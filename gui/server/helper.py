@@ -1,3 +1,6 @@
+from neo4j import GraphDatabase, basic_auth
+import ast
+import json
 def filterGraph(data, num, sort):
     ## filter nodes 
     nodes = data['results'][0]['data'][0]['graph']['nodes']
@@ -58,4 +61,14 @@ def filterGraph(data, num, sort):
         "errors":[]
     }
     return output 
+
+
+
+def print_(tx, ):
+    record = tx.run("""
+        CALL apoc.export.json.all(null,{useTypes:true, stream: true})
+        YIELD file, nodes, relationships, properties, data
+        RETURN file, nodes, relationships, properties, data
+    """)
+    return [rr for rr in record]
 

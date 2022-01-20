@@ -28,6 +28,7 @@ const actions = {
     async getTableData({commit, dispatch, state}){
         const path = "http://127.0.0.1:5000/getTableData"
         var result = await axios.get(path)
+        console.log(result)
         commit('SET_tableData', result['data'])
     }
 }

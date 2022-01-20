@@ -1,7 +1,7 @@
 <template>
     <div>
         <div>
-            <vue-tabulator ref="tabulator" v-model="dados" :options="options"/>
+            <vue-tabulator  ref="tabulator" v-model="dados" :options="options" v-if="showTable"/>
         </div>
     </div>
 </template>
@@ -14,20 +14,25 @@ Vue.use(vueTabulator, { name: "vue-tabulator" });
 export default{
     data(){
         return{
-            dados:null,
-            options: null
+            dados:[],
+            options: [],
+            showTable:false
         }
     },
     created(){
+        // this.test()
         this.$store.dispatch('getTableData')
+        
     },
     methods:{
-
     },
     watch:{
         tableData(){
-            this.dados = this.tableData['data']
+            console.log(this.tableData)
             this.options= this.tableData['option']
+            this.dados = this.tableData['data']
+            // console.log(this.options, this.dados)
+            this.showTable = true
         }
     },
     mounted(){
@@ -38,6 +43,7 @@ export default{
     },
     computed:{
         tableData(){
+            console.log('dd')
             return this.$store.state.tableData
         },
     }
