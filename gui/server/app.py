@@ -3,6 +3,7 @@ from flask import Flask, jsonify, request,Response
 from neo4j import GraphDatabase, basic_auth
 from flask_cors import CORS
 import json 
+import pandas as pd
 from helper import filterGraph, print_
 # configuration
 DEBUG = True
@@ -38,6 +39,8 @@ def getGraphData():
 
 @app.route('/getTableData', methods=['GET'])
 def getTableData():
+    data = pd.read_csv('data/PPOD_PeopleOrg.csv')
+    print(data.columns)
     dados = [{
                 'name': 'Teste',
                 'age': 13
@@ -51,14 +54,11 @@ def getTableData():
                     'field': 'age'
                 } ]
             }
-    with driver.session() as session:
-        res = session.read_transaction(print_, )
-    print(res[0:1])
-    # print(res)
+    
     output = {
         'data': dados,
         'option': options,
-        'temp': res
+        # 'temp': res
     }
     
     return Response(json.dumps(output))

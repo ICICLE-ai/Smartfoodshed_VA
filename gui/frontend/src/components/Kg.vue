@@ -23,7 +23,7 @@ export default{
             console.log(Neo4jd3)
         },
         drawNeo4jd3(){
-            // console.log(this.graphData)
+            console.log(this.graphData)
             var that = this
             var neo4jd3 = Neo4jd3.default('#div_graph', {
                 neo4jData: that.graphData,
