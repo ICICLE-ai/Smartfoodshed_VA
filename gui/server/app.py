@@ -1,9 +1,12 @@
+from telnetlib import ENCRYPT
 from flask import Flask, jsonify, request,Response
+from neo4j import GraphDatabase, basic_auth
 from flask_cors import CORS
 import json 
-from helper import filterGraph
+from helper import filterGraph, print_
 # configuration
 DEBUG = True
+driver = None
 
 # instantiate the app
 app = Flask(__name__)
@@ -43,15 +46,24 @@ def getTableData():
                 'columns': [{
                     'title': 'Name',
                     'field': 'name',
-                    'sorter': 'string',
-                    'width': 200,
-                    'editor': True,
-                }, ]
+                },{
+                    'title': 'Age',
+                    'field': 'age'
+                } ]
             }
+    with driver.session() as session:
+        res = session.read_transaction(print_, )
+    print(res[0:1])
+    # print(res)
     output = {
         'data': dados,
-        'option': options
+        'option': options,
+        'temp': res
     }
+    
     return Response(json.dumps(output))
+
 if __name__ == '__main__':
+    
+    driver = GraphDatabase.driver("bolt://localhost:7687", auth=("neo4j", "123"))
     app.run()
