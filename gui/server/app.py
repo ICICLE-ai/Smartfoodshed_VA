@@ -7,8 +7,7 @@ import pandas as pd
 from helper import filterGraph, print_
 # configuration
 DEBUG = True
-driver = None
-
+GRAPH_DRIVER = None
 # instantiate the app
 app = Flask(__name__)
 app.config.from_object(__name__)
@@ -64,6 +63,6 @@ def getTableData():
     return Response(json.dumps(output))
 
 if __name__ == '__main__':
-    
-    driver = GraphDatabase.driver("bolt://localhost:7687", auth=("neo4j", "123"))
+    global GRAPH_DRIVER
+    GRAPH_DRIVER = Neo4jSession()
     app.run()
