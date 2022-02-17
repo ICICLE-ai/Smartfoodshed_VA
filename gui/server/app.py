@@ -25,40 +25,29 @@ def ping_pong():
 
 @app.route('/getGraphData', methods=['GET'])
 def getGraphData():
-    f = open('all_converted.json')
-    # f = open('./data/all_converted.json')
+    # f = open('all_converted.json')
+    # # f = open('./data/all_converted.json')
+    # data = json.load(f)
+
+    # num = 20
+    # sort = 'betweenness'
+
+    # # print(num, sort)
+    # filtered_data = filterGraph(data, num, sort)
+    f = open('data/sample.json')
     data = json.load(f)
-
-    num = 20
-    sort = 'betweenness'
-
-    # print(num, sort)
-    filtered_data = filterGraph(data, num, sort)
     # print(type(filtered_data))
-    return Response(json.dumps(filtered_data))
+    return Response(json.dumps(data))
 
 @app.route('/getTableData', methods=['GET'])
 def getTableData():
-    data = pd.read_csv('data/PPOD_PeopleOrg.csv')
+    data = pd.read_csv('data/sctg7_table_100.csv')
+    data = data.fillna('')
     print(data.columns)
-    dados = [{
-                'name': 'Teste',
-                'age': 13
-            }]
-    options =  {
-                'columns': [{
-                    'title': 'Name',
-                    'field': 'name',
-                },{
-                    'title': 'Age',
-                    'field': 'age'
-                } ]
-            }
-    
+
+    dados = data.to_dict('records')
     output = {
         'data': dados,
-        'option': options,
-        # 'temp': res
     }
     
     return Response(json.dumps(output))

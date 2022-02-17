@@ -208,7 +208,9 @@ function Neo4jD3(_selector, _options) {
         // })
         node
         .each(function(d){
-            const text_nodes = textDisplay(d['properties']['name'])
+            // console.log(d)
+            const text_nodes = textDisplay(d['properties']['county'])
+            // console.log(d['properties']['name'])
             const selection = d3.select(this)
             if (text_nodes.length == 1) {
                 selection.append('text')
