@@ -6,7 +6,9 @@ Vue.use(Vuex)
 function initialState (){
     return {
         graphData: null,
-        tableData: null,
+        tableData: null, // raw data 
+
+        tableSelection: null, 
     }
 }
 
@@ -16,6 +18,9 @@ const mutations  = {
     },
     SET_tableData(state, val){
         state.tableData = val 
+    },
+    SET_tableSelection(state, val){
+        state.tableSelection = val 
     }
 }
 
@@ -28,7 +33,13 @@ const actions = {
     async getTableData({commit, dispatch, state}){
         const path = "http://127.0.0.1:5000/getTableData"
         var result = await axios.get(path)
-        console.log(result)
+        var tableSelection_temp = {}
+        var sheet = result['data']['sheet'] // list of sheet name
+        var data = result['data']['data'] // list of data obj 
+        sheet.forEach(s=>{
+            tableSelection_temp[s] = []
+        })
+        commit('SET_tableSelection', tableSelection_temp)
         commit('SET_tableData', result['data'])
     }
 }

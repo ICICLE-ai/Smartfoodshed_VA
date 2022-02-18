@@ -25,32 +25,36 @@ def ping_pong():
 
 @app.route('/getGraphData', methods=['GET'])
 def getGraphData():
-    # f = open('all_converted.json')
-    # # f = open('./data/all_converted.json')
-    # data = json.load(f)
-
-    # num = 20
-    # sort = 'betweenness'
-
-    # # print(num, sort)
-    # filtered_data = filterGraph(data, num, sort)
-    f = open('data/sample.json')
+    f = open('../../../local_data/graph.json')
     data = json.load(f)
     # print(type(filtered_data))
     return Response(json.dumps(data))
 
 @app.route('/getTableData', methods=['GET'])
 def getTableData():
-    data = pd.read_csv('data/sctg7_table_100.csv')
-    data = data.fillna('')
-    print(data.columns)
-
-    dados = data.to_dict('records')
-    output = {
-        'data': dados,
+    f = open('../../../local_data/ppod_entity_table.json')
+    data = json.load(f)
+    output = {} ## tableName: {tableData:{}, tableInfo:{}}
+    tableNames = []
+    for ele in data:
+        tableNames.append(ele['table_name'])
+        output[ele['table_name']] = {
+            'tableData': ele['table_data'],
+            'tableInfo': ele['table_info']
+        }
+    result = {
+        'data': output,
+        'sheet': tableNames
     }
-    
-    return Response(json.dumps(output))
+    # data = data.fillna('')
+    # print(data.columns)
+
+    # dados = data.to_dict('records')
+    # output = {
+    #     'data': dados,
+    # }
+    # print(data.keys())
+    return Response(json.dumps(result))
 
 if __name__ == '__main__':
     
