@@ -2,8 +2,11 @@ from telnetlib import ENCRYPT
 from flask import Flask, jsonify, request,Response
 from neo4j import GraphDatabase, basic_auth
 from flask_cors import CORS
-import json 
-import pandas as pd
+import json
+from neo4j import GraphDatabase
+from py2neo import Graph
+from py2neo import Subgraph
+import py2neo
 from helper import filterGraph, print_
 # configuration
 DEBUG = True
@@ -58,5 +61,11 @@ def getTableData():
 
 if __name__ == '__main__':
     
-    driver = GraphDatabase.driver("bolt://localhost:7687", auth=("neo4j", "123"))
+    # driver = GraphDatabase.driver("bolt://localhost:7687", auth=("neo4j", "123"))
+    graph = Graph("bolt://localhost:7687", auth=("neo4j", "123")) # This should be a global variable in this app
+    schema = py2neo.database.Schema(graph)
+    if len(list(schema.node_labels)) > 1:
+        entity_identifier = "label" # This should be a global variable in this app
+    else:
+        entity_identifier = "county" # This should be a global variable in this app
     app.run()
