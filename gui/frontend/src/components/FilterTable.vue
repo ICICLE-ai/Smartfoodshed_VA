@@ -66,7 +66,6 @@ export default{
       console.log(this.selected_rows)
     },
     handleSelectionChange (val) {
-      alert(1)
       // once change, we save the changes to the global
       console.log('checking here')
       console.log(val)
