@@ -208,7 +208,10 @@ function Neo4jD3(_selector, _options) {
         // })
         node
         .each(function(d){
-            const text_nodes = textDisplay(d['properties']['name'])
+            // console.log(d)
+            let mapping = d['properties']['mapping']
+            const text_nodes = textDisplay(d['properties'][mapping])
+            // console.log(d['properties']['name'])
             const selection = d3.select(this)
             if (text_nodes.length == 1) {
                 selection.append('text')
@@ -417,7 +420,9 @@ function Neo4jD3(_selector, _options) {
                 .attr('text-anchor', 'middle')
                 .attr("color", "white")
                 .text(function(d) {
-                    return d.type;
+                    // console.log(d)
+                    let mapping = d['properties']['mapping']
+                    return d['properties'][mapping];
                 });
     }
 
