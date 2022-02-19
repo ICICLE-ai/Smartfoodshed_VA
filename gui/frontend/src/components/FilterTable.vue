@@ -1,7 +1,7 @@
 <template>
     <div>
         <el-row>
-            <el-col :span="12">
+            <el-col :span="6">
                 <el-select v-model="selected_sheet" placeholder="Please Select" size="mini">
                     <el-option
                     v-for="item in sheetNames"
