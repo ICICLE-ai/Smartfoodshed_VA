@@ -24,7 +24,7 @@
         </el-row>
 
         <div>
-            <el-table :data="dados" max-height="800" @select-all="handleSelectionChange" @select="handleSelectionChange" ref="multipleTable">
+            <el-table :data="dados" max-height="800" @select-all="handleSelectionChange" @select="handleSelectionChange" ref="multipleTable" lazy>
                 <el-table-column
                     type="selection"
                     width="55">
@@ -89,6 +89,7 @@ export default{
   },
   watch: {
     tableData () {
+      console.log(this.tableData)
       this.sheetNames = this.tableData['sheet']
       this.selected_sheet = this.sheetNames[0]
       this.options = this.tableData['data'][this.selected_sheet]['tableInfo']

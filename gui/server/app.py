@@ -7,7 +7,7 @@ from neo4j import GraphDatabase
 from py2neo import Graph
 from py2neo import Subgraph
 import py2neo
-from helper import filterGraph, print_
+from helper import filterGraph, print_, get_subgraph
 # configuration
 DEBUG = True
 GRAPH_DRIVER = None
@@ -34,7 +34,7 @@ def getGraphData():
 
 @app.route('/getTableData', methods=['GET'])
 def getTableData():
-    f = open('../../../local_data/ppod_entity_table.json')
+    f = open('../../../local_data/cfs_relation_table.json')
     data = json.load(f)
     output = {} ## tableName: {tableData:{}, tableInfo:{}}
     tableNames = []
