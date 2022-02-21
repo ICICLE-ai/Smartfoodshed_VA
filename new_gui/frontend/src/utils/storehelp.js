@@ -32,9 +32,9 @@ function generationEntityRelations(container){
         const data = container[sheet]
         const items = Object.values(data)
         items.forEach(item => {
-            if(item.relation_id){
+            if(item.relation_id != null){
                 relations.push(item.relation_id)
-            }else if(item.id) {
+            }else if(item.id != null) {
                 nodes.push(item.id)
             }else{
                 console.log("Error, item doesn't have id or relation_id")
@@ -77,7 +77,7 @@ function removeItemsToSelection(container, items){
         items.forEach(item => {
             const id = item[indexingTerm]
             if(id != null) {
-                if(container[id]){
+                if(container[id] != null){
                     delete container[id]
                 }
             } else {
@@ -124,10 +124,11 @@ function retrieveInteractiveTable(tableData, dictionary, {entities, relations}){
     if (entities == null && relations == null){
         return null
     }
+    console.log("---===---===---===---===")
     console.log(entities)
     console.log(relations)
     // entity handler
-    if (entities != null) {
+    if (entities != null && Object.keys(dictionary['entities']).length > 0) {
         entities.forEach(eId => {
             const info = dictionary['entities'][eId]
             if(info!=null){
@@ -139,18 +140,20 @@ function retrieveInteractiveTable(tableData, dictionary, {entities, relations}){
                     filtered_data[originalSheet]['tableData'].push(info['data'])
                 }else{
                     filtered_data[originalSheet] = {
-                        'tableData': [], 
+                        'tableData': [info['data']], 
                         'tableInfo': tableData['data'][originalSheet]['tableInfo']
                     } 
                 }
             }else {
+                console.log(dictionary['entities'])
+                console.log(dictionary['entities'][eId])
                 console.log("missing info from dictionary")
             }
         })
     }
     // relation handler
-    if (relations != null) {
-        relations.forEach(rId => {
+    if (relations != null && Object.keys(dictionary['relations']).length > 0) {
+        relations.forEach(rId => { 
             const info = dictionary['relations'][rId]
             if(info!=null){
                 const originalSheet = info['fromSheet']

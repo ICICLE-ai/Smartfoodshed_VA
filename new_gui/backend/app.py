@@ -36,7 +36,7 @@ def getGraphData():
 
 @app.route('/getTableData', methods=['GET'])
 def getTableData():
-    f = open('../../../local_data/cfs_relation_table.json')
+    f = open('../../../local_data/cfs_entity_table.json')
     data = json.load(f)
     output = {} ## tableName: {tableData:{}, tableInfo:{}}
     tableNames = []

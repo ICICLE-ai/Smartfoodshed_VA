@@ -116,7 +116,10 @@ export default{
       svg.call(lasso)
     },
     retrieveTableFromGraphHandler(){
-      this.$store.dispatch("retrieveSubTable", {entites: this.selectedEntities, relations: this.selectedRelations})
+      console.log("retrieving data now!!!")
+      console.log(this.selectedEntities)
+      console.log(this.selectedRelations)
+      this.$store.dispatch("retrieveSubTable", {entities: this.selectedEntities, relations: this.selectedRelations})
     },
     resetGraphTableHandler(){
       this.$store.dispatch("resetTableGraph")
