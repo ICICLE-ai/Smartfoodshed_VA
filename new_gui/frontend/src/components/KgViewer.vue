@@ -1,6 +1,16 @@
 <template>
     <div class="fullHeight">
-        <div id="div_graph" class="fullHeight" :style="{'height': HEIGHT}"></div>
+        <div
+          class="graph-btn-container"
+        >
+          <v-btn
+            small
+            @click="retrieveTableFromGraphHandler"
+          >
+            Retrieve
+        </v-btn>
+        <div id="div_graph" class="fullHeight" :style="{'height': HEIGHT}"></div>   
+        </div>
     </div>
 </template>
 
@@ -14,7 +24,8 @@ export default{
   },
   data () {
     return {
-      // graphData:{}
+      selectedEntities: [], 
+      selectedRelations: []
     }
   },
   created () {
@@ -44,8 +55,7 @@ export default{
       })
 
       const svg = d3.select('#div_graph').select("svg")
-      var circles_question = svg.selectAll('circle')
-      console.log(circles_question)
+      var circles_question = svg.selectAll('.outline')
       var lasso_start = function () {
         lasso.items()
           .attr('fill', "green")
@@ -64,20 +74,29 @@ export default{
           .classed('possible', false)
       }
       var lasso_end = function () {
-        console.log("!!!!!!!!!!!!")
-        console.log(lasso.notSelectedItems())
         lasso.items()
           .classed('not_possible', false)
           .classed('possible', false)
 
-        // Style the selected dots
         lasso.selectedItems()
           .classed('selected', true)
-          .style('fill', "green")
-
+        that.selectedEntities.splice(0, that.selectedEntities.length)
+        that.selectedRelations.splice(0, that.selectedRelations.length) 
+        lasso.selectedItems().each(function(d){
+          const label = this.nodeName 
+          
+          if (label == "circle") {
+            console.log("adding entity" + d.id)
+            that.selectedEntities.push(d.id)
+          }else {
+            console.log("adding Relations" + d.id)
+            that.selectedRelations.push(d.id)
+          }
+          
+        })
         // Reset the style of the not selected dots
-        lasso.notSelectedItems()
-        //   .attr('r', 3.5)
+        // lasso.notSelectedItems()
+        
       }
       var lasso = d3Lasso.lasso()
         .closePathSelect(true)
@@ -88,15 +107,14 @@ export default{
         .on('draw', lasso_draw)
         .on('end', lasso_end)
       svg.call(lasso)
+    },
+    retrieveTableFromGraphHandler(){
+      this.$store.dispatch("retrieveSubTable", {entites: this.selectedEntities, relations: this.selectedRelations})
     }
   },
   watch: {
     graphData () {
-      // console.log(this.graphData)
-      // console.log(this.graphData['results'][0]['data'][0]['graph']['nodes'])
       this.graphData['results'][0]['data'][0]['graph']['nodes'].forEach(function (d) {
-        // this.graphData['nodes'].forEach(function(d){
-        // console.log(d)
         d['status'] = 'unclicked'
       })
       this.drawNeo4jd3()
@@ -144,7 +162,18 @@ export default{
     fill: #EC888C;
 }
 
-.selected {
-    fill: steelblue;
+.nodes .selected {
+    fill: green!important;
+    stroke-width: 3px!important;
+    stroke: black;
+}
+.relationships .selected {
+    stroke-width: 5px !important;
+    stroke: green!important;
+}
+.graph-btn-container{
+    /* position: absolute;  */
+    margin-top: 30px;
+    /* float: left */
 }
 </style>

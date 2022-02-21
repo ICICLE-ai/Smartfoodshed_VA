@@ -4,13 +4,13 @@
             <div>
               <v-tabs v-model="tab">
                 <v-tab
-                  v-for="item in sheetNames"
-                  :key="item"
+                  v-for="sheetname in sheetNames"
+                  :key="sheetname"
                 >
-                  {{ item }}
+                  {{ sheetname }}
                 </v-tab>
               </v-tabs>
-             <v-tabs-items v-model="tab">
+             <v-tabs-items v-model="tab" ref="tabletabs">
                 <v-tab-item
                   v-for="sheetname in sheetNames"
                   :key="sheetname"
@@ -18,33 +18,45 @@
                    <v-data-table
                         v-model="selected_rows"
                         show-select
-                        :headers="convert(tableData['data'][sheetname]['tableInfo'])"
-                        :items="tableData['data'][sheetname]['tableData']"
-                        item-key="name"
+                        :headers="convert(currentData['data'][sheetname]['tableInfo'])"
+                        :items="currentData['data'][sheetname]['tableData']"
+                        :item-key="sheetItemKey"
                         :single-select="singleSelect"
                         class="elevation-1"
                         :search="search"
                         :custom-filter="filterOnlyCapsText"
+                        @item-selected="itemSelectedHandler"
+                        @toggle-select-all="selectAllHandler"
                     >
                         <template v-slot:top>
-                        <v-text-field
-                            v-model="search"
-                            label="Search (UPPER CASE ONLY)"
-                            class="mx-4"
-                        ></v-text-field>
+                          <v-text-field
+                              v-model="search"
+                              label="Search (UPPER CASE ONLY)"
+                              class="mx-4"
+                              style="margin-top: 3px"
+                          ></v-text-field>
                         </template>
-                        <template v-slot:body.append>
-                        <tr>
-                            <td></td>
-                            <td>
-                            <v-text-field
-                                v-model="calories"
-                                type="number"
-                                label="Less than"
-                            ></v-text-field>
-                            </td>
-                            <td colspan="4"></td>
-                        </tr>
+                        <template v-slot:footer>
+                          <v-container>
+                            <v-row
+                              justify="space-between"
+                            >
+                              <v-col cols="3">
+                                <v-text-field
+                                  v-model="calories"
+                                  type="number"
+                                  label="Less than"  
+                                  style="width: 80px"
+
+                              ></v-text-field>
+                              </v-col>
+                              <v-col cols="3" style="margin-top:20px">
+                                 <v-btn @click="retrieveGraphFromTableHandler">
+                                  Retrieve
+                                </v-btn>
+                              </v-col>
+                            </v-row>
+                          </v-container>
                         </template>
                     </v-data-table>
                 </v-tab-item>
@@ -69,26 +81,24 @@ export default{
       singleSelect: false,
       sheetNames: [],
       tab: null,
+      sheetItemKey: null, 
+      currentSheet: null, 
+      currentData: null, 
     }
   },
   computed: {
-    ...mapState(['tableData', 'tableSelection', 'tableSelected']),
+    ...mapState(['tableData', 'tableSelection', 'tableSelected', 'tableInteractiveMode', 'interactiveTableData']),
   },
   created(){
     this.$store.dispatch('getTableData')
   },
   methods: {
     filterOnlyCapsText (value, search, item) {
+      console.log(value, search, item)
       return value != null &&
         search != null &&
         typeof value === 'string' &&
-        value.toString().toLocaleUpperCase().indexOf(search) !== -1
-    },
-    handleSelectionChange (val) {
-      // TBA 
-      // once change, we save the changes to the global
-      this.$store.dispatch('setTableSelected', {sheetName: this.selected_sheet, value: val})
-
+        value.toString().indexOf(search) !== -1
     },
     convert(raw){
       // vuetify need the text + value, not label+value 
@@ -101,13 +111,79 @@ export default{
         newOutput.push(temp)
       })
       return newOutput
+    }, 
+    itemSelectedHandler({item, value}){
+      
+      if (value) {
+        this.$store.dispatch('setTableSelected', {action: 'add', sheetName: this.currentSheet, value: [item]})
+      } else {
+        this.$store.dispatch('setTableSelected', {action: 'remove', sheetName: this.currentSheet, value: [item]})
+      }
+    }, 
+    retrieveGraphFromTableHandler(){ 
+      this.$store.dispatch("retrieveGraphFromTable")
+    }, 
+    selectAllHandler({items, value}){
+      console.log(items, value)
+      if (value) {
+        this.$store.dispatch('setTableSelected', {action: 'add', sheetName: this.currentSheet, value: items})
+      } else {
+        this.$store.dispatch('setTableSelected', {action: 'remove', sheetName: this.currentSheet, value: items})
+      }
+    },
+    updateItemKey(){
+      this.currentSheet = this.currentData['sheet'][this.tab]
+      const sampleData = this.currentData['data'][this.currentSheet]['tableData'][0]; 
+      if(sampleData){
+        const keys = Object.keys(sampleData)
+        if(keys.includes('relation_id')){
+          this.sheetItemKey = 'relation_id'
+        }else if(keys.includes('id')){
+          this.sheetItemKey = 'id'
+        }
+      }
     }
   },
   watch:{
-     tableData () {
-      this.sheetNames = this.tableData['sheet']
+    tableData () {
+      if (!this.tableInteractiveMode) {
+        this.sheetNames = this.tableData['sheet']
+        console.log("check here!!!")
+        console.log(this.tableData)
+        this.currentData = this.tableData
+        if(this.tab==null){
+          this.tab = 0
+        } 
+        this.updateItemKey()
+      }
     },
-  }
+    tableInteractiveMode(){
+      alert("interactive mode change!!! " + this.tableInteractiveMode)
+    },
+    interactiveTableData(){
+      alert("interactiveTableData coming!!!")
+      console.log(this.interactiveTableData)
+      this.currentData = this.interactiveTableData
+      if(this.tab==null){
+          this.tab = 0
+        } 
+      this.updateItemKey()
+    },
+    tab() {
+      // tab id
+      // const tabId = this.tab
+      if (this.currenData) {
+        this.updateItemKey()
+      }
+      console.log(this.sheetItemKey)
+    }, 
+  }, 
+  
 }
 
 </script>
+<style>
+.v-input__slot{
+  width: 100px;
+}
+</style>

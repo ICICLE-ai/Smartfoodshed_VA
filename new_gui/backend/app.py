@@ -7,7 +7,7 @@ from neo4j import GraphDatabase
 from py2neo import Graph
 from py2neo import Subgraph
 import py2neo
-from helper import filterGraph, print_, get_subgraph
+from helper import filterGraph, print_, get_subgraph, convert_subgraph_to_json
 # configuration
 DEBUG = True
 GRAPH_DRIVER = None
@@ -18,7 +18,9 @@ app.config.from_object(__name__)
 # enable CORS
 CORS(app, resources={r'/*': {'origins': '*'}})
 
+# graph = None 
 
+# entity_identifier = None
 # sanity check route
 @app.route('/ping', methods=['GET'])
 def ping_pong():
@@ -58,8 +60,24 @@ def getTableData():
     # print(data.keys())
     return Response(json.dumps(result))
 
+@app.route('/retrieveSubgraph', methods=['POST'])
+def getSubGraphFromTable(): 
+    request_obj = request.get_json()
+    nodes_list = []
+    relation_list = []
+    if request_obj.get("nodes"): 
+        nodes_list = request_obj.get("nodes")
+    
+    if request_obj.get("relations"):
+        relation_list = request_obj.get("relations")
+    
+    subgraph_res = get_subgraph(graph, nodes_list, relation_list)
+    dict_res = convert_subgraph_to_json(subgraph_res, entity_identifier)
+    return Response(json.dumps(dict_res))
+
 if __name__ == '__main__':
     
+    global graph, entity_identifier
     # driver = GraphDatabase.driver("bolt://localhost:7687", auth=("neo4j", "123"))
     graph = Graph("bolt://localhost:7687", auth=("neo4j", "123")) # This should be a global variable in this app
     schema = py2neo.database.Schema(graph)
