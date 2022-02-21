@@ -9,6 +9,13 @@
           >
             Retrieve
         </v-btn>
+        <v-btn
+            small
+            @click="resetGraphTableHandler"
+            style="margin-left: 10px"
+          >
+            Reset
+        </v-btn>
         <div id="div_graph" class="fullHeight" :style="{'height': HEIGHT}"></div>   
         </div>
     </div>
@@ -110,6 +117,9 @@ export default{
     },
     retrieveTableFromGraphHandler(){
       this.$store.dispatch("retrieveSubTable", {entites: this.selectedEntities, relations: this.selectedRelations})
+    },
+    resetGraphTableHandler(){
+      this.$store.dispatch("resetTableGraph")
     }
   },
   watch: {

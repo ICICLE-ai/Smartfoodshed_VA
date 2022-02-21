@@ -11,7 +11,7 @@ function initialState () {
   return {
     graphData: null,
     tableData: null, // raw data
-
+    originalGraph: null, 
     tableSelection: null,
     tableSelected: {},
     idDict: {},
@@ -22,6 +22,9 @@ function initialState () {
 const mutations = {
   SET_graphData (state, val) {
     state.graphData = val
+  },
+  SET_graphDataBackUp (state, val) {
+    state.originalGraph = val
   },
   SET_tableData (state, val) {
     state.tableData = val
@@ -42,7 +45,7 @@ const mutations = {
   TABLE_INTERACTIVE_ON(state, ) {
     state.tableInteractiveMode = true
   },
-  TABLE_INTERACTIVE_ON(state, ) {
+  TABLE_INTERACTIVE_OFF(state, ) {
     state.tableInteractiveMode = false
   },
   RESET_TABLE_SELECTED(state, ) {
@@ -57,6 +60,9 @@ const mutations = {
     }
     console.log("!!!!!!!!!!!!===========!!!!!!!!!!!!!")
     console.log(res)
+  },
+  RESET_GRAPHDATA(state, ){
+    state.graphData = state.originalGraph
   }
 }
 const actions = {
@@ -64,6 +70,7 @@ const actions = {
     const path = 'http://127.0.0.1:5000/getGraphData'
     var result = await axios.get(path)
     commit('SET_graphData', result['data'])
+    commit('SET_graphDataBackUp', result['data'])
   },
   async getTableData ({commit, dispatch, state}) {
     const path = 'http://127.0.0.1:5000/getTableData'
@@ -106,6 +113,10 @@ const actions = {
     commit('TABLE_INTERACTIVE_ON')
     commit('UPDATE_INTERACTIVE_TABLE', {entities, relations})
     commit('RESET_TABLE_SELECTED')
+  },
+  resetTableGraph({commit, state}, ){
+    commit('TABLE_INTERACTIVE_OFF') 
+    commit('RESET_GRAPHDATA')
   }
 }
 export default new Vuex.Store({

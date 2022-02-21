@@ -161,22 +161,30 @@ export default{
       }
     },
     tableInteractiveMode(){
-      alert("interactive mode change!!! " + this.tableInteractiveMode)
-    },
-    interactiveTableData(){
-      
-      console.log(this.interactiveTableData)
-      if(this.interactiveTableData['sheet'].length > 0){
-        this.currentData = this.interactiveTableData
+      if(!this.tableInteractiveMode){
+        this.currentData = this.tableData
         if(this.tab==null){
-            this.tab = 0
-          } 
+              this.tab = 0
+        } 
         this.updateItemKey()
         this.selected_rows = []
-      }else{
-        alert("Nothing retrieved from table!")
+      }   
+    },
+    interactiveTableData(){
+      console.log(this.interactiveTableData)
+      if(this.tableInteractiveMode){
+        if(this.interactiveTableData['sheet'].length > 0){
+          this.currentData = this.interactiveTableData
+          if(this.tab==null){
+              this.tab = 0
+            } 
+          this.updateItemKey()
+          this.selected_rows = []
+        }else{
+          alert("Nothing retrieved from table!")
+          this.selected_rows = []
+        }
       }
-      
     },
     tab() {
       // tab id
