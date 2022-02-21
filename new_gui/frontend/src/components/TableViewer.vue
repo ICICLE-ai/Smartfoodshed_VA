@@ -133,6 +133,9 @@ export default{
     },
     updateItemKey(){
       this.currentSheet = this.currentData['sheet'][this.tab]
+      if (this.currentSheet == null){
+        return 
+      }
       const sampleData = this.currentData['data'][this.currentSheet]['tableData'][0]; 
       if(sampleData){
         const keys = Object.keys(sampleData)
@@ -161,13 +164,19 @@ export default{
       alert("interactive mode change!!! " + this.tableInteractiveMode)
     },
     interactiveTableData(){
-      alert("interactiveTableData coming!!!")
+      
       console.log(this.interactiveTableData)
-      this.currentData = this.interactiveTableData
-      if(this.tab==null){
-          this.tab = 0
-        } 
-      this.updateItemKey()
+      if(this.interactiveTableData['sheet'].length > 0){
+        this.currentData = this.interactiveTableData
+        if(this.tab==null){
+            this.tab = 0
+          } 
+        this.updateItemKey()
+        this.selected_rows = []
+      }else{
+        alert("Nothing retrieved from table!")
+      }
+      
     },
     tab() {
       // tab id

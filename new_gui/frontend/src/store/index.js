@@ -45,6 +45,9 @@ const mutations = {
   TABLE_INTERACTIVE_ON(state, ) {
     state.tableInteractiveMode = false
   },
+  RESET_TABLE_SELECTED(state, ) {
+    state.tableSelected = {}
+  },
   UPDATE_INTERACTIVE_TABLE(state, {entities, relations}){ 
     const res = retrieveInteractiveTable(state.tableData, state.idDict, {entities, relations}) 
     if (res != null){
@@ -102,6 +105,7 @@ const actions = {
     console.log("retrieve sub table!!!")
     commit('TABLE_INTERACTIVE_ON')
     commit('UPDATE_INTERACTIVE_TABLE', {entities, relations})
+    commit('RESET_TABLE_SELECTED')
   }
 }
 export default new Vuex.Store({
