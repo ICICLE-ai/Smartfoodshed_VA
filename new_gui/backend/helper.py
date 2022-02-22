@@ -164,21 +164,23 @@ def write_relations_to_json(graph,relation_type_list,out_file,entity_identifier,
 #       node_id_list, a list of int, each element is an id for a node
 #       relation_id_list, a list of int, each element is an id for a relationship
 #Ouput: a sugraph object in py2neo
-def get_subgraph(graph,node_id_list,relation_id_list):
+def get_subgraph(graph, node_id_list, relation_id_list):
     node_list = [graph.nodes.get(i) for i in node_id_list]
     all_pairs = [set(comb) for comb in combinations(node_list, 2)]
     subgraph = Subgraph()
 
-    #get all the relationships where the ending node and starting node all belong to the node set and put in the subgraph
+    # get all the relationships where the ending node and starting node all belong to the node set and put in the subgraph
     for pair in all_pairs:
         relation = graph.match(pair).first()
         if relation is not None:
             subgraph = subgraph | relation
 
-    #concatenate the subgraph with relationship list
+    # concatenate the subgraph with relationship list
     relation_list = [graph.relationships.get(i) for i in relation_id_list]
-    for relation in relation_list:
-        subgraph = subgraph | relation
+    subgraph = subgraph | Subgraph((), relation_list)
+
+    # concatenate the subgraph with node list
+    subgraph = subgraph | Subgraph(node_list)
     return subgraph
 
 #Input: subgraph, a subgraph object in py2neo
