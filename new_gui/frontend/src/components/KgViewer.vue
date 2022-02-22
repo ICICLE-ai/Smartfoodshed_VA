@@ -1,5 +1,5 @@
 <template>
-    <div class="fullHeight">
+    <div class="fullHeight" style="position:relative">
         <div
           class="graph-btn-container"
         >
@@ -16,8 +16,9 @@
           >
             Reset
         </v-btn>
-        <div id="div_graph" class="fullHeight" :style="{'height': HEIGHT}"></div>   
         </div>
+        <div id="div_graph" class="fullHeight" :style="{'height': HEIGHT}"></div>   
+        
     </div>
 </template>
 
@@ -185,8 +186,9 @@ export default{
     stroke: green!important;
 }
 .graph-btn-container{
-    /* position: absolute;  */
-    margin-top: 30px;
+    position: relative; 
+    top: 330px;
+    /* margin-top: 30px; */
     /* float: left */
 }
 </style>

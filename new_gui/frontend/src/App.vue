@@ -1,11 +1,11 @@
 <template>
   <v-app>
     <v-main>
-      <v-row>
-        <v-col>
+      <v-row justify="center">
+        <v-col cols="5" align-self="center">
           <table-viewer/>
         </v-col>
-        <v-col>
+        <v-col cols="7">
           <kg-viewer/>
         </v-col>
       </v-row>

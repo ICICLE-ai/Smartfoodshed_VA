@@ -1,7 +1,6 @@
 <template>
-    <div id="app">
-        <v-app id="inspire">
-            <div>
+        <v-container id="inspire">
+            <div class="tmp">
               <v-tabs v-model="tab">
                 <v-tab
                   v-for="sheetname in sheetNames"
@@ -63,8 +62,7 @@
               </v-tabs-items>
            
             </div>
-        </v-app>
-    </div>
+        </v-container> 
 </template>
 
 <script>
