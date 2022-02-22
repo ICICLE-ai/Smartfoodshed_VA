@@ -161,8 +161,6 @@ function retrieveInteractiveTable(tableData, dictionary, {entities, relations}){
                     activeSheets.push(originalSheet)
                 }
                 if(filtered_data[originalSheet]!=null){
-                    console.log("----++++-----")
-                    console.log(info['data'])
                     filtered_data[originalSheet]['tableData'].push(info['data'])
                 }else{
                     filtered_data[originalSheet] = {

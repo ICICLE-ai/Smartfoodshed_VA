@@ -163,6 +163,7 @@ export default{
     tableInteractiveMode(){
       if(!this.tableInteractiveMode){
         this.currentData = this.tableData
+        this.sheetNames = this.currentData['sheet'] 
         if(this.tab==null){
               this.tab = 0
         } 
@@ -175,6 +176,9 @@ export default{
       if(this.tableInteractiveMode){
         if(this.interactiveTableData['sheet'].length > 0){
           this.currentData = this.interactiveTableData
+          this.sheetNames = this.currentData['sheet']
+          // console.log("**********************")
+          // console.log(this.interactiveTableData)
           if(this.tab==null){
               this.tab = 0
             } 

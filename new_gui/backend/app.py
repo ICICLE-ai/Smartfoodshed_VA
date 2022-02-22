@@ -36,7 +36,7 @@ def getGraphData():
 
 @app.route('/getTableData', methods=['GET'])
 def getTableData():
-    f = open('../../../local_data/cfs_entity_table.json')
+    f = open('../../../local_data/ppod_relation_table.json')
     data = json.load(f)
     output = {} ## tableName: {tableData:{}, tableInfo:{}}
     tableNames = []
@@ -70,9 +70,11 @@ def getSubGraphFromTable():
     
     if request_obj.get("relations"):
         relation_list = request_obj.get("relations")
-    
+    print(nodes_list)
+    print(relation_list)
     subgraph_res = get_subgraph(graph, nodes_list, relation_list)
     dict_res = convert_subgraph_to_json(subgraph_res, entity_identifier)
+    print(dict_res)
     return Response(json.dumps(dict_res))
 
 if __name__ == '__main__':
