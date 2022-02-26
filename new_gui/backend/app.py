@@ -36,7 +36,7 @@ def getGraphData():
 
 @app.route('/getTableData', methods=['GET'])
 def getTableData():
-    f = open('../../../local_data/ppod_relation_table.json')
+    f = open('../../../local_data/ppod_entity_table.json')
     data = json.load(f)
     output = {} ## tableName: {tableData:{}, tableInfo:{}}
     tableNames = []
