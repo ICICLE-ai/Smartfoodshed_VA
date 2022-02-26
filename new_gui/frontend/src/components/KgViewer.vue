@@ -53,12 +53,68 @@ export default{
         infoPanel: false,
 
         onNodeDoubleClick: function (node) {
-          that.dbclick(node)
+          // that.dbclick(node)
         },
         onNodeMouseEnter: function (node) {
           that.hover_node = node
         },
         onNodeClick: function (node) {
+          console.log(node)
+          console.log(d3.select(this))
+          let this_g = d3.select('#div_graph .nodes')
+
+          let append_g = this_g.append('g').attr("transform", "translate(" + node['x'] + "," + node['y'] + ")");
+          let radius = 25
+
+          // Create dummy data
+          var data = {a: 10, b: 10} // only two operations 
+
+          // set the color scale
+          var color = d3.scaleOrdinal()
+            .domain(data)
+            .range(["#94B49F", "#BB6464"])
+
+
+            // Compute the position of each group on the pie:
+            var pie = d3.pie()
+              .value(function(d) {return d.value; })
+            var data_ready = pie(d3.entries(data))
+            
+            // removal / expand operations 
+            var operation_buttons_g = append_g.selectAll('whatever')
+            .data(data_ready)
+            .enter()
+            
+            var operation_buttons = operation_buttons_g.append('path')
+            .attr('d', d3.arc()
+              .innerRadius(30)         // This is the size of the donut hole
+              .outerRadius(50)
+            )
+            .attr('fill', function(d){ return(color(d.data.key)) })
+            // .attr("stroke", "black")
+            .style("stroke-width", "2px")
+            .style("opacity", 0.7)
+            .style('cursor','pointer')
+            .attr('title','test')
+            
+            
+            // hovering effect 
+            operation_buttons.on('mouseover', function(d){
+               d3.select(this).style('opacity',1)
+            })
+            .on('mouseout',function(d){
+              d3.select(this).style('opacity',0.7)
+            })
+            .on('click', function(d,i){
+              // console.log(node,i)
+              let clicked_node_id = node['id']
+              if(i==0){
+                // green button -> expand 
+
+              }else{
+                //red button -> delete
+              }
+            })
         }
       })
 

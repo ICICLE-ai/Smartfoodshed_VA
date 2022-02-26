@@ -210,7 +210,9 @@ function Neo4jD3 (_selector, _options) {
       .each(function (d) {
         // console.log(d)
         let mapping = d['properties']['mapping']
+        console.log(d['properties'])
         const text_nodes = textDisplay(d['properties'][mapping])
+
         // console.log(d['properties']['name'])
         const selection = d3.select(this)
         if (text_nodes.length == 1) {
