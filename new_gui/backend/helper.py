@@ -183,6 +183,25 @@ def get_subgraph(graph, node_id_list, relation_id_list):
     subgraph = subgraph | Subgraph(node_list)
     return subgraph
 
+#Input: node_id_list, a list of int, a list of node id
+#       relation_id_list, a list of int, a list of relation id
+#       delete_node, a int, the node id of the deleted node
+#       graph, a py2neo graph object
+#Output: a subgraph object in py2neo after deletion
+def delete_node(node_id_list,relation_id_list,delete_node,graph):
+    node_list = [graph.nodes.get(i) for i in node_id_list]
+    relation_list = [graph.relationships.get(i) for i in relation_id_list]
+
+    subgraph = Subgraph()
+    subgraph = subgraph | Subgraph((),relation_list)
+    subgraph = subgraph | Subgraph(node_list)
+    for r in list(subgraph.relationships):
+        if r.start_node.identity == delete_node:
+            subgraph = subgraph - r | Subgraph([r.end_node])
+        elif r.end_node.identity == delete_node:
+            subgraph = subgraph - r | Subgraph([r.start_node])
+    return subgraph
+
 #Input: subgraph, a subgraph object in py2neo
 #       entity_identifier, a string, denotes the property name which you want to display in the front end (same as the mapping property)
 #Ouput: a dictionary containing the graph in json format

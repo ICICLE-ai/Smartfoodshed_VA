@@ -29,14 +29,18 @@ def ping_pong():
 
 @app.route('/getGraphData', methods=['GET'])
 def getGraphData():
-    f = open('../../../local_data/graph.json')
+    f = open('/Users/yolandalala/Desktop/ICICLE/code/input_graph.json')
     data = json.load(f)
     # print(type(filtered_data))
     return Response(json.dumps(data))
 
 @app.route('/getTableData', methods=['GET'])
 def getTableData():
+<<<<<<< HEAD
     f = open('../../../local_data/ppod_entity_table.json')
+=======
+    f = open('/Users/yolandalala/Desktop/ICICLE/code/cfs_relation_table.json')
+>>>>>>> d06d4c77beb10ab671d290d762b730a424bee086
     data = json.load(f)
     output = {} ## tableName: {tableData:{}, tableInfo:{}}
     tableNames = []
@@ -70,11 +74,23 @@ def getSubGraphFromTable():
     
     if request_obj.get("relations"):
         relation_list = request_obj.get("relations")
-    print(nodes_list)
-    print(relation_list)
     subgraph_res = get_subgraph(graph, nodes_list, relation_list)
     dict_res = convert_subgraph_to_json(subgraph_res, entity_identifier)
-    print(dict_res)
+    return Response(json.dumps(dict_res))
+
+@app.route('/deleteNode', methods=['POST'])
+def delete_node_from_graph():
+    request_obj = request.get_json()
+    nodes_list = []
+    relation_list = []
+    if request_obj.get("nodes"):
+        nodes_list = request_obj.get("nodes")
+    if request_obj.get("relations"):
+        relation_list = request_obj.get("relations")
+    if request_obj.get("delete_node"):
+        delete_node = request_obj.get("delete_node")
+    subgraph_res = delete_node(nodes_list,relation_list,delete_node,graph)
+    dict_res = convert_subgraph_to_json(subgraph_res, entity_identifier)
     return Response(json.dumps(dict_res))
 
 if __name__ == '__main__':
