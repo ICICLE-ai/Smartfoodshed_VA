@@ -30,6 +30,7 @@ def ping_pong():
 @app.route('/getGraphData', methods=['GET'])
 def getGraphData():
     f = open('/Users/yolandalala/Desktop/ICICLE/code/input_graph.json')
+    # f = open('../../../local_data/graph.json')
     data = json.load(f)
     # print(type(filtered_data))
     return Response(json.dumps(data))
@@ -37,8 +38,12 @@ def getGraphData():
 @app.route('/getTableData', methods=['GET'])
 def getTableData():
 <<<<<<< HEAD
+<<<<<<< HEAD
     f = open('../../../local_data/ppod_entity_table.json')
 =======
+=======
+    # f = open('../../../local_data/cfs_relation_table.json')
+>>>>>>> 6931e9cd8333811e5a5d2cf2977134f5fbbe1bce
     f = open('/Users/yolandalala/Desktop/ICICLE/code/cfs_relation_table.json')
 >>>>>>> d06d4c77beb10ab671d290d762b730a424bee086
     data = json.load(f)
