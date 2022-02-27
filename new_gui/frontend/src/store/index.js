@@ -60,8 +60,6 @@ const mutations = {
     }else{
       alert("retrieve nothing")
     }
-    console.log("!!!!!!!!!!!!===========!!!!!!!!!!!!!")
-    console.log(res)
   },
   RESET_GRAPHDATA(state, ){
     state.graphData = state.originalGraph
@@ -128,12 +126,11 @@ const actions = {
   },
   async node_expand({commit, state}, {node_id}){
     const updatedGraphData = await graphNodeLinkExpand(state.graphData, node_id)
-    commit('NODE_EXPAND', {updatedGraphData})
+    commit('NODE_EXPAND', {updatedGraphData: updatedGraphData['data']})
   }, 
   node_remove({state, commit}, {node_id}){
-    alert("node removal: " + node_id)
     const updatedGraphData = graphNodeLinkRemoval(state.graphData, node_id)
-    commit('NODE_REMOVE', {updatedGraphData})
+    commit('NODE_REMOVE', {updatedGraphData: updatedGraphData})
   }
 }
 export default new Vuex.Store({

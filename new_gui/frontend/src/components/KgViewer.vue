@@ -185,6 +185,7 @@ export default{
   },
   watch: {
     graphData () {
+      console.log(this.graphData)
       this.graphData['results'][0]['data'][0]['graph']['nodes'].forEach(function (d) {
         d['status'] = 'unclicked'
       })
