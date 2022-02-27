@@ -7,6 +7,12 @@ from neo4j import GraphDatabase
 from py2neo import Graph
 from py2neo import Subgraph
 import py2neo
+""" config.py
+// Adding config file to config your local data folder please !!!!!!!!!!!
+
+// e.g.
+localfile_path = "../../../local_data"
+"""
 from config import localfile_path
 from helper import filterGraph, print_, get_subgraph, convert_subgraph_to_json,graph_after_delete_node, graph_after_expand_node
 # configuration
