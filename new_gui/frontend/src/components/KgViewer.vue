@@ -3,12 +3,6 @@
         <div
           class="graph-btn-container"
         >
-          <v-btn
-            small
-            @click="retrieveTableFromGraphHandler"
-          >
-            Retrieve
-        </v-btn>
         <v-btn
             small
             @click="resetGraphTableHandler"
@@ -26,6 +20,7 @@
 import * as Neo4jd3 from '../js/Neo4D3'
 import * as d3Lasso from 'd3-lasso'
 import * as d3 from 'd3'
+import * as KGutils from '@/utils/KGutils.js'
 export default{
   components: {
 
@@ -33,7 +28,9 @@ export default{
   data () {
     return {
       selectedEntities: [], 
-      selectedRelations: []
+      selectedRelations: [],
+      currentEntities: [], 
+      currentRelations: [],
     }
   },
   created () {
@@ -67,8 +64,8 @@ export default{
           let radius = 25
 
           // Create dummy data
-          var data = {a: 10, b: 10} // only two operations 
-
+          var data = {a: {action: "expand", value: 10}, b: {action: "remove", value: 10} } // only two operations 
+          console.log(d3.entries(data))
           // set the color scale
           var color = d3.scaleOrdinal()
             .domain(data)
@@ -77,14 +74,15 @@ export default{
 
             // Compute the position of each group on the pie:
             var pie = d3.pie()
-              .value(function(d) {return d.value; })
+              .value(function(d) {return d.value.value; })
             var data_ready = pie(d3.entries(data))
             
             // removal / expand operations 
             var operation_buttons_g = append_g.selectAll('whatever')
             .data(data_ready)
             .enter()
-            
+            console.log("!!!!!check here !!!!")
+            console.log(data_ready)
             var operation_buttons = operation_buttons_g.append('path')
             .attr('d', d3.arc()
               .innerRadius(30)         // This is the size of the donut hole
@@ -100,7 +98,8 @@ export default{
             
             // hovering effect 
             operation_buttons.on('mouseover', function(d){
-               d3.select(this).style('opacity',1)
+              console.log("mouseover")
+              d3.select(this).style('opacity',1)
             })
             .on('mouseout',function(d){
               d3.select(this).style('opacity',0.7)
@@ -108,11 +107,12 @@ export default{
             .on('click', function(d,i){
               // console.log(node,i)
               let clicked_node_id = node['id']
-              if(i==0){
-                // green button -> expand 
-
-              }else{
-                //red button -> delete
+              const action = d.data.value.action 
+              if (action == "expand"){
+                that.$store.dispatch("node_expand", {node_id: clicked_node_id})
+              }else {
+                that.$store.dispatch("node_remove", {node_id: clicked_node_id})
+                // assume action is "remove"
               }
             })
         }
@@ -172,14 +172,15 @@ export default{
         .on('end', lasso_end)
       svg.call(lasso)
     },
-    retrieveTableFromGraphHandler(){
-      console.log("retrieving data now!!!")
-      console.log(this.selectedEntities)
-      console.log(this.selectedRelations)
-      this.$store.dispatch("retrieveSubTable", {entities: this.selectedEntities, relations: this.selectedRelations})
-    },
     resetGraphTableHandler(){
       this.$store.dispatch("resetTableGraph")
+    },
+    nodeExpansionHandler(nodeId){
+
+
+    }, 
+    nodeRemovalHandler(nodeId){
+
     }
   },
   watch: {
@@ -187,7 +188,33 @@ export default{
       this.graphData['results'][0]['data'][0]['graph']['nodes'].forEach(function (d) {
         d['status'] = 'unclicked'
       })
+      console.log("check graph data")
+      console.log(this.graphData)
+      KGutils.graphDataParsing(this.graphData, this.currentEntities, this.currentRelations)
       this.drawNeo4jd3()
+    }, 
+    selectedEntities(val) {
+      if (val.length > 0) {
+        console.log("retrieving data now!!!")
+        console.log(val.length)
+        console.log(this.selectedEntities)
+        console.log(this.selectedRelations)
+        console.log("****************")
+        console.log(val)
+        this.$store.dispatch("retrieveSubTable", {entities: this.selectedEntities, relations: this.selectedRelations})
+      }
+      
+    }, 
+    selectedRelations(val){
+      if (val.length > 0) {
+        console.log("****************")
+        console.log(val.length)
+        console.log(val) 
+        console.log("retrieving data now!!!")
+        console.log(this.selectedEntities)
+        console.log(this.selectedRelations)
+        this.$store.dispatch("retrieveSubTable", {entities: this.selectedEntities, relations: this.selectedRelations})
+      }
     }
   },
   mounted () {

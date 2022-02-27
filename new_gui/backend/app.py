@@ -8,6 +8,12 @@ from py2neo import Graph
 from py2neo import Subgraph
 import py2neo
 from helper import filterGraph, print_, get_subgraph, convert_subgraph_to_json
+## Create a new py file config.py and add localfile_path to indicate the place of local_data folder
+## This config file will not be pushed to the osu code, so we don't need to always change path
+""" config.py
+localfile_path = "../../../local_data"
+"""
+from config import localfile_path
 # configuration
 DEBUG = True
 GRAPH_DRIVER = None
@@ -29,7 +35,9 @@ def ping_pong():
 
 @app.route('/getGraphData', methods=['GET'])
 def getGraphData():
-    f = open('/Users/yolandalala/Desktop/ICICLE/code/input_graph.json')
+    ## Create a new py file config.py and add localfile_path to indicate the place of local_data folder
+    ## This config file will not be pushed to the osu code, so we don't need to always change path
+    f = open(f'{localfile_path}/graph.json')
     # f = open('../../../local_data/graph.json')
     data = json.load(f)
     # print(type(filtered_data))
@@ -37,8 +45,10 @@ def getGraphData():
 
 @app.route('/getTableData', methods=['GET'])
 def getTableData():
+    ## Create a new py file config.py and add localfile_path to indicate the place of local_data folder
+    ## This config file will not be pushed to the osu code, so we don't need to always change path
     # f = open('../../../local_data/cfs_relation_table.json')
-    f = open('/Users/yolandalala/Desktop/ICICLE/code/cfs_relation_table.json')
+    f = open(f'{localfile_path}/cfs_relation_table.json')
     data = json.load(f)
     output = {} ## tableName: {tableData:{}, tableInfo:{}}
     tableNames = []
