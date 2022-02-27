@@ -6,7 +6,8 @@ import {generationEntityRelations,
         removeItemsToSelection,
         idParsingToDict,
         retrieveInteractiveTable} from '@/utils/storehelp'
-import {graphNodeLinkRemoval} from '@/utils/KGutils'
+import {graphNodeLinkRemoval, 
+        graphNodeLinkExpand} from '@/utils/KGutils'
 Vue.use(Vuex)
 function initialState () {
   return {
@@ -65,8 +66,8 @@ const mutations = {
   RESET_GRAPHDATA(state, ){
     state.graphData = state.originalGraph
   },
-  NODE_EXPAND(state, {node_id}){
-    
+  NODE_EXPAND(state, {updatedGraphData}){
+    state.graphData = updatedGraphData 
   }, 
   NODE_REMOVE(state, {updatedGraphData}){
     state.graphData = updatedGraphData
@@ -125,14 +126,14 @@ const actions = {
     commit('TABLE_INTERACTIVE_OFF') 
     commit('RESET_GRAPHDATA')
   },
-  node_expand({commit, state}, {node_id}){
-    commit('NODE_EXPAND', {node_id})
+  async node_expand({commit, state}, {node_id}){
+    const updatedGraphData = await graphNodeLinkExpand(state.graphData, node_id)
+    commit('NODE_EXPAND', {updatedGraphData})
   }, 
   node_remove({state, commit}, {node_id}){
     alert("node removal: " + node_id)
     const updatedGraphData = graphNodeLinkRemoval(state.graphData, node_id)
     commit('NODE_REMOVE', {updatedGraphData})
-
   }
 }
 export default new Vuex.Store({

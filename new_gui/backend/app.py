@@ -7,13 +7,8 @@ from neo4j import GraphDatabase
 from py2neo import Graph
 from py2neo import Subgraph
 import py2neo
-from helper import filterGraph, print_, get_subgraph, convert_subgraph_to_json
-## Create a new py file config.py and add localfile_path to indicate the place of local_data folder
-## This config file will not be pushed to the osu code, so we don't need to always change path
-""" config.py
-localfile_path = "../../../local_data"
-"""
 from config import localfile_path
+from helper import filterGraph, print_, get_subgraph, convert_subgraph_to_json,graph_after_delete_node, graph_after_expand_node
 # configuration
 DEBUG = True
 GRAPH_DRIVER = None
@@ -35,9 +30,7 @@ def ping_pong():
 
 @app.route('/getGraphData', methods=['GET'])
 def getGraphData():
-    ## Create a new py file config.py and add localfile_path to indicate the place of local_data folder
-    ## This config file will not be pushed to the osu code, so we don't need to always change path
-    f = open(f'{localfile_path}/graph.json')
+    f = open(f'{localfile_path}/input_graph.json')
     # f = open('../../../local_data/graph.json')
     data = json.load(f)
     # print(type(filtered_data))
@@ -48,7 +41,7 @@ def getTableData():
     ## Create a new py file config.py and add localfile_path to indicate the place of local_data folder
     ## This config file will not be pushed to the osu code, so we don't need to always change path
     # f = open('../../../local_data/cfs_relation_table.json')
-    f = open(f'{localfile_path}/cfs_relation_table.json')
+    f = open(f'{localfile_path}/cfs_table.json')
     data = json.load(f)
     output = {} ## tableName: {tableData:{}, tableInfo:{}}
     tableNames = []
@@ -97,7 +90,24 @@ def delete_node_from_graph():
         relation_list = request_obj.get("relations")
     if request_obj.get("delete_node"):
         delete_node = request_obj.get("delete_node")
-    subgraph_res = delete_node(nodes_list,relation_list,delete_node,graph)
+    subgraph_res = graph_after_delete_node(nodes_list,relation_list,delete_node,graph)
+    dict_res = convert_subgraph_to_json(subgraph_res, entity_identifier)
+    return Response(json.dumps(dict_res))
+
+@app.route('/expandNode', methods=['POST'])
+def expand_node_from_graph():
+    request_obj = request.get_json()
+    nodes_list = []
+    relation_list = []
+    if request_obj.get("nodes"):
+        nodes_list = request_obj.get("nodes")
+    if request_obj.get("relations"):
+        relation_list = request_obj.get("relations")
+    if request_obj.get("expand_node"):
+        expand_node = request_obj.get("expand_node")
+    if request_obj.get("limit_number"):
+        limit_number = request_obj.get("limit_number")
+    subgraph_res = graph_after_expand_node(graph,nodes_list,relation_list,expand_node,limit_number)
     dict_res = convert_subgraph_to_json(subgraph_res, entity_identifier)
     return Response(json.dumps(dict_res))
 
