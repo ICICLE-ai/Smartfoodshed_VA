@@ -1,7 +1,7 @@
 from neo4j import GraphDatabase, basic_auth
 import ast
 import json
-from itertools import combinations
+from itertools import combinations,product
 from py2neo import Subgraph
 
 def filterGraph(data, num, sort):
@@ -188,7 +188,7 @@ def get_subgraph(graph, node_id_list, relation_id_list):
 #       delete_node, a int, the node id of the deleted node
 #       graph, a py2neo graph object
 #Output: a subgraph object in py2neo after deletion
-def delete_node(node_id_list,relation_id_list,delete_node,graph):
+def graph_after_delete_node(node_id_list,relation_id_list,delete_node,graph):
     node_list = [graph.nodes.get(i) for i in node_id_list]
     relation_list = [graph.relationships.get(i) for i in relation_id_list]
 
@@ -200,6 +200,43 @@ def delete_node(node_id_list,relation_id_list,delete_node,graph):
             subgraph = subgraph - r | Subgraph([r.end_node])
         elif r.end_node.identity == delete_node:
             subgraph = subgraph - r | Subgraph([r.start_node])
+    return subgraph
+
+#Input: node_id_list, a list of int, a list of node id
+#       relation_id_list, a list of int, a list of relation id
+#       expand_node, a int, the node id of the expanded node
+#       graph, a py2neo graph object
+#       limit_number, a int, the maximum number of nodes we could add after expansion
+#Output: a subgraph object in py2neo after expansion
+def graph_after_expand_node(graph,node_id_list,relation_id_list,expand_node,limit_number):
+    node_list = [graph.nodes.get(i) for i in node_id_list]
+    relation_list = [graph.relationships.get(i) for i in relation_id_list]
+
+    #reconstruct the subgraph
+    subgraph = Subgraph()
+    subgraph = subgraph | Subgraph((),relation_list)
+    subgraph = subgraph | Subgraph(node_list)
+
+    #find the expanded relationship from the expand_node
+    new_sub = Subgraph((),graph.match({graph.nodes.get(expand_node)}).limit(limit_number).all())
+
+    #check for possible connection between the newly added node and old node
+    new_node_id = [n.identity for n in list(new_sub.nodes)]
+    new_node_id.remove(expand_node)
+    new_node_list = [graph.nodes.get(i) for i in new_node_id]
+    comb_node_list = [graph.nodes.get(i) for i in node_id_list if i != expand_node]
+
+    #find all possible pairs between new node and old new except the expanded one
+    all_pairs = [set(comb) for comb in product(new_node_list, comb_node_list)] 
+
+    #query the graph to see if there exists some relationships between all pair
+    for pair in all_pairs:
+        relation = graph.match(pair).first()
+        if relation is not None:
+            new_sub = new_sub | relation
+
+    #concatenate the subgraph
+    subgraph = subgraph | new_sub
     return subgraph
 
 #Input: subgraph, a subgraph object in py2neo
