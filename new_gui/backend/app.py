@@ -105,6 +105,7 @@ def expand_node_from_graph():
     request_obj = request.get_json()
     nodes_list = []
     relation_list = []
+    limit_number = 5
     if request_obj.get("nodes"):
         nodes_list = request_obj.get("nodes")
     if request_obj.get("relations"):
