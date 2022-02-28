@@ -27,30 +27,37 @@ function Neo4jD3 (_selector, _options) {
     VERSION = '0.0.1'
 
   function appendGraph (container) {
-    svg = container.append('svg')
+    svg= container.append('svg')
       .attr('width', '100%')
       .attr('height', '100%')
       .attr('class', 'neo4jd3-graph')
-    //   .call(d3.zoom().on('zoom', function () {
-    //     var scale = d3.event.transform.k,
-    //       translate = [d3.event.transform.x, d3.event.transform.y]
+      // .call(d3.zoom().on('zoom', function () {
+      //   var scale = d3.event.transform.k,
+      //     translate = [d3.event.transform.x, d3.event.transform.y]
 
-    //     if (svgTranslate) {
-    //       translate[0] += svgTranslate[0]
-    //       translate[1] += svgTranslate[1]
-    //     }
+      //   // if (svgTranslate) {
+      //   //   alert(svgTranslate)
+      //   //   translate[0] += svgTranslate[0]
+      //   //   translate[1] += svgTranslate[1]
+      //   // }
 
-    //     if (svgScale) {
-    //       scale *= svgScale
-    //     }
+      //   // if (svgScale) {
+      //   //   alert(svgScale)
+      //   //   scale *= svgScale
+      //   // }
+      //   console.log("!!!")
+      //   console.log(this)
+      //   console.log(svg)
+      //   svg.attr('transform', 'translate(' + translate[0] + ', ' + translate[1] + ') scale(' + scale + ')')
+      // }))
 
-    //     svg.attr('transform', 'translate(' + translate[0] + ', ' + translate[1] + ') scale(' + scale + ')')
-    //   }))
-    //   .on('dblclick.zoom', null)
+      .on('dblclick.zoom', null)
       .append('g')
       .attr('width', '100%')
       .attr('height', '100%')
-
+    
+    
+    
     svgRelationships = svg.append('g')
       .attr('class', 'relationships')
 
@@ -115,6 +122,8 @@ function Neo4jD3 (_selector, _options) {
   }
 
   function appendNode () {
+    console.log("check node!!!")
+    console.log(node)
     return node.enter()
       .append('g')
       .attr('class', function (d) {
@@ -175,10 +184,10 @@ function Neo4jD3 (_selector, _options) {
           options.onNodeMouseLeave(d)
         }
       })
-    //   .call(d3.drag()
-    //     .on('start', dragStarted)
-    //     .on('drag', dragged)
-    //     .on('end', dragEnded))
+      .call(d3.drag()
+        .on('start', dragStarted)
+        .on('drag', dragged)
+        .on('end', dragEnded))
   }
 
   function appendNodeToGraph () {
@@ -198,14 +207,7 @@ function Neo4jD3 (_selector, _options) {
     return n
   }
   function appendLabeltoNode (node) {
-    // node.append('text')
-    // .style('font-size','10px')
-    // .style('text-anchor','middle')
-    // .style('fill','white')
-    // .style('font-weight', 'bold')
-    // .text(function(d){
-    //     return d['properties']['name']
-    // })
+    
     node
       .each(function (d) {
         // console.log(d)
@@ -1083,7 +1085,6 @@ function Neo4jD3 (_selector, _options) {
     if (width === 0 || height === 0) {
       return // nothing to fit
     }
-
     svgScale = 0.85 / Math.max(width / fullWidth, height / fullHeight)
     svgTranslate = [fullWidth / 2 - svgScale * midX, fullHeight / 2 - svgScale * midY]
 

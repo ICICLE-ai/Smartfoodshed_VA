@@ -7,8 +7,29 @@
             small
             @click="resetGraphTableHandler"
             style="margin-left: 10px"
+            class="kg-view-btn"
           >
             Reset
+        </v-btn>
+        <v-btn
+          small
+          @click="zoomPanToggleHandler"
+          :color="zoomPanColor"
+          class="kg-view-btn"
+        >
+          <v-icon>
+            mdi-arrow-expand-all
+          </v-icon>
+        </v-btn>
+        <v-btn
+          small
+          @click="lassoToggleHandler"
+          :color="lassoColor"
+          class="kg-view-btn"
+        >
+          <v-icon>
+            mdi-lasso
+          </v-icon>
         </v-btn>
         </div>
         <div id="div_graph" class="fullHeight" :style="{'height': HEIGHT}"></div>   
@@ -31,6 +52,12 @@ export default{
       selectedRelations: [],
       currentEntities: [], 
       currentRelations: [],
+      lassoColor: "grey", 
+      zoomPanColor: "green", 
+      lassoStatus: false,
+      zoomPanStatus: true, 
+      lasso: null, 
+      zoom: null, 
     }
   },
   created () {
@@ -105,21 +132,56 @@ export default{
               d3.select(this).style('opacity',0.7)
             })
             .on('click', function(d,i){
-              // console.log(node,i)
               let clicked_node_id = node['id']
               const action = d.data.value.action 
               if (action == "expand"){
                 that.$store.dispatch("node_expand", {node_id: clicked_node_id})
               }else {
                 that.$store.dispatch("node_remove", {node_id: clicked_node_id})
-                // assume action is "remove"
               }
             })
         }
       })
-
+      if (that.lassoStatus) {
+        that.disableZoom()
+        that.enableLasso()
+      } else {
+        that.disableLasso() 
+        that.enableZoomPan()
+      }
+      // that.enableLasso()
+      
+    },
+    resetGraphTableHandler(){
+      this.$store.dispatch("resetTableGraph")
+    },
+    toggleZoomPanLasso(){
+      this.zoomPanStatus = !this.zoomPanStatus 
+      this.lassoStatus = !this.lassoStatus
+      this.zoomPanColor = this.zoomPanStatus?"green":"grey"
+      this.lassoColor = this.lassoStatus?"green":"grey"
+    }, 
+    zoomPanToggleHandler() {
+      if (!this.zoomPanStatus) {
+        this.toggleZoomPanLasso() 
+        this.disableLasso()
+        this.enableZoomPan()
+      }
+      
+    }, 
+    lassoToggleHandler(){
+      if (!this.lassoStatus) {
+        this.toggleZoomPanLasso()
+        this.disableZoom()
+        this.enableLasso()
+        // this.enableZoomPan()
+      }
+      
+    },
+    enableLasso(){
       const svg = d3.select('#div_graph').select("svg")
       var circles_question = svg.selectAll('.outline')
+      let that = this
       var lasso_start = function () {
         lasso.items()
           .attr('fill', "green")
@@ -170,18 +232,30 @@ export default{
         .on('start', lasso_start)
         .on('draw', lasso_draw)
         .on('end', lasso_end)
+
       svg.call(lasso)
-    },
-    resetGraphTableHandler(){
-      this.$store.dispatch("resetTableGraph")
-    },
-    nodeExpansionHandler(nodeId){
-
-
     }, 
-    nodeRemovalHandler(nodeId){
+    disableLasso() {
+      const svg = d3.select('#div_graph').select("svg") 
+      svg.on(".dragstart", null);
+      svg.on(".drag", null);
+      svg.on(".dragend", null);
+    }, 
+    enableZoomPan(){
+      const svg = d3.select('#div_graph').select("svg") 
+      svg.call(d3.zoom().on('zoom', function () {
+        var scale = d3.event.transform.k,
+          translate = [d3.event.transform.x, d3.event.transform.y]
 
-    }
+        const g = svg.select("g")
+        g.attr('transform', 'translate(' + translate[0] + ', ' + translate[1] + ') scale(' + scale + ')')
+      }))
+      .on('dblclick.zoom', null)
+    },
+    disableZoom() {
+      const svg = d3.select('#div_graph').select("svg") 
+      svg.on('.zoom', null)
+    } 
   },
   watch: {
     graphData () {
@@ -274,5 +348,8 @@ export default{
     top: 330px;
     /* margin-top: 30px; */
     /* float: left */
+}
+.kg-view-btn{
+  margin-right: 10px;
 }
 </style>
