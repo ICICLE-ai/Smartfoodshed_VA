@@ -33,12 +33,16 @@ function graphNodeLinkRemoval(graphData, nodeId) {
             break
         }
     }
-
+    const relationRemaining = []
     for(let j = 0; j < relations.length; j++){
+        
         if(relations[j].startNode == nodeId || relations[j].endNode == nodeId){
-            relations.splice(j, 1)
+            console.log("REMOVED! - starNode: " + relations[j].startNode + ", endNode: " + relations[j].endNode)
+        }else{
+            relationRemaining.push(relations[j])
         }
     }
+    newGraphData.results[0].data[0].graph.relationships = relationRemaining 
     return newGraphData
 }
 
