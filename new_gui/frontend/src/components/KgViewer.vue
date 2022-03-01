@@ -1,5 +1,5 @@
 <template>
-    <div class="fullHeight" style="position:relative">       
+    <div class="fullHeight" style="position:relative">
         <div
           class="graph-btn-container"
         >
@@ -42,9 +42,6 @@ import * as Neo4jd3 from '../js/Neo4D3'
 import * as d3Lasso from 'd3-lasso'
 import * as d3 from 'd3'
 import * as KGutils from '@/utils/KGutils.js'
-var svg = null
-var lasso_on = true
-var lasso = null
 export default{
   components: {
 
@@ -227,7 +224,7 @@ export default{
         // lasso.notSelectedItems()
         
       }
-      lasso = d3Lasso.lasso()
+      var lasso = d3Lasso.lasso()
         .closePathSelect(true)
         .closePathDistance(100)
         .items(circles_question)

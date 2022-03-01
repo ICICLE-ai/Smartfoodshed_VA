@@ -47,7 +47,7 @@ def getTableData():
     ## Create a new py file config.py and add localfile_path to indicate the place of local_data folder
     ## This config file will not be pushed to the osu code, so we don't need to always change path
     # f = open('../../../local_data/cfs_relation_table.json')
-    f = open(f'{localfile_path}/ppod_table.json')
+    f = open(f'{localfile_path}/cfs_table.json')
     data = json.load(f)
     output = {} ## tableName: {tableData:{}, tableInfo:{}}
     tableNames = []
