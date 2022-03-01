@@ -292,6 +292,9 @@ export default{
       }
     }
   },
+  beforeMounted() {
+
+  }, 
   mounted () {
 
   },
