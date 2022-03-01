@@ -26,30 +26,39 @@ function Neo4jD3 (_selector, _options) {
     },
     VERSION = '0.0.1'
 
+  function piyush(){
+    console.log('something')
+  }
+
   function appendGraph (container) {
+    // console.log('something')
+    // console.log(container)
+    console.log(container)
     svg = container.append('svg')
       .attr('width', '100%')
       .attr('height', '100%')
       .attr('class', 'neo4jd3-graph')
-    //   .call(d3.zoom().on('zoom', function () {
-    //     var scale = d3.event.transform.k,
-    //       translate = [d3.event.transform.x, d3.event.transform.y]
+      .call(d3.zoom().on('zoom', function () {
+        var scale = d3.event.transform.k,
+          translate = [d3.event.transform.x, d3.event.transform.y]
 
-    //     if (svgTranslate) {
-    //       translate[0] += svgTranslate[0]
-    //       translate[1] += svgTranslate[1]
-    //     }
+        if (svgTranslate) {
+          translate[0] += svgTranslate[0]
+          translate[1] += svgTranslate[1]
+        }
 
-    //     if (svgScale) {
-    //       scale *= svgScale
-    //     }
+        if (svgScale) {
+          scale *= svgScale
+        }
 
-    //     svg.attr('transform', 'translate(' + translate[0] + ', ' + translate[1] + ') scale(' + scale + ')')
-    //   }))
+        svg.attr('transform', 'translate(' + translate[0] + ', ' + translate[1] + ') scale(' + scale + ')')
+      }))
     //   .on('dblclick.zoom', null)
       .append('g')
       .attr('width', '100%')
       .attr('height', '100%')
+
+    console.log(svg)
 
     svgRelationships = svg.append('g')
       .attr('class', 'relationships')

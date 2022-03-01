@@ -1,5 +1,12 @@
 <template>
     <div class="fullHeight" style="position:relative">
+          <v-btn
+            small
+            @click="toggleGraphTableHandler"
+            style="margin-left: 10px"
+          >
+            Lasso-Zoom
+        </v-btn>
         <div
           class="graph-btn-container"
         >
@@ -21,6 +28,9 @@ import * as Neo4jd3 from '../js/Neo4D3'
 import * as d3Lasso from 'd3-lasso'
 import * as d3 from 'd3'
 import * as KGutils from '@/utils/KGutils.js'
+var svg = null
+var lasso_on = true
+var lasso = null
 export default{
   components: {
 
@@ -118,7 +128,7 @@ export default{
         }
       })
 
-      const svg = d3.select('#div_graph').select("svg")
+      svg = d3.select('#div_graph').select("svg")
       var circles_question = svg.selectAll('.outline')
       var lasso_start = function () {
         lasso.items()
@@ -162,7 +172,7 @@ export default{
         // lasso.notSelectedItems()
         
       }
-      var lasso = d3Lasso.lasso()
+      lasso = d3Lasso.lasso()
         .closePathSelect(true)
         .closePathDistance(100)
         .items(circles_question)
@@ -171,9 +181,48 @@ export default{
         .on('draw', lasso_draw)
         .on('end', lasso_end)
       svg.call(lasso)
+      
     },
     resetGraphTableHandler(){
       this.$store.dispatch("resetTableGraph")
+    },
+    toggleGraphTableHandler(){
+      lasso_on = !lasso_on
+        svg.on(".dragstart", null);
+        svg.on(".drag", null);
+        svg.on(".dragend", null);
+      if(!lasso_on){
+       
+       
+        svg.append('svg')
+      .attr('width', '100%')
+      .attr('height', '100%')
+      .attr('class', 'neo4jd3-graph')
+        .call(d3.zoom().on('zoom', function () {
+        var scale = d3.event.transform.k,
+          translate = [d3.event.transform.x, d3.event.transform.y]
+
+        /*if (svgTranslate) {
+          translate[0] += svgTranslate[0]
+          translate[1] += svgTranslate[1]
+        }*/
+
+        /*if (svgScale) {
+          scale *= svgScale
+        }*/
+
+        svg.attr('transform', 'translate(' + translate[0] + ', ' + translate[1] + ') scale(' + scale + ')')
+      }))
+
+
+      }
+      else{
+        svg.on('.zoom',null)
+      
+        svg.call(lasso)
+        
+      }
+
     },
     nodeExpansionHandler(nodeId){
 
