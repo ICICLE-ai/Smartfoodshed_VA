@@ -47,7 +47,7 @@ def getTableData():
     ## Create a new py file config.py and add localfile_path to indicate the place of local_data folder
     ## This config file will not be pushed to the osu code, so we don't need to always change path
     # f = open('../../../local_data/cfs_relation_table.json')
-    f = open(f'{localfile_path}/cfs_table.json')
+    f = open(f'{localfile_path}/ppod_table.json')
     data = json.load(f)
     output = {} ## tableName: {tableData:{}, tableInfo:{}}
     tableNames = []
@@ -76,10 +76,10 @@ def getSubGraphFromTable():
     request_obj = request.get_json()
     nodes_list = []
     relation_list = []
-    if request_obj.get("nodes"): 
+    if request_obj.get("nodes") is not None: 
         nodes_list = request_obj.get("nodes")
     
-    if request_obj.get("relations"):
+    if request_obj.get("relations") is not None:
         relation_list = request_obj.get("relations")
     subgraph_res = get_subgraph(graph, nodes_list, relation_list)
     dict_res = convert_subgraph_to_json(subgraph_res, entity_identifier)
@@ -90,11 +90,11 @@ def delete_node_from_graph():
     request_obj = request.get_json()
     nodes_list = []
     relation_list = []
-    if request_obj.get("nodes"):
+    if request_obj.get("nodes") is not None:
         nodes_list = request_obj.get("nodes")
-    if request_obj.get("relations"):
+    if request_obj.get("relations") is not None:
         relation_list = request_obj.get("relations")
-    if request_obj.get("delete_node"):
+    if request_obj.get("delete_node") is not None:
         delete_node = request_obj.get("delete_node")
     subgraph_res = graph_after_delete_node(nodes_list,relation_list,delete_node,graph)
     dict_res = convert_subgraph_to_json(subgraph_res, entity_identifier)

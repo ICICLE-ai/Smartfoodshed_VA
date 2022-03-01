@@ -26,6 +26,10 @@ function Neo4jD3 (_selector, _options) {
     },
     VERSION = '0.0.1'
 
+  function piyush(){
+    console.log('something')
+  }
+
   function appendGraph (container) {
     svg= container.append('svg')
       .attr('width', '100%')
