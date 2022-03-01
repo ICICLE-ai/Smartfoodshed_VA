@@ -103,16 +103,17 @@ def delete_node_from_graph():
 @app.route('/expandNode', methods=['POST'])
 def expand_node_from_graph():
     request_obj = request.get_json()
+    print(request_obj)
     nodes_list = []
     relation_list = []
     limit_number = 5
-    if request_obj.get("nodes"):
+    if request_obj.get("nodes") is not None:
         nodes_list = request_obj.get("nodes")
-    if request_obj.get("relations"):
+    if request_obj.get("relations") is not None:
         relation_list = request_obj.get("relations")
-    if request_obj.get("expand_node"):
+    if request_obj.get("expand_node") is not None:
         expand_node = request_obj.get("expand_node")
-    if request_obj.get("limit_number"):
+    if request_obj.get("limit_number") is not None:
         limit_number = request_obj.get("limit_number")
     subgraph_res = graph_after_expand_node(graph,nodes_list,relation_list,expand_node,limit_number)
     dict_res = convert_subgraph_to_json(subgraph_res, entity_identifier)
