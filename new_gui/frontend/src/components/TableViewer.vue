@@ -135,8 +135,12 @@ export default{
         return 
       }
       const sampleData = this.currentData['data'][this.currentSheet]['tableData'][0]; 
+
       if(sampleData){
         const keys = Object.keys(sampleData)
+        console.log("check =================== here!!!")
+        console.log(sampleData)
+        console.log(this.currentSheet)
         if(keys.includes('relation_id')){
           this.sheetItemKey = 'relation_id'
         }else if(keys.includes('id')){
@@ -191,7 +195,8 @@ export default{
     tab() {
       // tab id
       // const tabId = this.tab
-      if (this.currenData) {
+      console.log(this.currentData)
+      if (this.currentData != null) {
         this.updateItemKey()
       }
       console.log(this.sheetItemKey)
