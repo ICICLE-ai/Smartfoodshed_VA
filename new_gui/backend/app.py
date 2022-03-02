@@ -47,7 +47,7 @@ def getTableData():
     ## Create a new py file config.py and add localfile_path to indicate the place of local_data folder
     ## This config file will not be pushed to the osu code, so we don't need to always change path
     # f = open('../../../local_data/cfs_relation_table.json')
-    f = open(f'{localfile_path}/cfs_table.json')
+    f = open(f'{localfile_path}/ppod_table.json')
     data = json.load(f)
     output = {} ## tableName: {tableData:{}, tableInfo:{}}
     tableNames = []
@@ -103,7 +103,6 @@ def delete_node_from_graph():
 @app.route('/expandNode', methods=['POST'])
 def expand_node_from_graph():
     request_obj = request.get_json()
-    print(request_obj)
     nodes_list = []
     relation_list = []
     limit_number = 5
@@ -115,6 +114,9 @@ def expand_node_from_graph():
         expand_node = request_obj.get("expand_node")
     if request_obj.get("limit_number") is not None:
         limit_number = request_obj.get("limit_number")
+    # print(nodes_list)
+    # print(relation_list)
+    # print(expand_node)
     subgraph_res = graph_after_expand_node(graph,nodes_list,relation_list,expand_node,limit_number)
     dict_res = convert_subgraph_to_json(subgraph_res, entity_identifier)
     return Response(json.dumps(dict_res))

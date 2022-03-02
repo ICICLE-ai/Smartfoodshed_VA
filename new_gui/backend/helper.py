@@ -222,18 +222,19 @@ def graph_after_expand_node(graph,node_id_list,relation_id_list,expand_node,limi
 
     #check for possible connection between the newly added node and old node
     new_node_id = [n.identity for n in list(new_sub.nodes)]
-    new_node_id.remove(expand_node)
-    new_node_list = [graph.nodes.get(i) for i in new_node_id]
-    comb_node_list = [graph.nodes.get(i) for i in node_id_list if i != expand_node]
+    if len(new_node_id) != 0:
+        new_node_id.remove(expand_node)
+        new_node_list = [graph.nodes.get(i) for i in new_node_id]
+        comb_node_list = [graph.nodes.get(i) for i in node_id_list if i != expand_node]
 
-    #find all possible pairs between new node and old new except the expanded one
-    all_pairs = [set(comb) for comb in product(new_node_list, comb_node_list)] 
+        #find all possible pairs between new node and old new except the expanded one
+        all_pairs = [set(comb) for comb in product(new_node_list, comb_node_list)] 
 
-    #query the graph to see if there exists some relationships between all pair
-    for pair in all_pairs:
-        relation = graph.match(pair).first()
-        if relation is not None:
-            new_sub = new_sub | relation
+        #query the graph to see if there exists some relationships between all pair
+        for pair in all_pairs:
+            relation = graph.match(pair).first()
+            if relation is not None:
+                new_sub = new_sub | relation
 
     #concatenate the subgraph
     subgraph = subgraph | new_sub
