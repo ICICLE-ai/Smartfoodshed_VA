@@ -181,7 +181,13 @@ def get_subgraph(graph, node_id_list, relation_id_list):
 
     # concatenate the subgraph with node list
     subgraph = subgraph | Subgraph(node_list)
-    return subgraph
+
+    if len(list(subgraph.nodes)) == 0:
+        #check if the graph is empty
+        error_code = 204
+    else:
+        error_code = 200
+    return subgraph,error_code
 
 #Input: node_id_list, a list of int, a list of node id
 #       relation_id_list, a list of int, a list of relation id
@@ -200,7 +206,13 @@ def graph_after_delete_node(node_id_list,relation_id_list,delete_node,graph):
             subgraph = subgraph - r | Subgraph([r.end_node])
         elif r.end_node.identity == delete_node:
             subgraph = subgraph - r | Subgraph([r.start_node])
-    return subgraph
+
+    if len(list(subgraph.nodes)) == 0:
+        #check if the graph is empty
+        error_code = 204
+    else:
+        error_code = 200
+    return subgraph,error_code
 
 #Input: node_id_list, a list of int, a list of node id
 #       relation_id_list, a list of int, a list of relation id
@@ -223,6 +235,7 @@ def graph_after_expand_node(graph,node_id_list,relation_id_list,expand_node,limi
     #check for possible connection between the newly added node and old node
     new_node_id = [n.identity for n in list(new_sub.nodes)]
     if len(new_node_id) != 0:
+        error_code = 200
         new_node_id.remove(expand_node)
         new_node_list = [graph.nodes.get(i) for i in new_node_id]
         comb_node_list = [graph.nodes.get(i) for i in node_id_list if i != expand_node]
@@ -235,10 +248,12 @@ def graph_after_expand_node(graph,node_id_list,relation_id_list,expand_node,limi
             relation = graph.match(pair).first()
             if relation is not None:
                 new_sub = new_sub | relation
-
+    else:
+        #new subgraph do not find new edges during expansion
+        error_code = 204
     #concatenate the subgraph
     subgraph = subgraph | new_sub
-    return subgraph
+    return subgraph,error_code
 
 #Input: subgraph, a subgraph object in py2neo
 #       entity_identifier, a string, denotes the property name which you want to display in the front end (same as the mapping property)

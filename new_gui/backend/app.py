@@ -76,50 +76,60 @@ def getSubGraphFromTable():
     request_obj = request.get_json()
     nodes_list = []
     relation_list = []
-    if request_obj.get("nodes") is not None: 
-        nodes_list = request_obj.get("nodes")
-    
-    if request_obj.get("relations") is not None:
-        relation_list = request_obj.get("relations")
-    subgraph_res = get_subgraph(graph, nodes_list, relation_list)
-    dict_res = convert_subgraph_to_json(subgraph_res, entity_identifier)
-    return Response(json.dumps(dict_res))
+    try:
+        if request_obj.get("nodes") is not None: 
+            nodes_list = request_obj.get("nodes")
+        
+        if request_obj.get("relations") is not None:
+            relation_list = request_obj.get("relations")
+        subgraph_res,error_code = get_subgraph(graph, nodes_list, relation_list)
+        dict_res = convert_subgraph_to_json(subgraph_res, entity_identifier)
+    except:
+        error_code = 404
+    return Response(json.dumps(dict_res),status = error_code)
 
 @app.route('/deleteNode', methods=['POST'])
 def delete_node_from_graph():
     request_obj = request.get_json()
     nodes_list = []
     relation_list = []
-    if request_obj.get("nodes") is not None:
-        nodes_list = request_obj.get("nodes")
-    if request_obj.get("relations") is not None:
-        relation_list = request_obj.get("relations")
-    if request_obj.get("delete_node") is not None:
-        delete_node = request_obj.get("delete_node")
-    subgraph_res = graph_after_delete_node(nodes_list,relation_list,delete_node,graph)
-    dict_res = convert_subgraph_to_json(subgraph_res, entity_identifier)
-    return Response(json.dumps(dict_res))
+    try:
+        if request_obj.get("nodes") is not None:
+            nodes_list = request_obj.get("nodes")
+        if request_obj.get("relations") is not None:
+            relation_list = request_obj.get("relations")
+        if request_obj.get("delete_node") is not None:
+            delete_node = request_obj.get("delete_node")
+        subgraph_res,error_code = graph_after_delete_node(nodes_list,relation_list,delete_node,graph)
+        dict_res = convert_subgraph_to_json(subgraph_res, entity_identifier)
+    except:
+        error_code = 404
+    return Response(json.dumps(dict_res),status = error_code)
 
 @app.route('/expandNode', methods=['POST'])
 def expand_node_from_graph():
     request_obj = request.get_json()
     nodes_list = []
     relation_list = []
+    # default for limit number is 5
     limit_number = 5
-    if request_obj.get("nodes") is not None:
-        nodes_list = request_obj.get("nodes")
-    if request_obj.get("relations") is not None:
-        relation_list = request_obj.get("relations")
-    if request_obj.get("expand_node") is not None:
-        expand_node = request_obj.get("expand_node")
-    if request_obj.get("limit_number") is not None:
-        limit_number = request_obj.get("limit_number")
-    # print(nodes_list)
-    # print(relation_list)
-    # print(expand_node)
-    subgraph_res = graph_after_expand_node(graph,nodes_list,relation_list,expand_node,limit_number)
-    dict_res = convert_subgraph_to_json(subgraph_res, entity_identifier)
-    return Response(json.dumps(dict_res))
+    try:
+        if request_obj.get("nodes") is not None:
+            nodes_list = request_obj.get("nodes")
+        if request_obj.get("relations") is not None:
+            relation_list = request_obj.get("relations")
+        if request_obj.get("expand_node") is not None:
+            expand_node = request_obj.get("expand_node")
+        if request_obj.get("limit_number") is not None:
+            limit_number = request_obj.get("limit_number")
+        # print(nodes_list)
+        # print(relation_list)
+        # print(expand_node)
+        subgraph_res,error_code = graph_after_expand_node(graph,nodes_list,relation_list,expand_node,limit_number)
+        dict_res = convert_subgraph_to_json(subgraph_res, entity_identifier)
+    except:
+        error_code = 404
+    return Response(json.dumps(dict_res),status = error_code)
 
 if __name__ == '__main__':
     
