@@ -269,7 +269,7 @@ def convert_subgraph_to_json(subgraph,entity_identifier,graph):
         relationship_types = get_all_relationship_type(graph,n.identity)
         node_dict = {"id":n.identity,"labels":[],"relationship_types":relationship_types,"properties":node_property,"type":"node"}
         node_dict_list.append(node_dict)
-
+    
     #construct list of relationship dicitionary
     relation_dict_list = []
     for r in list(subgraph.relationships):
