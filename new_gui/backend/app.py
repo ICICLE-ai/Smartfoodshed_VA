@@ -83,7 +83,7 @@ def getSubGraphFromTable():
         if request_obj.get("relations") is not None:
             relation_list = request_obj.get("relations")
         subgraph_res,error_code = get_subgraph(graph, nodes_list, relation_list)
-        dict_res = convert_subgraph_to_json(subgraph_res, entity_identifier)
+        dict_res = convert_subgraph_to_json(subgraph_res, entity_identifier,graph)
     except:
         error_code = 404
     return Response(json.dumps(dict_res),status = error_code)
@@ -101,7 +101,7 @@ def delete_node_from_graph():
         if request_obj.get("delete_node") is not None:
             delete_node = request_obj.get("delete_node")
         subgraph_res,error_code = graph_after_delete_node(nodes_list,relation_list,delete_node,graph)
-        dict_res = convert_subgraph_to_json(subgraph_res, entity_identifier)
+        dict_res = convert_subgraph_to_json(subgraph_res, entity_identifier,graph)
     except:
         error_code = 404
     return Response(json.dumps(dict_res),status = error_code)
@@ -126,7 +126,7 @@ def expand_node_from_graph():
         # print(relation_list)
         # print(expand_node)
         subgraph_res,error_code = graph_after_expand_node(graph,nodes_list,relation_list,expand_node,limit_number)
-        dict_res = convert_subgraph_to_json(subgraph_res, entity_identifier)
+        dict_res = convert_subgraph_to_json(subgraph_res, entity_identifier,graph)
     except:
         error_code = 404
     return Response(json.dumps(dict_res),status = error_code)

@@ -3,6 +3,7 @@ import ast
 import json
 from itertools import combinations,product
 from py2neo import Subgraph
+import collections
 
 def filterGraph(data, num, sort):
     ## filter nodes 
@@ -256,15 +257,17 @@ def graph_after_expand_node(graph,node_id_list,relation_id_list,expand_node,limi
     return subgraph,error_code
 
 #Input: subgraph, a subgraph object in py2neo
+#       graph, the entire neo4j graphDB
 #       entity_identifier, a string, denotes the property name which you want to display in the front end (same as the mapping property)
 #Ouput: a dictionary containing the graph in json format
-def convert_subgraph_to_json(subgraph,entity_identifier):
-    #construct list of node dicitionary
+def convert_subgraph_to_json(subgraph,entity_identifier,graph):
+    #construct list of node dicitionary 
     node_dict_list = []
     for n in list(subgraph.nodes):
         node_property = dict(n)
         node_property.update({"mapping":entity_identifier})
-        node_dict = {"id":n.identity,"labels":[],"properties":node_property,"type":"node"}
+        relationship_types = get_all_relationship_type(graph,n.identity)
+        node_dict = {"id":n.identity,"labels":[],"relationship_types":relationship_types,"properties":node_property,"type":"node"}
         node_dict_list.append(node_dict)
 
     #construct list of relationship dicitionary
@@ -281,6 +284,14 @@ def convert_subgraph_to_json(subgraph,entity_identifier):
     data_dict = {"graph":graph_dict}
     dict_result = {"results":[{"columns":[],"data":[data_dict]}]}
     return dict_result
+
+#Input:node_id, a int, a node id which we want to check for all relationship types
+#      graph, a py2neo subgraph object
+#Ouput: a dictionary where key is a relationship type name and the value is corresponding counter
+def get_all_relationship_type(graph,node_id):
+    relation_list = graph.match({graph.nodes.get(node_id)}).all()
+    relation_type = [type(i).__name__ for i in relation_list]
+    return dict(collections.Counter(relation_type))
 
 def print_(tx, ):
     record = tx.run("""
