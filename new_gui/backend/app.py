@@ -14,7 +14,7 @@ import py2neo
 localfile_path = "../../../local_data"
 """
 from config import localfile_path
-from helper import filterGraph, print_, get_subgraph, convert_subgraph_to_json_noR, convert_subgraph_to_json_withR, graph_after_delete_node, graph_after_expand_node, get_all_relationship_type
+from helper import filterGraph, print_, get_subgraph, convert_subgraph_to_json, convert_subgraph_to_json_withR, graph_after_delete_node, graph_after_expand_node, get_all_relationship_type
 # configuration
 DEBUG = True
 GRAPH_DRIVER = None
@@ -71,7 +71,7 @@ def getTableData():
     # print(data.keys())
     return Response(json.dumps(result))
 
-@app.route('/retrieveSubgraphWithouR', methods=['POST'])
+@app.route('/retrieveSubgraph', methods=['POST'])
 def getSubGraphFromTable(): 
     request_obj = request.get_json()
     nodes_list = []
@@ -83,7 +83,7 @@ def getSubGraphFromTable():
         if request_obj.get("relations") is not None:
             relation_list = request_obj.get("relations")
         subgraph_res,error_code = get_subgraph(graph, nodes_list, relation_list)
-        dict_res = convert_subgraph_to_json_noR(subgraph_res, entity_identifier,graph)
+        dict_res = convert_subgraph_to_json(subgraph_res, entity_identifier,graph)
     except:
         error_code = 404
     return Response(json.dumps(dict_res),status = error_code)
@@ -126,7 +126,7 @@ def delete_node_from_graph():
         error_code = 404
     return Response(json.dumps(dict_res),status = error_code)
 
-@app.route('/expandNodeWithoutR', methods=['POST'])
+@app.route('/expandNode', methods=['POST'])
 def expand_node_without_relationship_type():
     request_obj = request.get_json()
     nodes_list = []
@@ -146,7 +146,7 @@ def expand_node_without_relationship_type():
         # print(relation_list)
         # print(expand_node)
         subgraph_res,error_code = graph_after_expand_node(graph,nodes_list,relation_list,expand_node,limit_number)
-        dict_res = convert_subgraph_to_json_noR(subgraph_res, entity_identifier,graph)
+        dict_res = convert_subgraph_to_json(subgraph_res, entity_identifier,graph)
     except:
         error_code = 404
     return Response(json.dumps(dict_res),status = error_code)
