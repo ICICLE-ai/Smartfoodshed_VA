@@ -127,7 +127,7 @@ def delete_node_from_graph():
     return Response(json.dumps(dict_res),status = error_code)
 
 @app.route('/expandNode', methods=['POST'])
-def expand_node_without_relationship_type():
+def expand_node():
     request_obj = request.get_json()
     nodes_list = []
     relation_list = []
@@ -152,7 +152,7 @@ def expand_node_without_relationship_type():
     return Response(json.dumps(dict_res),status = error_code)
 
 @app.route('/expandNodeWithR', methods=['POST'])
-def expand_node_without_relationship_type():
+def expand_node_with_relationship_type():
     request_obj = request.get_json()
     nodes_list = []
     relation_list = []
