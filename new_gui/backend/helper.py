@@ -288,7 +288,7 @@ def convert_subgraph_to_json_withR(subgraph,entity_identifier,graph):
 #Input: subgraph, a subgraph object in py2neo
 #       entity_identifier, a string, denotes the property name which you want to display in the front end (same as the mapping property)
 #Ouput: a dictionary containing the graph in json format
-def convert_subgraph_to_json_noR(subgraph,entity_identifier,graph):
+def convert_subgraph_to_json(subgraph,entity_identifier):
     #construct list of node dicitionary 
     node_dict_list = []
     for n in list(subgraph.nodes):
