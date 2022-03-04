@@ -14,7 +14,7 @@ import py2neo
 localfile_path = "../../../local_data"
 """
 from config import localfile_path
-from helper import filterGraph, print_, get_subgraph, convert_subgraph_to_json_fast,convert_subgraph_to_json_slow,graph_after_delete_node, graph_after_expand_node,get_all_relationship_type
+from helper import filterGraph, print_, get_subgraph, convert_subgraph_to_json_noR, convert_subgraph_to_json_withR, graph_after_delete_node, graph_after_expand_node, get_all_relationship_type
 # configuration
 DEBUG = True
 GRAPH_DRIVER = None
@@ -71,35 +71,46 @@ def getTableData():
     # print(data.keys())
     return Response(json.dumps(result))
 
-@app.route('/retrieveSubgraph', methods=['POST'])
+@app.route('/retrieveSubgraphWithouR', methods=['POST'])
 def getSubGraphFromTable(): 
     request_obj = request.get_json()
     nodes_list = []
     relation_list = []
-    fast = True
     try:
         if request_obj.get("nodes") is not None: 
             nodes_list = request_obj.get("nodes")
         
         if request_obj.get("relations") is not None:
             relation_list = request_obj.get("relations")
-        if request_obj.get("fast") is not None:
-            fast = request_obj.get("fast")
         subgraph_res,error_code = get_subgraph(graph, nodes_list, relation_list)
-        if fast:
-            dict_res = convert_subgraph_to_json_fast(subgraph_res, entity_identifier,graph)
-        else:
-            dict_res = convert_subgraph_to_json_slow(subgraph_res, entity_identifier,graph)
+        dict_res = convert_subgraph_to_json_noR(subgraph_res, entity_identifier,graph)
     except:
         error_code = 404
     return Response(json.dumps(dict_res),status = error_code)
+
+@app.route('/retrieveSubgraphWithR', methods=['POST'])
+def getSubGraphFromTable(): 
+    request_obj = request.get_json()
+    nodes_list = []
+    relation_list = []
+    try:
+        if request_obj.get("nodes") is not None: 
+            nodes_list = request_obj.get("nodes")
+        
+        if request_obj.get("relations") is not None:
+            relation_list = request_obj.get("relations")
+        subgraph_res,error_code = get_subgraph(graph, nodes_list, relation_list)
+        dict_res = convert_subgraph_to_json_withR(subgraph_res, entity_identifier,graph)
+    except:
+        error_code = 404
+    return Response(json.dumps(dict_res),status = error_code)
+
 
 @app.route('/deleteNode', methods=['POST'])
 def delete_node_from_graph():
     request_obj = request.get_json()
     nodes_list = []
     relation_list = []
-    fast = True
     try:
         if request_obj.get("nodes") is not None:
             nodes_list = request_obj.get("nodes")
@@ -107,25 +118,21 @@ def delete_node_from_graph():
             relation_list = request_obj.get("relations")
         if request_obj.get("delete_node") is not None:
             delete_node = request_obj.get("delete_node")
-        if request_obj.get("fast") is not None:
-            fast = request_obj.get("fast")
+
         subgraph_res,error_code = graph_after_delete_node(nodes_list,relation_list,delete_node,graph)
-        if fast:
-            dict_res = convert_subgraph_to_json_fast(subgraph_res, entity_identifier,graph)
-        else:
-            dict_res = convert_subgraph_to_json_slow(subgraph_res, entity_identifier,graph)
+
+        dict_res = convert_subgraph_to_json_noR(subgraph_res, entity_identifier,graph)
     except:
         error_code = 404
     return Response(json.dumps(dict_res),status = error_code)
 
-@app.route('/expandNode', methods=['POST'])
-def expand_node_from_graph():
+@app.route('/expandNodeWithoutR', methods=['POST'])
+def expand_node_without_relationship_type():
     request_obj = request.get_json()
     nodes_list = []
     relation_list = []
     # default for limit number is 5
     limit_number = 5
-    fast = True
     try:
         if request_obj.get("nodes") is not None:
             nodes_list = request_obj.get("nodes")
@@ -135,16 +142,36 @@ def expand_node_from_graph():
             expand_node = request_obj.get("expand_node")
         if request_obj.get("limit_number") is not None:
             limit_number = request_obj.get("limit_number")
-        if request_obj.get("fast") is not None:
-            fast = request_obj.get("fast")
         # print(nodes_list)
         # print(relation_list)
         # print(expand_node)
         subgraph_res,error_code = graph_after_expand_node(graph,nodes_list,relation_list,expand_node,limit_number)
-        if fast:
-            dict_res = convert_subgraph_to_json_fast(subgraph_res, entity_identifier,graph)
-        else:
-            dict_res = convert_subgraph_to_json_slow(subgraph_res, entity_identifier,graph)
+        dict_res = convert_subgraph_to_json_noR(subgraph_res, entity_identifier,graph)
+    except:
+        error_code = 404
+    return Response(json.dumps(dict_res),status = error_code)
+
+@app.route('/expandNodeWithR', methods=['POST'])
+def expand_node_without_relationship_type():
+    request_obj = request.get_json()
+    nodes_list = []
+    relation_list = []
+    # default for limit number is 5
+    limit_number = 5
+    try:
+        if request_obj.get("nodes") is not None:
+            nodes_list = request_obj.get("nodes")
+        if request_obj.get("relations") is not None:
+            relation_list = request_obj.get("relations")
+        if request_obj.get("expand_node") is not None:
+            expand_node = request_obj.get("expand_node")
+        if request_obj.get("limit_number") is not None:
+            limit_number = request_obj.get("limit_number")
+        # print(nodes_list)
+        # print(relation_list)
+        # print(expand_node)
+        subgraph_res,error_code = graph_after_expand_node(graph,nodes_list,relation_list,expand_node,limit_number)
+        dict_res = convert_subgraph_to_json_withR(subgraph_res, entity_identifier,graph)
     except:
         error_code = 404
     return Response(json.dumps(dict_res),status = error_code)
