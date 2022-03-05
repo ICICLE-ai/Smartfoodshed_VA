@@ -84,10 +84,10 @@ export default{
         },
         onNodeClick: function (node) {
           console.log(node)
-          console.log(d3.select(this))
-          let this_g = d3.select('#div_graph .nodes')
+          let this_g = d3.select(`#node-${node.id}`)
 
-          let append_g = this_g.append('g').attr("transform", "translate(" + node['x'] + "," + node['y'] + ")");
+          // let append_g = this_g.append('g').attr("transform", "translate(" + node['x'] + "," + node['y'] + ")");
+          let append_g = this_g
           let radius = 25
 
           // Create dummy data
@@ -100,17 +100,17 @@ export default{
 
 
             // Compute the position of each group on the pie:
-            var pie = d3.pie()
-              .value(function(d) {return d.value.value; })
-            var data_ready = pie(d3.entries(data))
+          var pie = d3.pie()
+            .value(function(d) {return d.value.value; })
+          var data_ready = pie(d3.entries(data))
             
             // removal / expand operations 
-            var operation_buttons_g = append_g.selectAll('whatever')
+          var operation_buttons_g = append_g.selectAll('whatever')
             .data(data_ready)
             .enter()
             console.log("!!!!!check here !!!!")
             console.log(data_ready)
-            var operation_buttons = operation_buttons_g.append('path')
+          var operation_buttons = operation_buttons_g.append('path')
             .attr('d', d3.arc()
               .innerRadius(30)         // This is the size of the donut hole
               .outerRadius(50)
@@ -348,9 +348,7 @@ export default{
 }
 .graph-btn-container{
     position: relative; 
-    top: 330px;
-    /* margin-top: 30px; */
-    /* float: left */
+    top: 30px;
 }
 .kg-view-btn{
   margin-right: 10px;
