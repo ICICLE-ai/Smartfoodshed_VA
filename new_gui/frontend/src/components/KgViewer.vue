@@ -43,6 +43,7 @@ import * as d3Lasso from 'd3-lasso'
 import * as d3 from 'd3'
 import * as KGutils from '@/utils/KGutils.js'
 import {mapState} from 'vuex'
+import * as d3tip from '@/utils/d3-tip'
 export default{
   components: {
 
@@ -89,6 +90,8 @@ export default{
 
           if(that.relationStatusReady==false){
             // render the loading panel 
+            console.log('nononono')
+            //
           }else{
             let relation_data = that.relationTypeData['results'][0]['data'][0]['graph']['nodes'][idx]['relationship_types']
             // get the sum of all rel counts 
@@ -144,19 +147,26 @@ export default{
             .attr('d', 'M12,20C7.59,20 4,16.41 4,12C4,7.59 7.59,4 12,4C16.41,4 20,7.59 20,12C20,16.41 16.41,20 12,20M12,2A10,10 0 0,0 2,12A10,10 0 0,0 12,22A10,10 0 0,0 22,12A10,10 0 0,0 12,2M7,13H17V11H7')
             .attr("transform", 'translate(20, -35) scale(0.7)')
           
-       
+          let tip = d3tip()
+            .attr('class', 'd3-tip')
+            .offset([-10, 0])
+            .html(function(d) {
+              return "<strong>Relation: </strong>" + d + "<br></span>";
+            })
+
+            d3.select('svg').call(tip)
             // hovering effect 
             operation_buttons.on('mouseover', function(p){
               d3.select(this).style('opacity',1)
               let rel = p['data']['value']['action']
               console.log(rel)
-              this_g.append('svg:title')
-              .text(rel)
+              tip.show(rel);
 
             })
-            .on('mouseout',function(d){
+            .on('mouseout',function(p){
               d3.select(this).style('opacity',0.7)
-
+              let rel = p['data']['value']['action']
+              tip.hide(rel);
             })
             .on('click', function(d,i){
               let clicked_node_id = node['id']
@@ -323,7 +333,9 @@ export default{
     relationTypeData(val) {
       if(this.relationStatusReady) {
         console.log("relation type data is ready")
-        console.log(val)
+        
+
+
       }else{
         console.log("relation type data is not ready yet!")
       }
