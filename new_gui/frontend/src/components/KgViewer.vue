@@ -42,6 +42,7 @@ import * as Neo4jd3 from '../js/Neo4D3'
 import * as d3Lasso from 'd3-lasso'
 import * as d3 from 'd3'
 import * as KGutils from '@/utils/KGutils.js'
+import {mapState} from 'vuex'
 export default{
   components: {
 
@@ -91,7 +92,7 @@ export default{
           let radius = 25
 
           // Create dummy data
-          var data = {a: {action: "expand", value: 10}, b: {action: "remove", value: 10} } // only two operations 
+          var data = {a: {action: "expand", value: 30}, b: {action: "remove", value: 10} } // only two operations 
           console.log(d3.entries(data))
           // set the color scale
           var color = d3.scaleOrdinal()
@@ -115,12 +116,19 @@ export default{
               .innerRadius(30)         // This is the size of the donut hole
               .outerRadius(50)
             )
+            .attr("class", "circle-button")
             .attr('fill', function(d){ return(color(d.data.key)) })
             // .attr("stroke", "black")
             .style("stroke-width", "2px")
+            .style("stroke", "white")
             .style("opacity", 0.7)
             .style('cursor','pointer')
             .attr('title','test')
+
+          var hide_icon = operation_buttons_g.append('path') 
+            .attr('d', 'M12,20C7.59,20 4,16.41 4,12C4,7.59 7.59,4 12,4C16.41,4 20,7.59 20,12C20,16.41 16.41,20 12,20M12,2A10,10 0 0,0 2,12A10,10 0 0,0 12,22A10,10 0 0,0 22,12A10,10 0 0,0 12,2M7,13H17V11H7')
+            .attr("transform", 'translate(-38, -35) scale(0.7)')
+
             
             
             // hovering effect 
@@ -278,7 +286,6 @@ export default{
         console.log(val)
         this.$store.dispatch("retrieveSubTable", {entities: this.selectedEntities, relations: this.selectedRelations})
       }
-      
     }, 
     selectedRelations(val){
       if (val.length > 0) {
@@ -290,6 +297,17 @@ export default{
         console.log(this.selectedRelations)
         this.$store.dispatch("retrieveSubTable", {entities: this.selectedEntities, relations: this.selectedRelations})
       }
+    }, 
+    relationStatusReady(val){
+      console.log("relation status: " + val) 
+    },
+    relationTypeData(val) {
+      if(this.relationStatusReady) {
+        console.log("relation type data is ready")
+        console.log(val)
+      }else{
+        console.log("relation type data is not ready yet!")
+      }
     }
   },
   beforeMounted() {
@@ -299,9 +317,7 @@ export default{
 
   },
   computed: {
-    graphData () {
-      return this.$store.state.graphData
-    },
+    ...mapState(['graphData', 'relationStatusReady', 'relationTypeData']),
     HEIGHT () {
       return window.innerHeight + 'px'
     }
@@ -352,5 +368,9 @@ export default{
 }
 .kg-view-btn{
   margin-right: 10px;
+}
+
+.circle-button:hover{
+  cursor: pointer;
 }
 </style>

@@ -156,6 +156,7 @@ function Neo4jD3 (_selector, _options) {
 
         return classes
       })
+      .attr('id', d=>`node-${d.id}`)
       .on('click', function (d) {
         d.fx = d.fy = null
 
@@ -281,55 +282,59 @@ function Neo4jD3 (_selector, _options) {
   function textDisplay (text) {
     let threshold = 9
 
-    let text_tokens = text.split(' ')
     let res = []
-    let tmp = ''
-    for (let token of text_tokens) {
-      if (res.length < 2) {
+    if (text) {
+      let text_tokens = text.split(' ')
+      let tmp = ''
+      for (let token of text_tokens) {
+        if (res.length < 2) {
+          if (tmp.length > threshold) {
+            res.push(token.slice(0, 9) + '..')
+            tmp = ''
+          }
+          if (tmp.length == 0) {
+            if (token.length <= threshold) {
+              tmp += token
+            } else {
+              res.push(token.slice(0, 9) + '..')
+              tmp = ''
+            }
+          } else {
+            if (tmp.length + 1 + token.length <= threshold) {
+              tmp += ' ' + token
+            } else {
+              res.push(tmp)
+              tmp = token
+            }
+          }
+        } else {
+          if (tmp.length == 0) {
+            if (token.length <= threshold) {
+              tmp += token
+            } else {
+              res.push(token.slice(0, 9) + '..')
+              tmp = ''
+            }
+          } else {
+            if (tmp.length + 1 + token.length <= threshold) {
+              tmp += ' ' + token
+            } else {
+              res.push(tmp)
+              tmp = token
+            }
+          }
+          break
+        }
+      }
+      if (tmp.length > 0) {
         if (tmp.length > threshold) {
-          res.push(token.slice(0, 9) + '..')
-          tmp = ''
-        }
-        if (tmp.length == 0) {
-          if (token.length <= threshold) {
-            tmp += token
-          } else {
-            res.push(token.slice(0, 9) + '..')
-            tmp = ''
-          }
+          res.push(tmp.slice(0, 8) + '..')
         } else {
-          if (tmp.length + 1 + token.length <= threshold) {
-            tmp += ' ' + token
-          } else {
-            res.push(tmp)
-            tmp = token
-          }
+          res.push(tmp)
         }
-      } else {
-        if (tmp.length == 0) {
-          if (token.length <= threshold) {
-            tmp += token
-          } else {
-            res.push(token.slice(0, 9) + '..')
-            tmp = ''
-          }
-        } else {
-          if (tmp.length + 1 + token.length <= threshold) {
-            tmp += ' ' + token
-          } else {
-            res.push(tmp)
-            tmp = token
-          }
-        }
-        break
       }
-    }
-    if (tmp.length > 0) {
-      if (tmp.length > threshold) {
-        res.push(tmp.slice(0, 8) + '..')
-      } else {
-        res.push(tmp)
-      }
+    }else {
+      res = ['None']
     }
     return res
   }

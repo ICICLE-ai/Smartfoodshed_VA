@@ -19,11 +19,16 @@ function initialState () {
     idDict: {},
     tableInteractiveMode: false, 
     interactiveTableData: null, 
+    relationStatusReady: false, 
+    relationTypeData: null,
   }
 }
 const mutations = {
   SET_graphData (state, val) {
     state.graphData = val
+  },
+  SET_GRAPHDATA_RELATION_TYPE_DATA(state, val){
+    state.relationTypeData = val
   },
   SET_graphDataBackUp (state, val) {
     state.originalGraph = val
@@ -69,6 +74,12 @@ const mutations = {
   }, 
   NODE_REMOVE(state, {updatedGraphData}){
     state.graphData = updatedGraphData
+  },
+  RELATION_STATUS_OFF(state,){
+    state.relationStatusReady = false 
+  },
+  RELATION_STATUS_ON(state,){
+    state.relationStatusReady = true
   }
 }
 const actions = {
@@ -103,16 +114,37 @@ const actions = {
       console.log("Waring! setTableSelected action received an invalid action type: " + action)
     }
   },
-  async retrieveGraphFromTable({commit, state}) {
+  retrieveGraphFromTable({commit, state}) {
     console.log("retrieve graph data from table") 
     // data preparation
     let {nodes, relations} = generationEntityRelations(state.tableSelected)
-    const path = "http://127.0.0.1:5000/retrieveSubgraph"
-    console.log(nodes, relations)
-    const result = await axios.post(path, {nodes, relations})
-    console.log("result returned back!!!")
-    console.log(result)
-    commit('SET_graphData', result['data'])
+    const path_retrieve_graph = 'http://127.0.0.1:5000/retrieveSubgraph'
+    const path_retrieve_graph_relation = 'http://127.0.0.1:5000/retrieveSubgraphWithR' 
+    // set getDataRelationStatus to be false to indicate 
+    commit('RELATION_STATUS_OFF')
+    // retrieve data
+    axios.post(path_retrieve_graph, {nodes, relations})
+      .then(result => {
+        console.log(result)
+        commit('SET_graphData', result['data']) 
+      })
+      .catch(error => {
+        console.log(error)
+        console.log(error.response.status)
+      })
+    
+      axios.post(path_retrieve_graph_relation, {nodes, relations})
+        .then(result => {
+          console.log("!!!!!!1---------!!!!!!!!!!!! relation data back ")
+          console.log(result)
+          commit('SET_GRAPHDATA_RELATION_TYPE_DATA', result['data'])  
+          commit('RELATION_STATUS_ON')
+        })
+        .catch(error => {
+          console.log(error)
+          console.log(error.response.status)
+        })
+
   },
   retrieveSubTable({commit, state}, {entities, relations}) { 
     console.log("retrieve sub table!!!")
