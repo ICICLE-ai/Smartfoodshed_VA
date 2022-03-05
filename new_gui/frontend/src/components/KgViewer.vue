@@ -67,11 +67,10 @@ export default{
   },
   methods: {
     drawNeo4jd3 () {
-      // console.log(this.graphData)
+
+
       var that = this
-      var width = 600, height = 400
-      //   const svg = d3.select('#div_graph').append('svg')
-      //     .attr('viewBox', [0, 0, width, height])
+      
       var neo4jd3 = Neo4jd3.default('#div_graph', {
         neo4jData: that.graphData,
         nodeRadius: 30,
@@ -85,7 +84,6 @@ export default{
         },
         onNodeClick: function (node,idx) {
           // console.log(node,id)
-          console.log(that.relationStatusReady)
           // Create dummy data
           var data = { b: {action: "remove", value: 10, pos:0} } // only two operations 
 
@@ -109,20 +107,13 @@ export default{
           // let append_g = this_g.append('g').attr("transform", "translate(" + node['x'] + "," + node['y'] + ")");
           let append_g = this_g
 
-          // set the color scale
-          var color = d3.scaleOrdinal()
-            .domain(data)
-            .range(["#94B49F", "#BB6464"])
-
-
             // Compute the position of each group on the pie:
           var pie = d3.pie()
             .sort(null) //avoiding to sort the pie, make sure the remove button in the same position 
             .value(function(d) {return d.value.value; })
           var data_ready = pie(d3.entries(data))
           
-          // sort data to make sure the remove always appear in the same position 
-          // data_ready.sort((a, b) => (a.index > b.index) ? 1 : -1)
+
     
             // removal / expand operations 
           var operation_buttons_g = append_g.selectAll('whatever')
@@ -152,14 +143,20 @@ export default{
           var hide_icon = operation_buttons_g.append('path') 
             .attr('d', 'M12,20C7.59,20 4,16.41 4,12C4,7.59 7.59,4 12,4C16.41,4 20,7.59 20,12C20,16.41 16.41,20 12,20M12,2A10,10 0 0,0 2,12A10,10 0 0,0 12,22A10,10 0 0,0 22,12A10,10 0 0,0 12,2M7,13H17V11H7')
             .attr("transform", 'translate(20, -35) scale(0.7)')
-
+          
+       
             // hovering effect 
-            operation_buttons.on('mouseover', function(d){
-              console.log("mouseover")
+            operation_buttons.on('mouseover', function(p){
               d3.select(this).style('opacity',1)
+              let rel = p['data']['value']['action']
+              console.log(rel)
+              this_g.append('svg:title')
+              .text(rel)
+
             })
             .on('mouseout',function(d){
               d3.select(this).style('opacity',0.7)
+
             })
             .on('click', function(d,i){
               let clicked_node_id = node['id']
@@ -395,4 +392,8 @@ export default{
 .circle-button:hover{
   cursor: pointer;
 }
+
+
+
+
 </style>
