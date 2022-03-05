@@ -84,10 +84,10 @@ def getSubGraphFromTable():
             relation_list = request_obj.get("relations")
         subgraph_res,error_code = get_subgraph(graph, nodes_list, relation_list)
         dict_res = convert_subgraph_to_json(subgraph_res, entity_identifier)
+        print(error_code)
     except:
         print("404")
         error_code = 404
-    print(dict_res)
     return Response(json.dumps(dict_res),status = error_code)
 
 @app.route('/retrieveSubgraphWithR', methods=['POST'])
