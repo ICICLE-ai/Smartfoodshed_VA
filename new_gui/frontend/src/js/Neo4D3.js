@@ -157,11 +157,11 @@ function Neo4jD3 (_selector, _options) {
         return classes
       })
       .attr('id', d=>`node-${d.id}`)
-      .on('click', function (d) {
+      .on('click', function (d,i) {
         d.fx = d.fy = null
 
         if (typeof options.onNodeClick === 'function') {
-          options.onNodeClick(d)
+          options.onNodeClick(d,i)
         }
       })
       .on('dblclick', function (d) {

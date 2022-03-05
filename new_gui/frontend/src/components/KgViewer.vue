@@ -83,17 +83,32 @@ export default{
         onNodeMouseEnter: function (node) {
           that.hover_node = node
         },
-        onNodeClick: function (node) {
-          console.log(node)
+        onNodeClick: function (node,idx) {
+          // console.log(node,id)
+          console.log(that.relationStatusReady)
+          // Create dummy data
+          var data = { b: {action: "remove", value: 10, pos:0} } // only two operations 
+
+          if(that.relationStatusReady==false){
+            // render the loading panel 
+          }else{
+            let relation_data = that.relationTypeData['results'][0]['data'][0]['graph']['nodes'][idx]['relationship_types']
+            // get the sum of all rel counts 
+            const sumValues = obj => Object.values(obj).reduce((a, b) => a + b);
+            const total_c  = sumValues(relation_data)
+            // generate the dount data
+            for (const [key, value] of Object.entries(relation_data)) {
+              data[key] = {action: key, value: (value/total_c)*30}
+            }
+
+          }
+          // sorting 
+          
           let this_g = d3.select(`#node-${node.id}`)
 
           // let append_g = this_g.append('g').attr("transform", "translate(" + node['x'] + "," + node['y'] + ")");
           let append_g = this_g
-          let radius = 25
 
-          // Create dummy data
-          var data = {a: {action: "expand", value: 30}, b: {action: "remove", value: 10} } // only two operations 
-          console.log(d3.entries(data))
           // set the color scale
           var color = d3.scaleOrdinal()
             .domain(data)
@@ -102,22 +117,31 @@ export default{
 
             // Compute the position of each group on the pie:
           var pie = d3.pie()
+            .sort(null) //avoiding to sort the pie, make sure the remove button in the same position 
             .value(function(d) {return d.value.value; })
           var data_ready = pie(d3.entries(data))
-            
+          
+          // sort data to make sure the remove always appear in the same position 
+          // data_ready.sort((a, b) => (a.index > b.index) ? 1 : -1)
+    
             // removal / expand operations 
           var operation_buttons_g = append_g.selectAll('whatever')
             .data(data_ready)
             .enter()
-            console.log("!!!!!check here !!!!")
-            console.log(data_ready)
+          
           var operation_buttons = operation_buttons_g.append('path')
             .attr('d', d3.arc()
               .innerRadius(30)         // This is the size of the donut hole
               .outerRadius(50)
             )
             .attr("class", "circle-button")
-            .attr('fill', function(d){ return(color(d.data.key)) })
+            .attr('fill', function(d,i){ 
+              if(i==0){
+                return "#BB6464"
+              }else{
+                return "#94B49F"
+              } 
+            })
             // .attr("stroke", "black")
             .style("stroke-width", "2px")
             .style("stroke", "white")
@@ -127,10 +151,8 @@ export default{
 
           var hide_icon = operation_buttons_g.append('path') 
             .attr('d', 'M12,20C7.59,20 4,16.41 4,12C4,7.59 7.59,4 12,4C16.41,4 20,7.59 20,12C20,16.41 16.41,20 12,20M12,2A10,10 0 0,0 2,12A10,10 0 0,0 12,22A10,10 0 0,0 22,12A10,10 0 0,0 12,2M7,13H17V11H7')
-            .attr("transform", 'translate(-38, -35) scale(0.7)')
+            .attr("transform", 'translate(20, -35) scale(0.7)')
 
-            
-            
             // hovering effect 
             operation_buttons.on('mouseover', function(d){
               console.log("mouseover")
