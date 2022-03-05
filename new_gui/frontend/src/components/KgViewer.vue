@@ -33,7 +33,12 @@
         </v-btn>
         </div>
         <div id="div_graph" class="fullHeight" :style="{'height': HEIGHT}"></div>   
-        
+        <v-overlay :value="loading_value">
+        <v-progress-circular
+          indeterminate
+          size="64"
+        ></v-progress-circular>
+      </v-overlay>
     </div>
 </template>
 
@@ -60,6 +65,7 @@ export default{
       zoomPanStatus: true, 
       lasso: null, 
       zoom: null, 
+      loading_value:false
     }
   },
   created () {
@@ -149,7 +155,7 @@ export default{
           
           let tip = d3tip()
             .attr('class', 'd3-tip')
-            .offset([-10, 0])
+            .offset([-10, 80])
             .html(function(d) {
               return "<strong>Relation: </strong>" + d + "<br></span>";
             })
@@ -304,6 +310,7 @@ export default{
       console.log(this.graphData)
       KGutils.graphDataParsing(this.graphData, this.currentEntities, this.currentRelations)
       this.drawNeo4jd3()
+      
     }, 
     selectedEntities(val) {
       if (val.length > 0) {
@@ -329,6 +336,7 @@ export default{
     }, 
     relationStatusReady(val){
       console.log("relation status: " + val) 
+
     },
     relationTypeData(val) {
       if(this.relationStatusReady) {
@@ -339,6 +347,9 @@ export default{
       }else{
         console.log("relation type data is not ready yet!")
       }
+    },
+    loading(val){
+      this.loading_value = val
     }
   },
   beforeMounted() {
@@ -348,7 +359,7 @@ export default{
 
   },
   computed: {
-    ...mapState(['graphData', 'relationStatusReady', 'relationTypeData']),
+    ...mapState(['graphData', 'relationStatusReady', 'relationTypeData','loading']),
     HEIGHT () {
       return window.innerHeight + 'px'
     }

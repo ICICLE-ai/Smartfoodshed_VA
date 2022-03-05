@@ -21,6 +21,7 @@ function initialState () {
     interactiveTableData: null, 
     relationStatusReady: false, 
     relationTypeData: null,
+    loading: false
   }
 }
 const mutations = {
@@ -80,6 +81,9 @@ const mutations = {
   },
   RELATION_STATUS_ON(state,){
     state.relationStatusReady = true
+  },
+  SET_LOADING(state,data){
+    state.loading = data 
   }
 }
 const actions = {
@@ -117,6 +121,7 @@ const actions = {
   retrieveGraphFromTable({commit, state}) {
     console.log("retrieve graph data from table") 
     // data preparation
+    commit('SET_LOADING', true)
     let {nodes, relations} = generationEntityRelations(state.tableSelected)
     const path_retrieve_graph = 'http://127.0.0.1:5000/retrieveSubgraph'
     const path_retrieve_graph_relation = 'http://127.0.0.1:5000/retrieveSubgraphWithR' 
@@ -137,6 +142,7 @@ const actions = {
         .then(result => {
           console.log("!!!!!!1---------!!!!!!!!!!!! relation data back ")
           console.log(result)
+          commit('SET_LOADING', false)
           commit('SET_GRAPHDATA_RELATION_TYPE_DATA', result['data'])  
           commit('RELATION_STATUS_ON')
         })
