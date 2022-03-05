@@ -233,8 +233,10 @@ def graph_after_expand_node(graph,node_id_list,relation_id_list,expand_node,limi
 
     #find the expanded relationship from the expand_node
     if relationship_name is None:
+        #expand on random relationship
         new_sub = Subgraph((),graph.match({graph.nodes.get(expand_node)}).limit(limit_number).all())
     else:
+        #expand on certain relationship
         new_sub = Subgraph((),graph.match({graph.nodes.get(expand_node)},relationship_name).limit(limit_number).all())
        
     #check for possible connection between the newly added node and old node
