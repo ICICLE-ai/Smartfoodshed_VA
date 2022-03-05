@@ -220,8 +220,9 @@ def graph_after_delete_node(node_id_list,relation_id_list,delete_node,graph):
 #       expand_node, a int, the node id of the expanded node
 #       graph, a py2neo graph object
 #       limit_number, a int, the maximum number of nodes we could add after expansion
+#       relationship_name, a certain relationship we want to expand, if it is None then we just expand on random relationship
 #Output: a subgraph object in py2neo after expansion
-def graph_after_expand_node(graph,node_id_list,relation_id_list,expand_node,limit_number):
+def graph_after_expand_node(graph,node_id_list,relation_id_list,expand_node,limit_number,relationship_name):
     node_list = [graph.nodes.get(i) for i in node_id_list]
     relation_list = [graph.relationships.get(i) for i in relation_id_list]
 
@@ -231,8 +232,11 @@ def graph_after_expand_node(graph,node_id_list,relation_id_list,expand_node,limi
     subgraph = subgraph | Subgraph(node_list)
 
     #find the expanded relationship from the expand_node
-    new_sub = Subgraph((),graph.match({graph.nodes.get(expand_node)}).limit(limit_number).all())
-
+    if relationship_name is None:
+        new_sub = Subgraph((),graph.match({graph.nodes.get(expand_node)}).limit(limit_number).all())
+    else:
+        new_sub = Subgraph((),graph.match({graph.nodes.get(expand_node)},relationship_name).limit(limit_number).all())
+       
     #check for possible connection between the newly added node and old node
     new_node_id = [n.identity for n in list(new_sub.nodes)]
     if len(new_node_id) != 0:
