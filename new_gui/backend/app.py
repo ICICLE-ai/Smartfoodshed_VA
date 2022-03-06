@@ -144,10 +144,11 @@ def expand_node():
             expand_node = request_obj.get("expand_node")
         if request_obj.get("limit_number") is not None:
             limit_number = request_obj.get("limit_number")
+        relationship_name = request_obj.get("relationship_name")
         # print(nodes_list)
         # print(relation_list)
         # print(expand_node)
-        subgraph_res,error_code = graph_after_expand_node(graph,nodes_list,relation_list,expand_node,limit_number)
+        subgraph_res,error_code = graph_after_expand_node(graph,nodes_list,relation_list,expand_node,limit_number,relationship_name)
         dict_res = convert_subgraph_to_json(subgraph_res, entity_identifier)
     except:
         error_code = 404
@@ -169,10 +170,11 @@ def expand_node_with_relationship_type():
             expand_node = request_obj.get("expand_node")
         if request_obj.get("limit_number") is not None:
             limit_number = request_obj.get("limit_number")
+        relationship_name = request_obj.get("relationship_name")
         # print(nodes_list)
         # print(relation_list)
         # print(expand_node)
-        subgraph_res,error_code = graph_after_expand_node(graph,nodes_list,relation_list,expand_node,limit_number)
+        subgraph_res,error_code = graph_after_expand_node(graph,nodes_list,relation_list,expand_node,limit_number,relationship_name)
         dict_res = convert_subgraph_to_json_withR(subgraph_res, entity_identifier,graph)
     except:
         error_code = 404
