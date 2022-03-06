@@ -268,6 +268,8 @@
     }
 
     function getNodeEl() {
+      console.log("inside tip")
+      console.log(node)
       if (node == null) {
         node = initNode()
         // re-add node to DOM

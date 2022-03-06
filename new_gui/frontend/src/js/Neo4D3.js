@@ -620,7 +620,7 @@ function Neo4jD3 (_selector, _options) {
     }
 
     if (!options.minCollision) {
-      options.minCollision = options.nodeRadius * 2
+      options.minCollision = options.nodeRadius*2
     }
 
     initImageMap()
@@ -684,10 +684,10 @@ function Neo4jD3 (_selector, _options) {
       .force('collide', d3.forceCollide().radius(function (d) {
         return options.minCollision
       }).iterations(2))
-      .force('charge', d3.forceManyBody())
+      .force('charge', d3.forceManyBody().strength(-50))
       .force('link', d3.forceLink().id(function (d) {
         return d.id
-      }))
+      }).distance(0).strength(.8))
       .force('center', d3.forceCenter(svg.node().parentElement.parentElement.clientWidth / 2, svg.node().parentElement.parentElement.clientHeight / 2))
       .on('tick', function () {
         tick()
