@@ -97,6 +97,13 @@ export default{
         onNodeClick: function (node,idx) {
           // console.log(node,id)
           // Create dummy data
+          console.log(node)
+          if (node.showBtnPanel == true) {
+            d3.select(`#node-${node.id}`).selectAll('.circle-button').remove()
+            node.showBtnPanel = false
+            return
+          }
+          node.showBtnPanel = true 
           var data = { b: {action: "remove", value: 10, pos:0} } // only two operations 
 
           if(that.relationStatusReady==false){
@@ -158,6 +165,7 @@ export default{
           var hide_icon = operation_buttons_g.append('path') 
             .attr('d', 'M12,20C7.59,20 4,16.41 4,12C4,7.59 7.59,4 12,4C16.41,4 20,7.59 20,12C20,16.41 16.41,20 12,20M12,2A10,10 0 0,0 2,12A10,10 0 0,0 12,22A10,10 0 0,0 22,12A10,10 0 0,0 12,2M7,13H17V11H7')
             .attr("transform", 'translate(20, -35) scale(0.7)')
+            .attr("class", "circle-button")
           
           
 
@@ -231,6 +239,7 @@ export default{
       var circles_question = svg.selectAll('.outline')
       let that = this
       var lasso_start = function () {
+        console.log(111)
         lasso.items()
           .attr('fill', "green")
           .classed('not_possible', true)
@@ -294,7 +303,7 @@ export default{
       svg.call(d3.zoom().on('zoom', function () {
         var scale = d3.event.transform.k,
           translate = [d3.event.transform.x, d3.event.transform.y]
-
+        console.log(1)
         const g = svg.select("g")
         g.attr('transform', 'translate(' + translate[0] + ', ' + translate[1] + ') scale(' + scale + ')')
       }))

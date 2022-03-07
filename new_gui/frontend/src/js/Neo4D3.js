@@ -26,9 +26,6 @@ function Neo4jD3 (_selector, _options) {
     },
     VERSION = '0.0.1'
 
-  function piyush(){
-    console.log('something')
-  }
 
   function appendGraph (container) {
     svg= container.append('svg')
@@ -59,9 +56,9 @@ function Neo4jD3 (_selector, _options) {
       .append('g')
       .attr('width', '100%')
       .attr('height', '100%')
-    
-    
-    
+       
+   
+      
     svgRelationships = svg.append('g')
       .attr('class', 'relationships')
 
