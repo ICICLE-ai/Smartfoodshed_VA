@@ -70,7 +70,7 @@ export default{
     }
   },
   created () {
-    this.$store.dispatch('getGraphData')
+    // this.$store.dispatch('getGraphData')
     window['d3'] = d3
     this.tip = d3tip()
             .attr('class', 'd3-tip')
@@ -185,7 +185,6 @@ export default{
               }else {
                 
                 console.log(d.data.value.action)
-                alert(11)
                 that.$store.dispatch("node_expand", {node_id: clicked_node_id, relation: d.data.key})
               }
             })
@@ -347,8 +346,6 @@ export default{
     relationTypeData(val) {
       if(this.relationStatusReady) {
         console.log("relation type data is ready")
-        
-
 
       }else{
         console.log("relation type data is not ready yet!")

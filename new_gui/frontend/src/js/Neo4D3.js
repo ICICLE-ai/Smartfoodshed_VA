@@ -980,8 +980,12 @@ function Neo4jD3 (_selector, _options) {
         nWeight = mirror ? 2 : -3,
         point = { x: (d.target.x - d.source.x) * 0.5 + n.x * nWeight, y: (d.target.y - d.source.y) * 0.5 + n.y * nWeight },
         rotatedPoint = rotatePoint(center, point, angle)
-
-      return 'translate(' + rotatedPoint.x + ', ' + rotatedPoint.y + ')'
+      console.log(angle);
+      let translate_res = 'translate(' + rotatedPoint.x + ', ' + rotatedPoint.y + ')'
+      if (angle > 90 && angle <= 279){
+        translate_res += ' rotate(180)'
+      }
+      return translate_res
     })
   }
 
