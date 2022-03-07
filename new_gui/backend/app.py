@@ -61,14 +61,6 @@ def getTableData():
         'data': output,
         'sheet': tableNames
     }
-    # data = data.fillna('')
-    # print(data.columns)
-
-    # dados = data.to_dict('records')
-    # output = {
-    #     'data': dados,
-    # }
-    # print(data.keys())
     return Response(json.dumps(result))
 
 @app.route('/retrieveSubgraph', methods=['POST'])
@@ -145,9 +137,7 @@ def expand_node():
         if request_obj.get("limit_number") is not None:
             limit_number = request_obj.get("limit_number")
         relationship_name = request_obj.get("relationship_name")
-        # print(nodes_list)
-        # print(relation_list)
-        # print(expand_node)
+        print(relationship_name)
         subgraph_res,error_code = graph_after_expand_node(graph,nodes_list,relation_list,expand_node,limit_number,relationship_name)
         dict_res = convert_subgraph_to_json(subgraph_res, entity_identifier)
     except:
@@ -171,9 +161,6 @@ def expand_node_with_relationship_type():
         if request_obj.get("limit_number") is not None:
             limit_number = request_obj.get("limit_number")
         relationship_name = request_obj.get("relationship_name")
-        # print(nodes_list)
-        # print(relation_list)
-        # print(expand_node)
         subgraph_res,error_code = graph_after_expand_node(graph,nodes_list,relation_list,expand_node,limit_number,relationship_name)
         dict_res = convert_subgraph_to_json_withR(subgraph_res, entity_identifier,graph)
     except:
