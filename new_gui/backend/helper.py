@@ -341,3 +341,30 @@ def print_(tx, ):
     """)
     return [rr for rr in record]
 
+#Input:graph, a py2neo subgraph object
+#Ouput: a dictionary where key is a entity type name and the value is corresponding counter
+#       a dictionary where key is a relationship type name and the value is corresponding counter
+def get_graph_overview(graph):
+    schema = py2neo.database.Schema(graph)
+    entity_type = list(schema.node_labels)
+
+    relation_type = list(schema.relationship_types)
+    if len(entity_type) > 1:
+        entity_type.remove("Resource")
+        entity_type.remove("_GraphConfig")
+
+    entity_dist_dict = {}
+    for n in entity_type:
+        entity_dist_dict[n] = graph.nodes.match(n).__len__()
+
+    relationship_dist_dict = {}
+    for r in relation_type:
+        relationship_dist_dict[r] = graph.relationships.match(r_type=r).__len__()
+    
+    if len(relationship_dist_dict) == 0 or len(entity_dist_dict) == 0:
+        error_code = 204
+    else:
+        error_code = 200
+    return_dict = {"entity":entity_dist_dict,"relationship":relationship_dist_dict}
+    return return_dict, error_code
+
