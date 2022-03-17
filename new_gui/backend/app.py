@@ -14,7 +14,6 @@ import py2neo
 localfile_path = "../../../local_data"
 """
 from config import localfile_path
-import helper
 from helper import filterGraph, print_, get_subgraph, convert_subgraph_to_json, convert_subgraph_to_json_withR, graph_after_delete_node, graph_after_expand_node, get_all_relationship_type
 # configuration
 DEBUG = True
@@ -83,8 +82,8 @@ def getSubGraphFromTable():
         
         if request_obj.get("relations") is not None:
             relation_list = request_obj.get("relations")
-        subgraph_res,error_code = helper.get_subgraph(graph, nodes_list, relation_list)
-        dict_res = helper.convert_subgraph_to_json(subgraph_res, entity_identifier)
+        subgraph_res,error_code = get_subgraph(graph, nodes_list, relation_list)
+        dict_res = convert_subgraph_to_json(subgraph_res, entity_identifier)
         print(error_code)
     except:
         print("404")
@@ -102,8 +101,8 @@ def getSubGraphFromTableWithR():
         
         if request_obj.get("relations") is not None:
             relation_list = request_obj.get("relations")
-        subgraph_res,error_code = helper.get_subgraph(graph, nodes_list, relation_list)
-        dict_res = helper.convert_subgraph_to_json_withR(subgraph_res, entity_identifier,graph)
+        subgraph_res,error_code = get_subgraph(graph, nodes_list, relation_list)
+        dict_res = convert_subgraph_to_json_withR(subgraph_res, entity_identifier,graph)
     except:
         error_code = 404
     return Response(json.dumps(dict_res),status = error_code)
@@ -122,9 +121,9 @@ def delete_node_from_graph():
         if request_obj.get("delete_node") is not None:
             delete_node = request_obj.get("delete_node")
 
-        subgraph_res,error_code = helper.graph_after_delete_node(nodes_list,relation_list,delete_node,graph)
+        subgraph_res,error_code = graph_after_delete_node(nodes_list,relation_list,delete_node,graph)
 
-        dict_res = helper.convert_subgraph_to_json(subgraph_res, entity_identifier,graph)
+        dict_res = convert_subgraph_to_json(subgraph_res, entity_identifier,graph)
     except:
         error_code = 404
     return Response(json.dumps(dict_res),status = error_code)
@@ -149,8 +148,8 @@ def expand_node():
         # print(nodes_list)
         # print(relation_list)
         # print(expand_node)
-        subgraph_res,error_code = helper.graph_after_expand_node(graph,nodes_list,relation_list,expand_node,limit_number,relationship_name)
-        dict_res = helper.convert_subgraph_to_json(subgraph_res, entity_identifier)
+        subgraph_res,error_code = graph_after_expand_node(graph,nodes_list,relation_list,expand_node,limit_number,relationship_name)
+        dict_res = convert_subgraph_to_json(subgraph_res, entity_identifier)
     except:
         error_code = 404
     return Response(json.dumps(dict_res),status = error_code)
@@ -175,8 +174,8 @@ def expand_node_with_relationship_type():
         # print(nodes_list)
         # print(relation_list)
         # print(expand_node)
-        subgraph_res,error_code = helper.graph_after_expand_node(graph,nodes_list,relation_list,expand_node,limit_number,relationship_name)
-        dict_res = helper.convert_subgraph_to_json_withR(subgraph_res, entity_identifier,graph)
+        subgraph_res,error_code = graph_after_expand_node(graph,nodes_list,relation_list,expand_node,limit_number,relationship_name)
+        dict_res = convert_subgraph_to_json_withR(subgraph_res, entity_identifier,graph)
     except:
         error_code = 404
     return Response(json.dumps(dict_res),status = error_code)
@@ -187,15 +186,7 @@ def get_all_relationship_types():
     try:
         if request_obj.get("node") is not None:
             node = request_obj.get("node")
-        dict_res,error_code = helper.get_all_relationship_type(graph,node)
-    except:
-        error_code = 404
-    return Response(json.dumps(dict_res),status = error_code)
-
-@app.route('/getGraphOverview', methods=['GET'])
-def get_graph_overview():
-    try:
-        dict_res,error_code = helper.get_graph_overview(graph)
+        dict_res,error_code = get_all_relationship_type(graph,node)
     except:
         error_code = 404
     return Response(json.dumps(dict_res),status = error_code)
