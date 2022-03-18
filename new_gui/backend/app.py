@@ -193,11 +193,7 @@ def get_all_relationship_types():
 
 @app.route('/getGraphOverview', methods=['GET'])
 def get_graph_overview():
-    try:
-        dict_res,error_code = helper.get_graph_overview(graph)
-    except:
-        error_code = 404
-    return Response(json.dumps(dict_res),status = error_code)
+    return Response(json.dumps(graph_overview))
 
 if __name__ == '__main__':
     
@@ -205,7 +201,14 @@ if __name__ == '__main__':
     # driver = GraphDatabase.driver("bolt://localhost:7687", auth=("neo4j", "123"))
     graph = Graph("bolt://localhost:7687", auth=("neo4j", "123")) # This should be a global variable in this app
     schema = py2neo.database.Schema(graph)
-    if len(list(schema.node_labels)) > 1:
+    entity_type = list(schema.node_labels)
+    relationship_type = list(schema.relationship_types)
+    if len(entity_type) > 1:
+        entity_type.remove("Resource")
+        entity_type.remove("_GraphConfig")
+
+    graph_overview = helper.get_graph_overview(graph,entity_type,relationship_type)
+    if len(entity_type) > 1:
         entity_identifier = "label" # This should be a global variable in this app
     else:
         entity_identifier = "county" # This should be a global variable in this app
