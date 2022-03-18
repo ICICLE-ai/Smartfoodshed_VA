@@ -197,7 +197,7 @@ def get_graph_overview():
 
 if __name__ == '__main__':
     
-    global graph, entity_identifier
+    global graph, entity_identifier,graph_overview
     # driver = GraphDatabase.driver("bolt://localhost:7687", auth=("neo4j", "123"))
     graph = Graph("bolt://localhost:7687", auth=("neo4j", "123")) # This should be a global variable in this app
     schema = py2neo.database.Schema(graph)
