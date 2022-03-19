@@ -347,7 +347,7 @@ export default{
       var node_overview_data = this.graphOverview['data']['entity']
       var link_overview_data = this.graphOverview['data']['relationship']
       console.log('fff', node_overview_data, link_overview_data)
-      // this.drawBarChart(div, link_overview_data)
+      // this.drawBarChart(divK, link_overview_data)
       // this.drawBarChart(div, node_overview_data)
     },
     graphData () {
