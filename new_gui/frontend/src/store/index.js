@@ -1,6 +1,7 @@
 import Vue from 'vue'
 import Vuex from 'vuex'
 import axios from 'axios'
+import * as d3 from 'd3'
 import {generationEntityRelations, 
         addItemsToSelection, 
         removeItemsToSelection,
@@ -21,7 +22,8 @@ function initialState () {
     interactiveTableData: null, 
     relationStatusReady: false, 
     relationTypeData: null,
-    loading: false
+    loading: false,
+    us: null,
   }
 }
 const mutations = {
@@ -84,6 +86,9 @@ const mutations = {
   },
   SET_LOADING(state,data){
     state.loading = data 
+  },
+  LOADIN_MAP(state, us){
+    state.us = us; 
   }
 
 }
@@ -173,6 +178,10 @@ const actions = {
   node_remove({state, commit}, {node_id}){
     const updatedGraphData = graphNodeLinkRemoval(state.graphData, node_id)
     commit('NODE_REMOVE', {updatedGraphData: updatedGraphData})
+  },
+  async load_map({state, commit}) {
+    const us = await d3.json('https://raw.githubusercontent.com/chrisdaly/map-data/master/us-counties.topojson.txt')
+    commit("LOADIN_MAP", us)
   }
 }
 export default new Vuex.Store({
