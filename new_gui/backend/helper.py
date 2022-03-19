@@ -4,6 +4,8 @@ import json
 from itertools import combinations,product
 from py2neo import Subgraph
 import collections
+import py2neo
+
 
 def filterGraph(data, num, sort):
     ## filter nodes 
@@ -338,4 +340,18 @@ def print_(tx, ):
         RETURN file, nodes, relationships, properties, data
     """)
     return [rr for rr in record]
+
+#Input:graph, a py2neo subgraph object
+#Ouput: a dictionary where key is a entity type name and the value is corresponding counter
+#       a dictionary where key is a relationship type name and the value is corresponding counter
+def get_graph_overview(graph,entity_type,relationship_type):
+    entity_dist_dict = {}
+    for n in entity_type:
+        entity_dist_dict[n] = graph.nodes.match(n).__len__()
+
+    relationship_dist_dict = {}
+    for r in relationship_type:
+        relationship_dist_dict[r] = graph.relationships.match(r_type=r).__len__()
+    return_dict = {"entity":entity_dist_dict,"relationship":relationship_dist_dict}
+    return return_dict
 
