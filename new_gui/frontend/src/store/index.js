@@ -23,10 +23,21 @@ function initialState () {
     relationStatusReady: false, 
     relationTypeData: null,
     loading: false,
+<<<<<<< HEAD
     us: null,
+=======
+    expandThreshold: 5, // node expand limit 
+    graphOverview: null, // for link overview 
+>>>>>>> 64918cdf163f1bf9d3ebb2afdc196a106cc8703b
   }
 }
 const mutations = {
+  SET_graphOverview(state, val){
+    state.graphOverview = val
+  },
+  SET_expandThreshold(state, val){
+    state.expandThreshold = val
+  },
   SET_graphData (state, val) {
     state.graphData = val
   },
@@ -93,11 +104,20 @@ const mutations = {
 
 }
 const actions = {
+  async setExpandTh ({commit, dispatch, state}, data){
+    commit('SET_expandThreshold', data)
+  },
   async getGraphData ({commit, dispatch, state}) {
     const path = 'http://127.0.0.1:5000/getGraphData'
     var result = await axios.get(path)
     commit('SET_graphData', result['data'])
     commit('SET_graphDataBackUp', result['data'])
+   
+  },
+  async getGraphOverview({commit, dispatch, state}){
+    axios.get("http://127.0.0.1:5000/getGraphOverview").then(result=>{
+      commit('SET_graphOverview', result)
+    })
   },
   async getTableData ({commit, dispatch, state}) {
     const path = 'http://127.0.0.1:5000/getTableData'
@@ -156,7 +176,7 @@ const actions = {
         console.log(error)
         console.log(error.response.status)
       })
-
+    
   },
   retrieveSubTable({commit, state}, {entities, relations}) { 
     console.log("retrieve sub table!!!")
@@ -170,7 +190,7 @@ const actions = {
   },
   async node_expand({commit, state}, {node_id, relation}){
     commit('SET_LOADING', true)
-    const updatedGraphData = await graphNodeLinkExpand(state.graphData, node_id, relation)
+    const updatedGraphData = await graphNodeLinkExpand(state.graphData, node_id, relation, state.expandThreshold)
     commit('SET_LOADING', false)
     commit('NODE_EXPAND', {updatedGraphData: updatedGraphData['data']})
     commit('SET_GRAPHDATA_RELATION_TYPE_DATA', updatedGraphData['data'])  

@@ -160,7 +160,9 @@ def expand_node_with_relationship_type():
     nodes_list = []
     relation_list = []
     # default for limit number is 5
-    limit_number = 5
+    limit_number = request_obj['threshold']
+    print(limit_number)
+    # limit_number = 5
     try:
         if request_obj.get("nodes") is not None:
             nodes_list = request_obj.get("nodes")

@@ -3,34 +3,56 @@
         <div
           class="graph-btn-container"
         >
-        <v-btn
+        <v-row no-gutters>
+          <v-col
+            key="0"
+            sm="3"
+            cols=2>
+            <v-btn
             small
-            @click="resetGraphTableHandler"
-            style="margin-left: 10px"
             class="kg-view-btn"
-          >
+            @click="resetGraphTableHandler"
+            >
             Reset
-        </v-btn>
-        <v-btn
-          small
-          @click="zoomPanToggleHandler"
-          :color="zoomPanColor"
-          class="kg-view-btn"
-        >
-          <v-icon>
+            </v-btn>
+             <v-btn
+              small
+              @click="zoomPanToggleHandler"
+              :color="zoomPanColor"
+              class="kg-view-btn"
+            ><v-icon>
             mdi-arrow-expand-all
-          </v-icon>
-        </v-btn>
-        <v-btn
-          small
-          @click="lassoToggleHandler"
-          :color="lassoColor"
-          class="kg-view-btn"
-        >
-          <v-icon>
-            mdi-lasso
-          </v-icon>
-        </v-btn>
+              </v-icon>
+            </v-btn>
+            <v-btn
+              small
+              class="kg-view-btn"
+              @click="lassoToggleHandler"
+              :color="lassoColor"
+            >
+              <v-icon>
+                mdi-lasso
+              </v-icon>
+            </v-btn>
+          </v-col>
+          <v-col
+            key="1"
+            cols=2
+            sm="3">
+            <v-slider
+              v-model="user_defined_thre"
+              :thumb-size="24"
+              @click="changeThreshold"
+              thumb-label="always"
+            ></v-slider>
+          </v-col>
+          
+        </v-row>
+       
+        
+          
+        
+        
         </div>
         <div id="div_graph" class="fullHeight" :style="{'height': HEIGHT}"></div>   
         <v-overlay :value="loading_value">
@@ -66,11 +88,12 @@ export default{
       lasso: null, 
       zoom: null, 
       loading_value:false,
-      tip: null
+      tip: null,
+      user_defined_thre: 5 // user defined threshold to show how many nodes we want to see if we expand one node 
     }
   },
   created () {
-    // this.$store.dispatch('getGraphData')
+    this.$store.dispatch('getGraphOverview')
     window['d3'] = d3
     this.tip = d3tip()
             .attr('class', 'd3-tip')
@@ -80,6 +103,10 @@ export default{
     })
   },
   methods: {
+    changeThreshold(){
+      // change user define threshold for how many nodes we want to expand 
+      this.$store.dispatch('setExpandTh', this.user_defined_thre)
+    },
     drawNeo4jd3 () {
       var that = this
       d3.selectAll(".d3-tip").remove()
@@ -315,6 +342,14 @@ export default{
     } 
   },
   watch: {
+    graphOverview(){
+      console.log('tuymeieeeeee',this.graphOverview)
+      var node_overview_data = this.graphOverview['data']['entity']
+      var link_overview_data = this.graphOverview['data']['relationship']
+      console.log('fff', node_overview_data, link_overview_data)
+      // this.drawBarChart(div, link_overview_data)
+      // this.drawBarChart(div, node_overview_data)
+    },
     graphData () {
       console.log(this.graphData)
       this.graphData['results'][0]['data'][0]['graph']['nodes'].forEach(function (d) {
@@ -371,7 +406,7 @@ export default{
 
   },
   computed: {
-    ...mapState(['graphData', 'relationStatusReady', 'relationTypeData','loading']),
+    ...mapState(['graphData', 'relationStatusReady', 'relationTypeData','loading', 'graphOverview']),
     HEIGHT () {
       return window.innerHeight + 'px'
     }
