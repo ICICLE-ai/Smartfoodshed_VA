@@ -85,6 +85,7 @@ const mutations = {
   SET_LOADING(state,data){
     state.loading = data 
   }
+
 }
 const actions = {
   async getGraphData ({commit, dispatch, state}) {
@@ -120,8 +121,8 @@ const actions = {
   },
   retrieveGraphFromTable({commit, state}) {
     console.log("retrieve graph data from table") 
-    // data preparation
     commit('SET_LOADING', true)
+    // data preparation
     let {nodes, relations} = generationEntityRelations(state.tableSelected)
     const path_retrieve_graph = 'http://127.0.0.1:5000/retrieveSubgraph'
     const path_retrieve_graph_relation = 'http://127.0.0.1:5000/retrieveSubgraphWithR' 
@@ -138,18 +139,18 @@ const actions = {
         console.log(error.response.status)
       })
     
-      axios.post(path_retrieve_graph_relation, {nodes, relations})
-        .then(result => {
-          console.log("!!!!!!1---------!!!!!!!!!!!! relation data back ")
-          console.log(result)
-          commit('SET_LOADING', false)
-          commit('SET_GRAPHDATA_RELATION_TYPE_DATA', result['data'])  
-          commit('RELATION_STATUS_ON')
-        })
-        .catch(error => {
-          console.log(error)
-          console.log(error.response.status)
-        })
+    axios.post(path_retrieve_graph_relation, {nodes, relations})
+      .then(result => {
+        console.log("!!!!!!1---------!!!!!!!!!!!! relation data back ")
+        console.log(result)
+        commit('SET_LOADING', false)
+        commit('SET_GRAPHDATA_RELATION_TYPE_DATA', result['data'])  
+        commit('RELATION_STATUS_ON')
+      })
+      .catch(error => {
+        console.log(error)
+        console.log(error.response.status)
+      })
 
   },
   retrieveSubTable({commit, state}, {entities, relations}) { 
@@ -162,9 +163,12 @@ const actions = {
     commit('TABLE_INTERACTIVE_OFF') 
     commit('RESET_GRAPHDATA')
   },
-  async node_expand({commit, state}, {node_id}){
-    const updatedGraphData = await graphNodeLinkExpand(state.graphData, node_id)
+  async node_expand({commit, state}, {node_id, relation}){
+    commit('SET_LOADING', true)
+    const updatedGraphData = await graphNodeLinkExpand(state.graphData, node_id, relation)
+    commit('SET_LOADING', false)
     commit('NODE_EXPAND', {updatedGraphData: updatedGraphData['data']})
+    commit('SET_GRAPHDATA_RELATION_TYPE_DATA', updatedGraphData['data'])  
   }, 
   node_remove({state, commit}, {node_id}){
     const updatedGraphData = graphNodeLinkRemoval(state.graphData, node_id)

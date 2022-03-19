@@ -26,9 +26,6 @@ function Neo4jD3 (_selector, _options) {
     },
     VERSION = '0.0.1'
 
-  function piyush(){
-    console.log('something')
-  }
 
   function appendGraph (container) {
     svg= container.append('svg')
@@ -59,9 +56,9 @@ function Neo4jD3 (_selector, _options) {
       .append('g')
       .attr('width', '100%')
       .attr('height', '100%')
-    
-    
-    
+       
+   
+      
     svgRelationships = svg.append('g')
       .attr('class', 'relationships')
 
@@ -620,7 +617,7 @@ function Neo4jD3 (_selector, _options) {
     }
 
     if (!options.minCollision) {
-      options.minCollision = options.nodeRadius * 2
+      options.minCollision = options.nodeRadius*2
     }
 
     initImageMap()
@@ -684,10 +681,10 @@ function Neo4jD3 (_selector, _options) {
       .force('collide', d3.forceCollide().radius(function (d) {
         return options.minCollision
       }).iterations(2))
-      .force('charge', d3.forceManyBody())
+      .force('charge', d3.forceManyBody().strength(-50))
       .force('link', d3.forceLink().id(function (d) {
         return d.id
-      }))
+      }).distance(0).strength(.8))
       .force('center', d3.forceCenter(svg.node().parentElement.parentElement.clientWidth / 2, svg.node().parentElement.parentElement.clientHeight / 2))
       .on('tick', function () {
         tick()
@@ -980,8 +977,12 @@ function Neo4jD3 (_selector, _options) {
         nWeight = mirror ? 2 : -3,
         point = { x: (d.target.x - d.source.x) * 0.5 + n.x * nWeight, y: (d.target.y - d.source.y) * 0.5 + n.y * nWeight },
         rotatedPoint = rotatePoint(center, point, angle)
-
-      return 'translate(' + rotatedPoint.x + ', ' + rotatedPoint.y + ')'
+      console.log(angle);
+      let translate_res = 'translate(' + rotatedPoint.x + ', ' + rotatedPoint.y + ')'
+      if (angle > 90 && angle <= 279){
+        translate_res += ' rotate(180)'
+      }
+      return translate_res
     })
   }
 

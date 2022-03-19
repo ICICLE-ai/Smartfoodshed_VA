@@ -65,19 +65,24 @@ export default{
       zoomPanStatus: true, 
       lasso: null, 
       zoom: null, 
-      loading_value:false
+      loading_value:false,
+      tip: null
     }
   },
   created () {
-    this.$store.dispatch('getGraphData')
+    // this.$store.dispatch('getGraphData')
     window['d3'] = d3
+    this.tip = d3tip()
+            .attr('class', 'd3-tip')
+            .offset([-10, 80])
+            .html(function(d) {
+              return "<strong>Relation: </strong>" + d + "<br></span>";
+    })
   },
   methods: {
     drawNeo4jd3 () {
-
-
       var that = this
-      
+      d3.selectAll(".d3-tip").remove()
       var neo4jd3 = Neo4jd3.default('#div_graph', {
         neo4jData: that.graphData,
         nodeRadius: 30,
@@ -92,6 +97,13 @@ export default{
         onNodeClick: function (node,idx) {
           // console.log(node,id)
           // Create dummy data
+          console.log(node)
+          if (node.showBtnPanel == true) {
+            d3.select(`#node-${node.id}`).selectAll('.circle-button').remove()
+            node.showBtnPanel = false
+            return
+          }
+          node.showBtnPanel = true 
           var data = { b: {action: "remove", value: 10, pos:0} } // only two operations 
 
           if(that.relationStatusReady==false){
@@ -107,7 +119,8 @@ export default{
             for (const [key, value] of Object.entries(relation_data)) {
               data[key] = {action: key, value: (value/total_c)*30}
             }
-
+            console.log("check data")
+            console.log(data)
           }
           // sorting 
           
@@ -152,35 +165,35 @@ export default{
           var hide_icon = operation_buttons_g.append('path') 
             .attr('d', 'M12,20C7.59,20 4,16.41 4,12C4,7.59 7.59,4 12,4C16.41,4 20,7.59 20,12C20,16.41 16.41,20 12,20M12,2A10,10 0 0,0 2,12A10,10 0 0,0 12,22A10,10 0 0,0 22,12A10,10 0 0,0 12,2M7,13H17V11H7')
             .attr("transform", 'translate(20, -35) scale(0.7)')
+            .attr("class", "circle-button")
           
-          let tip = d3tip()
-            .attr('class', 'd3-tip')
-            .offset([-10, 80])
-            .html(function(d) {
-              return "<strong>Relation: </strong>" + d + "<br></span>";
-            })
+          
 
-            d3.select('svg').call(tip)
+          d3.select('svg').call(that.tip)
             // hovering effect 
-            operation_buttons.on('mouseover', function(p){
+          operation_buttons.on('mouseover', function(p){
               d3.select(this).style('opacity',1)
               let rel = p['data']['value']['action']
               console.log(rel)
-              tip.show(rel);
-
+              that.tip.show(rel);
             })
             .on('mouseout',function(p){
               d3.select(this).style('opacity',0.7)
               let rel = p['data']['value']['action']
-              tip.hide(rel);
+              that.tip.hide(rel);
             })
             .on('click', function(d,i){
               let clicked_node_id = node['id']
               const action = d.data.value.action 
-              if (action == "expand"){
-                that.$store.dispatch("node_expand", {node_id: clicked_node_id})
-              }else {
+              console.log(d)
+              that.tip.hide(d.data.value.action)
+              if (action == "remove"){
+                // tip.hide(d.data.value.action)
                 that.$store.dispatch("node_remove", {node_id: clicked_node_id})
+              }else {
+                
+                console.log(d.data.value.action)
+                that.$store.dispatch("node_expand", {node_id: clicked_node_id, relation: d.data.key})
               }
             })
         }
@@ -226,6 +239,7 @@ export default{
       var circles_question = svg.selectAll('.outline')
       let that = this
       var lasso_start = function () {
+        console.log(111)
         lasso.items()
           .attr('fill', "green")
           .classed('not_possible', true)
@@ -289,7 +303,7 @@ export default{
       svg.call(d3.zoom().on('zoom', function () {
         var scale = d3.event.transform.k,
           translate = [d3.event.transform.x, d3.event.transform.y]
-
+        console.log(1)
         const g = svg.select("g")
         g.attr('transform', 'translate(' + translate[0] + ', ' + translate[1] + ') scale(' + scale + ')')
       }))
@@ -341,8 +355,6 @@ export default{
     relationTypeData(val) {
       if(this.relationStatusReady) {
         console.log("relation type data is ready")
-        
-
 
       }else{
         console.log("relation type data is not ready yet!")

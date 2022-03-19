@@ -46,7 +46,7 @@ function graphNodeLinkRemoval(graphData, nodeId) {
     return newGraphData
 }
 
-async function graphNodeLinkExpand(graphData, nodeId) { 
+async function graphNodeLinkExpand(graphData, nodeId, relation) { 
     const newGraphData = {...graphData}
     const nodes = newGraphData.results[0].data[0].graph.nodes 
     const relations = newGraphData.results[0].data[0].graph.relationships  
@@ -59,8 +59,8 @@ async function graphNodeLinkExpand(graphData, nodeId) {
         relationList.push(relation.id)
     })
 
-    const passingData = {nodes: nodeList, relations: relationList, expand_node: nodeId}
-    const path = "http://127.0.0.1:5000/expandNode"
+    const passingData = {nodes: nodeList, relations: relationList, expand_node: nodeId, relationship_name:relation}
+    const path = "http://127.0.0.1:5000/expandNodeWithR"
     const updatedGraphData = await axios.post(path, passingData)
 
     return updatedGraphData

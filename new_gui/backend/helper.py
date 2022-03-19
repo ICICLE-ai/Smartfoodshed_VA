@@ -323,13 +323,13 @@ def convert_subgraph_to_json(subgraph,entity_identifier):
 #      graph, a py2neo subgraph object
 #Ouput: a dictionary where key is a relationship type name and the value is corresponding counter
 def get_all_relationship_type(graph,node_id):
-    relation_list = graph.match({graph.nodes.get(node_id)}).all()
-    relation_type = [type(i).__name__ for i in relation_list]
-    if len(relation_list) == 0:
+    cypher = "match (n)-[p]-(m) where id(n) = {0} return type(p) as type, count(p) as amount"
+    cypher_result = graph.run(cypher.format(node_id)).data()
+    if len(cypher_result) == 0:
         error_code = 204
     else:
         error_code = 200
-    return dict(collections.Counter(relation_type)),error_code
+    return {r["type"]: r["amount"] for r in cypher_result},error_code
 
 def print_(tx, ):
     record = tx.run("""
