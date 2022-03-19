@@ -23,12 +23,9 @@ function initialState () {
     relationStatusReady: false, 
     relationTypeData: null,
     loading: false,
-<<<<<<< HEAD
     us: null,
-=======
     expandThreshold: 5, // node expand limit 
     graphOverview: null, // for link overview 
->>>>>>> 64918cdf163f1bf9d3ebb2afdc196a106cc8703b
   }
 }
 const mutations = {

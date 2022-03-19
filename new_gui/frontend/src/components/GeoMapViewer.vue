@@ -13,7 +13,7 @@
 import * as d3 from 'd3'
 import * as topojson from 'topojson-client'
 import {mapState} from 'vuex'
-import * as d3tip from '@/utils/d3-tip'
+// import * as d3tip from '@/utils/d3-tip'
 export default {
     components: {
 
@@ -39,27 +39,43 @@ export default {
                 alert("map data not ready yet!");
                 return
             }
-            const width = 960;
-            const height = 600;
-            const projection = d3.geoAlbersUsa().scale(1200).translate([width/2, height/2])
+            window.d3 = d3;
+            const width = 700;
+            const height = 900;
+            const projection = d3.geoAlbersUsa().scale(800).translate([width/2, height/2])
             const path = d3.geoPath().projection(projection) 
             const svg = d3.select(".geo-map")
             
             const counties = svg.append("g")
+            const states = svg.append("g")
+            counties
                 .selectAll("path")
                 .data(topojson.feature(this.us, this.us.objects.counties).features)
-                .append("path")
+                .enter().append("path")
                 // .attr("fill", d => color(data.get(d.id)) != null ? color(data.get(d.id)) : "white")
                 .attr("stroke", "lightgrey")
                 .attr("d", path)
             
-            const states = svg.append("path")
+            states.append("path")
                 .datum(topojson.mesh(this.us, this.us.objects.states))
                 .attr("fill", "none")
                 .attr("stroke", "grey")
                 .attr("stroke-linejoin", "round")
                 .attr("d", path);
+
             
+            svg.call(
+                d3
+                .zoom()
+                .extent([[0, 0], [width, height]])
+                .translateExtent([[0, 0], [width, height]])
+                .scaleExtent([1, 4])
+                .duration(500)
+                .on('zoom', function() {
+                    counties.attr("transform", d3.event.transform);
+                    states.attr("transform", d3.event.transform);
+                })
+            );
         }
     },  
     created(){
