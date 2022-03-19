@@ -21,10 +21,14 @@ function initialState () {
     interactiveTableData: null, 
     relationStatusReady: false, 
     relationTypeData: null,
-    loading: false
+    loading: false,
+    expandThreshold: 5, 
   }
 }
 const mutations = {
+  SET_expandThreshold(state, val){
+    state.expandThreshold = val
+  },
   SET_graphData (state, val) {
     state.graphData = val
   },
@@ -88,6 +92,9 @@ const mutations = {
 
 }
 const actions = {
+  async setExpandTh ({commit, dispatch, state}, data){
+    commit('SET_expandThreshold', data)
+  },
   async getGraphData ({commit, dispatch, state}) {
     const path = 'http://127.0.0.1:5000/getGraphData'
     var result = await axios.get(path)
@@ -165,7 +172,7 @@ const actions = {
   },
   async node_expand({commit, state}, {node_id, relation}){
     commit('SET_LOADING', true)
-    const updatedGraphData = await graphNodeLinkExpand(state.graphData, node_id, relation)
+    const updatedGraphData = await graphNodeLinkExpand(state.graphData, node_id, relation, state.expandThreshold)
     commit('SET_LOADING', false)
     commit('NODE_EXPAND', {updatedGraphData: updatedGraphData['data']})
     commit('SET_GRAPHDATA_RELATION_TYPE_DATA', updatedGraphData['data'])  
