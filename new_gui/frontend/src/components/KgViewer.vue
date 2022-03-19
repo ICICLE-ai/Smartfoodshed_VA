@@ -93,7 +93,7 @@ export default{
     }
   },
   created () {
-    // this.$store.dispatch('getGraphData')
+    this.$store.dispatch('getGraphOverview')
     window['d3'] = d3
     this.tip = d3tip()
             .attr('class', 'd3-tip')
@@ -342,6 +342,14 @@ export default{
     } 
   },
   watch: {
+    graphOverview(){
+      console.log('tuymeieeeeee',this.graphOverview)
+      var node_overview_data = this.graphOverview['data']['entity']
+      var link_overview_data = this.graphOverview['data']['relationship']
+      console.log('fff', node_overview_data, link_overview_data)
+      // this.drawBarChart(div, link_overview_data)
+      // this.drawBarChart(div, node_overview_data)
+    },
     graphData () {
       console.log(this.graphData)
       this.graphData['results'][0]['data'][0]['graph']['nodes'].forEach(function (d) {
@@ -398,7 +406,7 @@ export default{
 
   },
   computed: {
-    ...mapState(['graphData', 'relationStatusReady', 'relationTypeData','loading']),
+    ...mapState(['graphData', 'relationStatusReady', 'relationTypeData','loading', 'graphOverview']),
     HEIGHT () {
       return window.innerHeight + 'px'
     }

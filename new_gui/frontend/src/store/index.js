@@ -22,10 +22,14 @@ function initialState () {
     relationStatusReady: false, 
     relationTypeData: null,
     loading: false,
-    expandThreshold: 5, 
+    expandThreshold: 5, // node expand limit 
+    graphOverview: null, // for link overview 
   }
 }
 const mutations = {
+  SET_graphOverview(state, val){
+    state.graphOverview = val
+  },
   SET_expandThreshold(state, val){
     state.expandThreshold = val
   },
@@ -100,6 +104,12 @@ const actions = {
     var result = await axios.get(path)
     commit('SET_graphData', result['data'])
     commit('SET_graphDataBackUp', result['data'])
+   
+  },
+  async getGraphOverview({commit, dispatch, state}){
+    axios.get("http://127.0.0.1:5000/getGraphOverview").then(result=>{
+      commit('SET_graphOverview', result)
+    })
   },
   async getTableData ({commit, dispatch, state}) {
     const path = 'http://127.0.0.1:5000/getTableData'
@@ -158,7 +168,7 @@ const actions = {
         console.log(error)
         console.log(error.response.status)
       })
-
+    
   },
   retrieveSubTable({commit, state}, {entities, relations}) { 
     console.log("retrieve sub table!!!")
