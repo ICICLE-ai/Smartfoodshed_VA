@@ -698,6 +698,8 @@ export default{
   cursor: pointer;
 }
 
-
+.neo4jd3{
+  margin-top:60px;
+}
 
 </style>
