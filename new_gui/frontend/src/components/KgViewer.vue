@@ -143,7 +143,8 @@ export default{
             }else{
               console.log(that.relationTypeData['results'][0]['data'][0]['graph']['nodes'])
               console.log(idx)
-              let relation_data = that.relationTypeData['results'][0]['data'][0]['graph']['nodes'][idx]['relationship_types']
+              let filtered_relation_type_data = that.relationTypeData['results'][0]['data'][0]['graph']['nodes'].filter(d => d.id == node.id)
+              let relation_data = filtered_relation_type_data[0]['relationship_types']
               // get the sum of all rel counts 
               const sumValues = obj => Object.values(obj).reduce((a, b) => a + b);
               const total_c  = sumValues(relation_data)
