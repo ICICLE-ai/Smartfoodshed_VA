@@ -32,26 +32,6 @@ function Neo4jD3 (_selector, _options) {
       .attr('width', '100%')
       .attr('height', '100%')
       .attr('class', 'neo4jd3-graph')
-      // .call(d3.zoom().on('zoom', function () {
-      //   var scale = d3.event.transform.k,
-      //     translate = [d3.event.transform.x, d3.event.transform.y]
-
-      //   // if (svgTranslate) {
-      //   //   alert(svgTranslate)
-      //   //   translate[0] += svgTranslate[0]
-      //   //   translate[1] += svgTranslate[1]
-      //   // }
-
-      //   // if (svgScale) {
-      //   //   alert(svgScale)
-      //   //   scale *= svgScale
-      //   // }
-      //   console.log("!!!")
-      //   console.log(this)
-      //   console.log(svg)
-      //   svg.attr('transform', 'translate(' + translate[0] + ', ' + translate[1] + ') scale(' + scale + ')')
-      // }))
-
       .on('dblclick.zoom', null)
       .append('g')
       .attr('width', '100%')
@@ -123,8 +103,9 @@ function Neo4jD3 (_selector, _options) {
   }
 
   function appendNode () {
-    console.log("check node!!!")
-    console.log(node)
+    // exist removed nodes
+    node.exit().remove()
+
     return node.enter()
       .append('g')
       .attr('class', function (d) {
@@ -212,10 +193,8 @@ function Neo4jD3 (_selector, _options) {
     
     node
       .each(function (d) {
-        // console.log(d)
         let mapping = d['properties']['mapping']
         const text_nodes = textDisplay(d['properties'][mapping])
-        // console.log(d['properties']['name'])
         const selection = d3.select(this)
         if (text_nodes.length == 1) {
           selection.append('text')
@@ -388,6 +367,8 @@ function Neo4jD3 (_selector, _options) {
   }
 
   function appendRelationship () {
+    // exist removed relationships
+    relationship.exit().remove()
     return relationship.enter()
       .append('g')
       .attr('class', 'relationship')
@@ -681,7 +662,7 @@ function Neo4jD3 (_selector, _options) {
       .force('collide', d3.forceCollide().radius(function (d) {
         return options.minCollision
       }).iterations(2))
-      .force('charge', d3.forceManyBody().strength(-50))
+      .force('charge', d3.forceManyBody().strength(-100))
       .force('link', d3.forceLink().id(function (d) {
         return d.id
       }).distance(0).strength(.8))
@@ -977,7 +958,6 @@ function Neo4jD3 (_selector, _options) {
         nWeight = mirror ? 2 : -3,
         point = { x: (d.target.x - d.source.x) * 0.5 + n.x * nWeight, y: (d.target.y - d.source.y) * 0.5 + n.y * nWeight },
         rotatedPoint = rotatePoint(center, point, angle)
-      // console.log(angle);
       let translate_res = 'translate(' + rotatedPoint.x + ', ' + rotatedPoint.y + ')'
       if (angle > 90 && angle <= 279){
         translate_res += ' rotate(180)'
@@ -1041,11 +1021,49 @@ function Neo4jD3 (_selector, _options) {
     })
   }
 
-  function updateNodes (n) {
-    Array.prototype.push.apply(nodes, n)
+  /**
+   * Push arr2 to arr2 avoid duplicate of id
+   * @param {*} arr1 
+   * @param {*} arr2 
+   */
+  function arrayPush(arr1, arr2){
+    let visited = {}
+    let ids = arr1.map(d => {
+      visited[d.id] = false  
+      return d.id
+    })
+    
+    for(let i = 0; i < arr2.length;i++){
+      const tmpId = arr2[i].id
+      if(!ids.includes(tmpId)){
+        arr1.push(arr2[i])
+        ids.push(tmpId)
+      }else{
+        visited[tmpId] = true
+      }
+    }
 
+    // remove non-visted values
+    const keys = Object.keys(visited)
+    for (let j = 0; j < keys.length; j++) {
+      let removeId = keys[j]
+      if(visited[removeId] == false){
+        for (let k = 0; k < arr1.length; k++) {
+          if(arr1[k].id == removeId){
+            arr1.splice(k, 1)
+            break
+          }
+        }
+      }
+    }
+  }
+
+  function updateNodes (n) {
+    // Array.prototype.push.apply(nodes, n)
+    arrayPush(nodes, n)
     node = svgNodes.selectAll('.node')
-      .data(nodes, function (d) { return d.id })
+      .data(nodes, function(d){return d.id})
+      // .data(nodeIds)
     var nodeEnter = appendNodeToGraph()
     node = nodeEnter.merge(node)
   }
@@ -1059,8 +1077,8 @@ function Neo4jD3 (_selector, _options) {
   }
 
   function updateRelationships (r) {
-    Array.prototype.push.apply(relationships, r)
-
+    // Array.prototype.push.apply(relationships, r)
+    arrayPush(relationships, r)
     relationship = svgRelationships.selectAll('.relationship')
       .data(relationships, function (d) { return d.id })
 
@@ -1103,7 +1121,6 @@ function Neo4jD3 (_selector, _options) {
   }
 
   init(_selector, _options)
-  console.log('here')
   return {
     appendRandomDataToNode: appendRandomDataToNode,
     neo4jDataToD3Data: neo4jDataToD3Data,

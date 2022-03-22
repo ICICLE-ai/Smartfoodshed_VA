@@ -50,9 +50,6 @@
         </v-row>
        
         
-          
-        
-        
         </div>
         <div id="div_graph" class="fullHeight" :style="{'height': HEIGHT}"></div>   
         <v-overlay :value="loading_value">
@@ -89,7 +86,8 @@ export default{
       zoom: null, 
       loading_value:false,
       tip: null,
-      user_defined_thre: 5 // user defined threshold to show how many nodes we want to see if we expand one node 
+      user_defined_thre: 5,// user defined threshold to show how many nodes we want to see if we expand one node 
+      neo4jd3 : null,
     }
   },
   created () {
@@ -101,6 +99,8 @@ export default{
             .html(function(d) {
               return "<strong>Relation: </strong>" + d + "<br></span>";
     })
+    console.log(document.querySelector("#div_graph"));
+    
   },
   methods: {
     changeThreshold(){
@@ -110,121 +110,133 @@ export default{
     drawNeo4jd3 () {
       var that = this
       d3.selectAll(".d3-tip").remove()
-      var neo4jd3 = Neo4jd3.default('#div_graph', {
-        neo4jData: that.graphData,
-        nodeRadius: 30,
-        infoPanel: false,
 
-        onNodeDoubleClick: function (node) {
-          // that.dbclick(node)
-        },
-        onNodeMouseEnter: function (node) {
-          that.hover_node = node
-        },
-        onNodeClick: function (node,idx) {
-          // console.log(node,id)
-          // Create dummy data
-          console.log(node)
-          if (node.showBtnPanel == true) {
-            d3.select(`#node-${node.id}`).selectAll('.circle-button').remove()
-            node.showBtnPanel = false
-            return
-          }
-          node.showBtnPanel = true 
-          var data = { b: {action: "remove", value: 10, pos:0} } // only two operations 
 
-          if(that.relationStatusReady==false){
-            // render the loading panel 
-            console.log('nononono')
-            //
-          }else{
-            let relation_data = that.relationTypeData['results'][0]['data'][0]['graph']['nodes'][idx]['relationship_types']
-            // get the sum of all rel counts 
-            const sumValues = obj => Object.values(obj).reduce((a, b) => a + b);
-            const total_c  = sumValues(relation_data)
-            // generate the dount data
-            for (const [key, value] of Object.entries(relation_data)) {
-              data[key] = {action: key, value: (value/total_c)*30}
+      if(this.neo4jd3 == null){
+        var neo4jd3 = Neo4jd3.default('#div_graph', {
+          neo4jData: this.graphData,
+          nodeRadius: 30,
+          infoPanel: false,
+
+          onNodeDoubleClick: function (node) {
+            // that.dbclick(node)
+          },
+          onNodeMouseEnter: function (node) {
+            that.hover_node = node
+          },
+          onNodeClick: function (node,idx) {
+            // console.log(node,id)
+            // Create dummy data
+            console.log(node)
+            if (node.showBtnPanel == true) {
+              d3.select(`#node-${node.id}`).selectAll('.circle-button').remove()
+              node.showBtnPanel = false
+              return
             }
-            console.log("check data")
-            console.log(data)
-          }
-          // sorting 
-          
-          let this_g = d3.select(`#node-${node.id}`)
+            node.showBtnPanel = true 
+            var data = { b: {action: "remove", value: 10, pos:0} } // only two operations 
 
-          // let append_g = this_g.append('g').attr("transform", "translate(" + node['x'] + "," + node['y'] + ")");
-          let append_g = this_g
-
-            // Compute the position of each group on the pie:
-          var pie = d3.pie()
-            .sort(null) //avoiding to sort the pie, make sure the remove button in the same position 
-            .value(function(d) {return d.value.value; })
-          var data_ready = pie(d3.entries(data))
-          
-
-    
-            // removal / expand operations 
-          var operation_buttons_g = append_g.selectAll('whatever')
-            .data(data_ready)
-            .enter()
-          
-          var operation_buttons = operation_buttons_g.append('path')
-            .attr('d', d3.arc()
-              .innerRadius(30)         // This is the size of the donut hole
-              .outerRadius(50)
-            )
-            .attr("class", "circle-button")
-            .attr('fill', function(d,i){ 
-              if(i==0){
-                return "#BB6464"
-              }else{
-                return "#94B49F"
-              } 
-            })
-            // .attr("stroke", "black")
-            .style("stroke-width", "2px")
-            .style("stroke", "white")
-            .style("opacity", 0.7)
-            .style('cursor','pointer')
-            .attr('title','test')
-
-          var hide_icon = operation_buttons_g.append('path') 
-            .attr('d', 'M12,20C7.59,20 4,16.41 4,12C4,7.59 7.59,4 12,4C16.41,4 20,7.59 20,12C20,16.41 16.41,20 12,20M12,2A10,10 0 0,0 2,12A10,10 0 0,0 12,22A10,10 0 0,0 22,12A10,10 0 0,0 12,2M7,13H17V11H7')
-            .attr("transform", 'translate(20, -35) scale(0.7)')
-            .attr("class", "circle-button")
-          
-          
-
-          d3.select('svg').call(that.tip)
-            // hovering effect 
-          operation_buttons.on('mouseover', function(p){
-              d3.select(this).style('opacity',1)
-              let rel = p['data']['value']['action']
-              console.log(rel)
-              that.tip.show(rel);
-            })
-            .on('mouseout',function(p){
-              d3.select(this).style('opacity',0.7)
-              let rel = p['data']['value']['action']
-              that.tip.hide(rel);
-            })
-            .on('click', function(d,i){
-              let clicked_node_id = node['id']
-              const action = d.data.value.action 
-              console.log(d)
-              that.tip.hide(d.data.value.action)
-              if (action == "remove"){
-                // tip.hide(d.data.value.action)
-                that.$store.dispatch("node_remove", {node_id: clicked_node_id})
-              }else {
-                
-                console.log(d.data.value.action)
-                that.$store.dispatch("node_expand", {node_id: clicked_node_id, relation: d.data.key})
+            if(that.relationStatusReady==false){
+              // render the loading panel 
+              console.log('nononono')
+              //
+            }else{
+              console.log(that.relationTypeData['results'][0]['data'][0]['graph']['nodes'])
+              console.log(idx)
+              let relation_data = that.relationTypeData['results'][0]['data'][0]['graph']['nodes'][idx]['relationship_types']
+              // get the sum of all rel counts 
+              const sumValues = obj => Object.values(obj).reduce((a, b) => a + b);
+              const total_c  = sumValues(relation_data)
+              // generate the dount data
+              for (const [key, value] of Object.entries(relation_data)) {
+                data[key] = {action: key, value: (value/total_c)*30}
               }
-            })
-        }
+              console.log("check data")
+              console.log(data)
+            }
+            // sorting 
+            
+            let this_g = d3.select(`#node-${node.id}`)
+
+            // let append_g = this_g.append('g').attr("transform", "translate(" + node['x'] + "," + node['y'] + ")");
+            let append_g = this_g
+
+              // Compute the position of each group on the pie:
+            var pie = d3.pie()
+              .sort(null) //avoiding to sort the pie, make sure the remove button in the same position 
+              .value(function(d) {return d.value.value; })
+            var data_ready = pie(d3.entries(data))
+            
+
+      
+              // removal / expand operations 
+            var operation_buttons_g = append_g.selectAll('whatever')
+              .data(data_ready)
+              .enter()
+            
+            var operation_buttons = operation_buttons_g.append('path')
+              .attr('d', d3.arc()
+                .innerRadius(30)         // This is the size of the donut hole
+                .outerRadius(50)
+              )
+              .attr("class", "circle-button")
+              .attr('fill', function(d,i){ 
+                if(i==0){
+                  return "#BB6464"
+                }else{
+                  return "#94B49F"
+                } 
+              })
+              // .attr("stroke", "black")
+              .style("stroke-width", "2px")
+              .style("stroke", "white")
+              .style("opacity", 0.7)
+              .style('cursor','pointer')
+              .attr('title','test')
+
+            var hide_icon = operation_buttons_g.append('path') 
+              .attr('d', 'M12,20C7.59,20 4,16.41 4,12C4,7.59 7.59,4 12,4C16.41,4 20,7.59 20,12C20,16.41 16.41,20 12,20M12,2A10,10 0 0,0 2,12A10,10 0 0,0 12,22A10,10 0 0,0 22,12A10,10 0 0,0 12,2M7,13H17V11H7')
+              .attr("transform", 'translate(20, -35) scale(0.7)')
+              .attr("class", "circle-button")
+            
+            
+
+            d3.select('svg').call(that.tip)
+              // hovering effect 
+            operation_buttons.on('mouseover', function(p){
+                d3.select(this).style('opacity',1)
+                let rel = p['data']['value']['action']
+                console.log(rel)
+                that.tip.show(rel);
+              })
+              .on('mouseout',function(p){
+                d3.select(this).style('opacity',0.7)
+                let rel = p['data']['value']['action']
+                that.tip.hide(rel);
+              })
+              .on('click', function(d,i){
+                let clicked_node_id = node['id']
+                const action = d.data.value.action 
+                console.log(d)
+                that.tip.hide(d.data.value.action)
+                if (action == "remove"){
+                  // tip.hide(d.data.value.action)
+                  that.$store.dispatch("node_remove", {node_id: clicked_node_id})
+                }else {
+                  
+                  console.log(d.data.value.action)
+                  that.$store.dispatch("node_expand", {node_id: clicked_node_id, relation: d.data.key})
+                }
+              })
+          }
       })
+        this.neo4jd3 = neo4jd3
+      }else{
+        this.neo4jd3.updateWithNeo4jData(this.graphData)
+      }
+
+      window.neo4jd3 = this.neo4jd3
+      window.graph = this.graphData
       if (that.lassoStatus) {
         that.disableZoom()
         that.enableLasso()

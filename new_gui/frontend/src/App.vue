@@ -2,7 +2,7 @@
   <v-app>
     <v-main>
       <v-row justify="center">
-        <v-col cols="5" align-self="center">
+        <v-col cols="5" align-self="center" style="height:100%">
           <v-tabs>
             <v-tab>
               Tabular View

@@ -15,6 +15,7 @@
                   :key="sheetname"
                 >
                    <v-data-table
+                        :height="windowHeight"
                         v-model="selected_rows"
                         show-select
                         :headers="convert(currentData['data'][sheetname]['tableInfo'])"
@@ -86,6 +87,9 @@ export default{
   },
   computed: {
     ...mapState(['tableData', 'tableSelection', 'tableSelected', 'tableInteractiveMode', 'interactiveTableData']),
+    windowHeight() {
+      return (window.innerHeight-350) + "px"
+    }
   },
   created(){
     this.$store.dispatch('getTableData')
@@ -209,5 +213,9 @@ export default{
 <style>
 .v-input__slot{
   width: 100px;
+}
+
+#inspire{
+  height: 100%;
 }
 </style>

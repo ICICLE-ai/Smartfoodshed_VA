@@ -52,6 +52,7 @@ export default {
                 .selectAll("path")
                 .data(topojson.feature(this.us, this.us.objects.counties).features)
                 .enter().append("path")
+                .attr('fill','#e4acac')
                 // .attr("fill", d => color(data.get(d.id)) != null ? color(data.get(d.id)) : "white")
                 .attr("stroke", "lightgrey")
                 .attr("d", path)

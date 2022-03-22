@@ -189,8 +189,13 @@ const actions = {
     commit('SET_LOADING', true)
     const updatedGraphData = await graphNodeLinkExpand(state.graphData, node_id, relation, state.expandThreshold)
     commit('SET_LOADING', false)
-    commit('NODE_EXPAND', {updatedGraphData: updatedGraphData['data']})
-    commit('SET_GRAPHDATA_RELATION_TYPE_DATA', updatedGraphData['data'])  
+    if (updatedGraphData.status == 200){
+      commit('NODE_EXPAND', {updatedGraphData: updatedGraphData['data']})
+      commit('SET_GRAPHDATA_RELATION_TYPE_DATA', updatedGraphData['data']) 
+    } else {
+      alert("Expansion not successful")
+    }
+     
   }, 
   node_remove({state, commit}, {node_id}){
     const updatedGraphData = graphNodeLinkRemoval(state.graphData, node_id)
