@@ -362,8 +362,7 @@ def get_graph_overview(graph,entity_type,relationship_type):
 def get_graph_with_certain_entity(graph,entity_type,limit_number):
     subgraph = Subgraph()
     for n in entity_type:
-        node_list = [n.identity for n in graph.nodes.match(n).limit(limit_number).all()]
-        subgraph = subgraph | Subgraph(node_list)
+        subgraph = subgraph | Subgraph(list(graph.nodes.match(n).limit(limit_number).all()))
     if len(list(subgraph.nodes)) == 0:
         #check if the graph is empty
         error_code = 204
