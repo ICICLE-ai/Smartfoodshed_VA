@@ -211,6 +211,7 @@ def get_graph_with_certain_entity():
         subgraph_res,error_code = helper.get_graph_with_certain_entity(graph,entity_type,limit_number)
         dict_res = helper.convert_subgraph_to_json_withR(subgraph_res,entity_identifier,graph)
     except:
+        print("Error!!!!!")
         error_code = 404
     return Response(json.dumps(dict_res),status = error_code)
 

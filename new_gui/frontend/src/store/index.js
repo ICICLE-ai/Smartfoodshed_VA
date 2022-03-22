@@ -207,13 +207,13 @@ const actions = {
     commit("LOADIN_MAP", us)
   },
   async retrieveNodesLinksWithTypes({state, commit}, {entity_type, relationship_type}){
-    const url = "http://127.0.0.1:5000/"
     commit('SET_LOADING', true)
     const updatedGraphData = await retrieveNodeLinkWithType(entity_type, relationship_type)
     commit('SET_LOADING', false)
     if (updatedGraphData.status == 200){
       commit('NODE_EXPAND', {updatedGraphData: updatedGraphData['data']})
       commit('SET_GRAPHDATA_RELATION_TYPE_DATA', updatedGraphData['data']) 
+      commit('RELATION_STATUS_ON')
     } else {
       alert("Expansion not successful")
     }
