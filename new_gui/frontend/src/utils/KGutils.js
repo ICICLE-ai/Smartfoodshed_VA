@@ -58,7 +58,7 @@ async function graphNodeLinkExpand(graphData, nodeId, relation, threshold) {
     relations.forEach(relation => {
         relationList.push(relation.id)
     })
-
+    
     const passingData = {nodes: nodeList, relations: relationList, expand_node: nodeId, relationship_name:relation, threshold: threshold}
     const path = "http://127.0.0.1:5000/expandNodeWithR"
     const updatedGraphData = await axios.post(path, passingData)
