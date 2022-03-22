@@ -66,5 +66,22 @@ async function graphNodeLinkExpand(graphData, nodeId, relation, threshold) {
     return updatedGraphData
 }
 
+async function retrieveNodeLinkWithType(entity_type, relationship_type) { 
+    let data; 
+    let path; 
+    if(relationship_type.length == 0){
+        path = "http://127.0.0.1:5000/getGwithEntityType"
+        data = {"entity_type":entity_type}
+    } else {
+        path = "http://127.0.0.1:5000/getGwithRelationshipType"
+        data = {"relationship_type":relationship_type}
+    }
+    console.log(entity_type) 
+    console.log(relationship_type)
+    const updatedGraphData = await axios.post(path, data)
+    console.log(updatedGraphData)
+    return updatedGraphData
+}
 
-export {graphDataParsing, graphNodeLinkRemoval, graphNodeLinkExpand}
+
+export {graphDataParsing, graphNodeLinkRemoval, graphNodeLinkExpand, retrieveNodeLinkWithType}

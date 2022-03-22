@@ -201,9 +201,13 @@ def get_graph_overview():
 def get_graph_with_certain_entity():
     request_obj = request.get_json()
     limit_number = 3
+    print("00000000000000000")
     try:
+        print(12312312312312)
+        print(request_obj)
         if request_obj.get("entity_type") is not None:
             entity_type = request_obj.get("entity_type")
+            print(entity_type)
         subgraph_res,error_code = helper.get_graph_with_certain_entity(graph,entity_type,limit_number)
         dict_res = helper.convert_subgraph_to_json_withR(subgraph_res,entity_identifier,graph)
     except:
@@ -212,9 +216,12 @@ def get_graph_with_certain_entity():
 
 @app.route('/getGwithRelationshipType', methods=['POST'])
 def get_graph_with_certain_relationship():
+    print("00000000000000000")
     request_obj = request.get_json()
     limit_number = 3
     try:
+        print("00000000000000000")
+        print(request_obj)
         if request_obj.get("relationship_type") is not None:
             relationship_type = request_obj.get("relationship_type")
         subgraph_res,error_code = helper.get_graph_with_certain_relationship(graph,relationship_type,limit_number)
