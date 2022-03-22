@@ -197,6 +197,32 @@ def get_all_relationship_types():
 def get_graph_overview():
     return Response(json.dumps(graph_overview))
 
+@app.route('/getGwithEntityType', methods=['POST'])
+def get_graph_with_certain_entity():
+    request_obj = request.get_json()
+    limit_number = 3
+    try:
+        if request_obj.get("entity_type") is not None:
+            entity_type = request_obj.get("entity_type")
+        subgraph_res,error_code = helper.get_graph_with_certain_entity(graph,entity_type,limit_number)
+        dict_res = helper.convert_subgraph_to_json_withR(subgraph_res,entity_identifier,graph)
+    except:
+        error_code = 404
+    return Response(json.dumps(dict_res),status = error_code)
+
+@app.route('/getGwithRelationshipType', methods=['POST'])
+def get_graph_with_certain_relationship():
+    request_obj = request.get_json()
+    limit_number = 3
+    try:
+        if request_obj.get("relationship_type") is not None:
+            relationship_type = request_obj.get("relationship_type")
+        subgraph_res,error_code = helper.get_graph_with_certain_relationship(graph,relationship_type,limit_number)
+        dict_res = helper.convert_subgraph_to_json_withR(subgraph_res,entity_identifier,graph)
+    except:
+        error_code = 404
+    return Response(json.dumps(dict_res),status = error_code)
+
 if __name__ == '__main__':
     
     global graph, entity_identifier,graph_overview

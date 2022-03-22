@@ -355,3 +355,32 @@ def get_graph_overview(graph,entity_type,relationship_type):
     return_dict = {"entity":entity_dist_dict,"relationship":relationship_dist_dict}
     return return_dict
 
+#Input:graph, a py2neo subgraph object
+#      entity_type, a list of str, a list of entity type
+#      limit_number, the limit for number of nodes per type
+#Output: a subgraph object in py2neo after query certain type
+def get_graph_with_certain_entity(graph,entity_type,limit_number):
+    subgraph = Subgraph()
+    for n in entity_type:
+        subgraph = subgraph| Subgraph((),graph.nodes.match(n).limit(limit_number).all())
+    if len(list(subgraph.nodes)) == 0:
+        #check if the graph is empty
+        error_code = 204
+    else:
+        error_code = 200
+    return subgraph,error_code
+
+#Input:graph, a py2neo subgraph object
+#      relationship_type, a list of str, a list of relationship type
+#      limit_number, the limit for number of relationship per type
+#Output: a subgraph object in py2neo after query certain type
+def get_graph_with_certain_relationship(graph,relationship_type,limit_number):
+    subgraph = Subgraph()
+    for r in relationship_type:
+        subgraph = subgraph| Subgraph((),graph.relationships.match(r_type = r).limit(limit_number).all())
+    if len(list(subgraph.nodes)) == 0:
+        #check if the graph is empty
+        error_code = 204
+    else:
+        error_code = 200
+    return subgraph,error_code
