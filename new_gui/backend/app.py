@@ -213,24 +213,25 @@ def get_graph_with_certain_entity():
         error_code = 404
     return Response(json.dumps(dict_res),status = error_code)
 
-@app.route('/getGwithRelationshipType', methods=['POST'])
-def get_graph_with_certain_relationship():
-    request_obj = request.get_json()
-    limit_number = 3
-    try:
-        print(request_obj)
-        if request_obj.get("relationship_type") is not None:
-            relationship_type = request_obj.get("relationship_type")
-        subgraph_res,error_code = helper.get_graph_with_certain_relationship(graph,relationship_type,limit_number)
-        dict_res = helper.convert_subgraph_to_json_withR(subgraph_res,entity_identifier,graph)
-    except:
-        error_code = 404
-    return Response(json.dumps(dict_res),status = error_code)
+# @app.route('/getGwithRelationshipType', methods=['POST'])
+# def get_graph_with_certain_relationship():
+#     request_obj = request.get_json()
+#     limit_number = 3
+#     try:
+#         print(request_obj)
+#         if request_obj.get("relationship_type") is not None:
+#             relationship_type = request_obj.get("relationship_type")
+#         subgraph_res,error_code = helper.get_graph_with_certain_relationship(graph,relationship_type,limit_number)
+#         dict_res = helper.convert_subgraph_to_json_withR(subgraph_res,entity_identifier,graph)
+#     except:
+#         error_code = 404
+#     return Response(json.dumps(dict_res),status = error_code)
 
 @app.route('/getCountyInfo', methods=['POST'])
 def get_graph_with_certain_relationship():
     request_obj = request.get_json()
     try:
+        print(request_obj)
         if request_obj.get("node") is not None:
             node = request_obj.get("node")
         dict_res,error_code = helper.get_county_info_for_nodes(node,database,graph)
