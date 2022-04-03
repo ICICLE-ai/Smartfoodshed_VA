@@ -595,6 +595,7 @@ export default{
         console.log("****************")
         console.log(val)
         this.$store.dispatch("retrieveSubTable", {entities: this.selectedEntities, relations: this.selectedRelations})
+        this.$store.dispatch("retrieveNodeGeo", {node: this.selectedEntities})
       }
     }, 
     selectedRelations(val){

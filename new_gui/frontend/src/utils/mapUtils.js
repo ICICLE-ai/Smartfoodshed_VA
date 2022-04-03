@@ -13,7 +13,7 @@ async function loadMapInitialData(){
 
 
 async function queryMapInfoWithNode(node_list){
-    const path = "..." 
+    const path = "http://127.0.0.1:5000/getCountyInfo" 
     const data = {
         "node": node_list
     }

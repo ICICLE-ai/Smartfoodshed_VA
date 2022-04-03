@@ -31,6 +31,8 @@ function initialState () {
     expandThreshold: 5, // node expand limit 
     graphOverview: null, // for link overview 
     mapInitialInfo: null, 
+    mapQueryInfo: null, 
+    mapInQueryStatus: false,  
   }
 }
 const mutations = {
@@ -105,6 +107,15 @@ const mutations = {
   }, 
   LOADIN_MAP_DATA(state, mapInfo){
     state.mapInitialInfo = mapInfo
+  }, 
+  MAP_IN_QUERY(state, ) {
+    state.mapInQueryStatus = true 
+  }, 
+  MAP_OFF_QUERY(state, ) {
+    state.mapInQueryStatus = false
+  }, 
+  LOAD_QUERY_MAP_INFO(state, queryRes) {
+    state.mapQueryInfo = queryRes
   }
 
 }
@@ -231,6 +242,19 @@ const actions = {
       commit('RELATION_STATUS_ON')
     } else {
       alert("Expansion not successful")
+    }
+  }, 
+  async retrieveNodeGeo({commit}, {node}){
+    console.log("Check node info")
+    commit("MAP_IN_QUERY") 
+    if (node != null) {
+      console.log(node)
+      const mapInfo = await queryMapInfoWithNode(node)
+      console.log("map info back") 
+      console.log(mapInfo)
+      if (mapInfo != null) {
+        commit ("LOAD_QUERY_MAP_INFO", mapInfo)
+      }
     }
   }
 }
