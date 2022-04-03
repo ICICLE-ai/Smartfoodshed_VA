@@ -12,8 +12,7 @@ import {graphNodeLinkRemoval,
         retrieveNodeLinkWithType} from '@/utils/KGutils'
 import {
         loadMapInitialData, 
-        queryMapInfoWithNode
-                                } from '@/utils/mapUtils'
+        queryMapInfoWithNode} from '@/utils/mapUtils'
 Vue.use(Vuex)
 function initialState () {
   return {
