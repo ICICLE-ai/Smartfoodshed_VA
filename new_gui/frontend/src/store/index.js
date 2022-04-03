@@ -10,6 +10,10 @@ import {generationEntityRelations,
 import {graphNodeLinkRemoval, 
         graphNodeLinkExpand, 
         retrieveNodeLinkWithType} from '@/utils/KGutils'
+import {
+        loadMapInitialData, 
+        queryMapInfoWithNode
+                                } from '@/utils/mapUtils'
 Vue.use(Vuex)
 function initialState () {
   return {
@@ -27,6 +31,7 @@ function initialState () {
     us: null,
     expandThreshold: 5, // node expand limit 
     graphOverview: null, // for link overview 
+    mapInitialInfo: null, 
   }
 }
 const mutations = {
@@ -98,6 +103,9 @@ const mutations = {
   },
   LOADIN_MAP(state, us){
     state.us = us; 
+  }, 
+  LOADIN_MAP_DATA(state, mapInfo){
+    state.mapInitialInfo = mapInfo
   }
 
 }
@@ -203,8 +211,16 @@ const actions = {
     commit('NODE_REMOVE', {updatedGraphData: updatedGraphData})
   },
   async load_map({state, commit}) {
+    // load map geo data
     const us = await d3.json('https://raw.githubusercontent.com/chrisdaly/map-data/master/us-counties.topojson.txt')
+    // load map detail data 
     commit("LOADIN_MAP", us)
+    const mapInitialInfo = await loadMapInitialData(); 
+    if (mapInitialInfo != null) {
+      // 
+      commit ("LOADIN_MAP_DATA", mapInitialInfo)
+    }
+    
   },
   async retrieveNodesLinksWithTypes({state, commit}, {entity_type, relationship_type}){
     commit('SET_LOADING', true)

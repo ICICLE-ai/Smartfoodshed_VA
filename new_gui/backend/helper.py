@@ -68,6 +68,44 @@ def filterGraph(data, num, sort):
     }
     return output
 
+def preprocess_county_entity(node_list,graph):
+    #Add geo_id to all county entities
+    #Add node label "County" to all county entities
+    set_county_label_cypher = "MATCH (n) WHERE id(n) = {} SET n:County"
+    set_geoid_cypher = "MATCH (n) WHERE id(n) = {} SET n.geo_id = '{}'"
+    fips = pd.read_csv("county_fips.csv")
+    fips = fips.astype({"fips": str})
+    fips['fips'] = fips['fips'].apply(lambda x: x.zfill(5))
+    fips = fips.append({'fips':'46102', 'name':'Oglala Lakota County','state':'SD'},ignore_index=True)
+    for node in node_list:
+        node = graph.nodes.get(node_id)
+        if node["geo_id"] is None:
+            graph.run(set_county_label_cypher.format(node.identity))
+            geo_id = fips[fips.name.isin([node["label"]])]['fips'].values[0]
+            graph.run(set_geoid_cypher.format(node.identity,geo_id))
+
+def get_county_info(node_list):
+    count_type_cypher = "match (n)-[p]-(m) where id(n) = {} and type(p) = \"in_county\" return labels(m) as type, count(m) as amount"
+    county_list = []
+    for node in node_list:
+        cypher_result = graph.run(count_type_cypher.format(node.identity)).data()
+        count_details = {r["type"][1]: r["amount"] for r in cypher_result}
+        count_total = sum(count_details.values())
+        county_id = node["geo_id"]
+        county_dict = {"county_id":county_id,"count_total":count_total,"count_details":count_details}
+        county_list.append(county_dict)
+    return county_list
+
+def write_county_info_to_json(out_file,graph):
+    incounty_edges = graph.relationships.match(r_type="in_county").all()
+    county_node_id = list(set([i.end_node.identity for i in incounty_edges]))
+    node_list = [graph.nodes.get(i) for i in county_node_id]
+    # preprocess_county_entity(node_list,graph)
+    out_dict = get_county_info(node_list)
+    out_file = "map_data.json"
+    with open(out_file, 'w') as outfile:
+        json.dump(out_dict, outfile)
+
 # Input: a graph object from py2neo,
 #           entity_type is a string,
 #           limit_number denotes the maximum number of entity instance you want to get
@@ -320,9 +358,27 @@ def convert_subgraph_to_json(subgraph,entity_identifier):
     dict_result = {"results":[{"columns":[],"data":[data_dict]}]}
     return dict_result
 
+#Input: node_id_list, a list of int, a list of node id
+#       database, a string, denotes the name of graph database we will query
+#       graph, a Py2neo graph object
+#Ouput: a list of dictionary containing the county information for each nodes in the node_id_list 
+def get_county_info_for_nodes(node_id_list,database,graph):
+    node_list = [graph.nodes.get(i) for i in node_id_list]
+    output = []
+    if database is "ppod":
+        for n in node_list:
+            county_list = [r.end_node["geo_id"] for r in graph.match({graph.nodes.get(n.identity)},"in_county").all()]
+            county_dict = {"node_id":n.identity,"county_id":county_list}
+            output.append(county_dict)
+    elif database is "cfs":
+        for n in node_list:
+            county_dict = {"node_id":n.identity,"county_id":[n['id']]}
+            output.append(county_dict)   
+    error_code = 200
+    return output,error_code
 
 #Input:node_id, a int, a node id which we want to check for all relationship types
-#      graph, a py2neo subgraph object
+#      graph, a py2neo graph object
 #Ouput: a dictionary where key is a relationship type name and the value is corresponding counter
 def get_all_relationship_type(graph,node_id):
     cypher = "match (n)-[p]-(m) where id(n) = {0} return type(p) as type, count(p) as amount"

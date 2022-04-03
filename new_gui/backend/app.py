@@ -42,6 +42,14 @@ def getGraphData():
     # print(type(filtered_data))
     return Response(json.dumps(data))
 
+@app.route('/g', methods=['GET'])
+def getMapData():
+    f = open(f'{localfile_path}/ppod_map_initial_data.json')
+    # f = open('../../../local_data/graph.json')
+    data = json.load(f)
+    # print(type(filtered_data))
+    return Response(json.dumps(data))
+
 @app.route('/getTableData', methods=['GET'])
 def getTableData():
     ## Create a new py file config.py and add localfile_path to indicate the place of local_data folder
@@ -201,9 +209,7 @@ def get_graph_overview():
 def get_graph_with_certain_entity():
     request_obj = request.get_json()
     limit_number = 3
-    print("00000000000000000")
     try:
-        print(12312312312312)
         print(request_obj)
         if request_obj.get("entity_type") is not None:
             entity_type = request_obj.get("entity_type")
@@ -215,25 +221,35 @@ def get_graph_with_certain_entity():
         error_code = 404
     return Response(json.dumps(dict_res),status = error_code)
 
-@app.route('/getGwithRelationshipType', methods=['POST'])
-def get_graph_with_certain_relationship():
-    print("00000000000000000")
+# @app.route('/getGwithRelationshipType', methods=['POST'])
+# def get_graph_with_certain_relationship():
+#     request_obj = request.get_json()
+#     limit_number = 3
+#     try:
+#         print(request_obj)
+#         if request_obj.get("relationship_type") is not None:
+#             relationship_type = request_obj.get("relationship_type")
+#         subgraph_res,error_code = helper.get_graph_with_certain_relationship(graph,relationship_type,limit_number)
+#         dict_res = helper.convert_subgraph_to_json_withR(subgraph_res,entity_identifier,graph)
+#     except:
+#         error_code = 404
+#     return Response(json.dumps(dict_res),status = error_code)
+
+@app.route('/getCountyInfo', methods=['POST'])
+def get_county_info():
     request_obj = request.get_json()
-    limit_number = 3
     try:
-        print("00000000000000000")
         print(request_obj)
-        if request_obj.get("relationship_type") is not None:
-            relationship_type = request_obj.get("relationship_type")
-        subgraph_res,error_code = helper.get_graph_with_certain_relationship(graph,relationship_type,limit_number)
-        dict_res = helper.convert_subgraph_to_json_withR(subgraph_res,entity_identifier,graph)
+        if request_obj.get("node") is not None:
+            node = request_obj.get("node")
+        dict_res,error_code = helper.get_county_info_for_nodes(node,database,graph)
     except:
         error_code = 404
     return Response(json.dumps(dict_res),status = error_code)
 
 if __name__ == '__main__':
     
-    global graph, entity_identifier,graph_overview
+    global graph, entity_identifier,graph_overview,database
     # driver = GraphDatabase.driver("bolt://localhost:7687", auth=("neo4j", "123"))
     graph = Graph("bolt://localhost:7687", auth=("neo4j", "123")) # This should be a global variable in this app
     schema = py2neo.database.Schema(graph)
@@ -245,7 +261,9 @@ if __name__ == '__main__':
 
     graph_overview = helper.get_graph_overview(graph,entity_type,relationship_type)
     if len(entity_type) > 1:
+        database = "ppod"
         entity_identifier = "label" # This should be a global variable in this app
     else:
+        database = "cfs"
         entity_identifier = "county" # This should be a global variable in this app
     app.run()

@@ -80,11 +80,11 @@ export default {
         }
     },  
     created(){
-        this.$store.dispatch("load_map");
+        this.$store.dispatch("load_map")
         console.log(topojson);
     },
     computed: {
-        ...mapState(['us']),
+        ...mapState(['us', 'mapInitialInfo']),
 
     },
     watch:{
@@ -93,6 +93,11 @@ export default {
             console.log(val)
             this.us_map_ready = true
             this.drawMap()
+        },
+        mapInitialInfo(val,) {
+            console.log("Map data initialized")
+            console.log(val)
+            
         }
     }
 
