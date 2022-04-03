@@ -201,9 +201,7 @@ def get_graph_overview():
 def get_graph_with_certain_entity():
     request_obj = request.get_json()
     limit_number = 3
-    print("00000000000000000")
     try:
-        print(12312312312312)
         print(request_obj)
         if request_obj.get("entity_type") is not None:
             entity_type = request_obj.get("entity_type")
@@ -217,11 +215,9 @@ def get_graph_with_certain_entity():
 
 @app.route('/getGwithRelationshipType', methods=['POST'])
 def get_graph_with_certain_relationship():
-    print("00000000000000000")
     request_obj = request.get_json()
     limit_number = 3
     try:
-        print("00000000000000000")
         print(request_obj)
         if request_obj.get("relationship_type") is not None:
             relationship_type = request_obj.get("relationship_type")
@@ -231,9 +227,20 @@ def get_graph_with_certain_relationship():
         error_code = 404
     return Response(json.dumps(dict_res),status = error_code)
 
+@app.route('/getCountyInfo', methods=['POST'])
+def get_graph_with_certain_relationship():
+    request_obj = request.get_json()
+    try:
+        if request_obj.get("node") is not None:
+            node = request_obj.get("node")
+        dict_res,error_code = helper.get_county_info_for_nodes(node,database,graph)
+    except:
+        error_code = 404
+    return Response(json.dumps(dict_res),status = error_code)
+
 if __name__ == '__main__':
     
-    global graph, entity_identifier,graph_overview
+    global graph, entity_identifier,graph_overview,database
     # driver = GraphDatabase.driver("bolt://localhost:7687", auth=("neo4j", "123"))
     graph = Graph("bolt://localhost:7687", auth=("neo4j", "123")) # This should be a global variable in this app
     schema = py2neo.database.Schema(graph)
@@ -245,7 +252,9 @@ if __name__ == '__main__':
 
     graph_overview = helper.get_graph_overview(graph,entity_type,relationship_type)
     if len(entity_type) > 1:
+        database = "ppod"
         entity_identifier = "label" # This should be a global variable in this app
     else:
+        database = "cfs"
         entity_identifier = "county" # This should be a global variable in this app
     app.run()

@@ -358,9 +358,27 @@ def convert_subgraph_to_json(subgraph,entity_identifier):
     dict_result = {"results":[{"columns":[],"data":[data_dict]}]}
     return dict_result
 
+#Input: node_id_list, a list of int, a list of node id
+#       database, a string, denotes the name of graph database we will query
+#       graph, a Py2neo graph object
+#Ouput: a list of dictionary containing the county information for each nodes in the node_id_list 
+def get_county_info_for_nodes(node_id_list,database,graph):
+    node_list = [graph.nodes.get(i) for i in node_id_list]
+    output = []
+    if database is "ppod":
+        for n in node_list:
+            county_list = [r.end_node["geo_id"] for r in graph.match({graph.nodes.get(n.identity)},"in_county").all()]
+            county_dict = {"node_id":n.identity,"county_id":county_list}
+            output.append(county_dict)
+    elif database is "cfs":
+        for n in node_list:
+            county_dict = {"node_id":n.identity,"county_id":[n['id']]}
+            output.append(county_dict)   
+    error_code = 200
+    return output,error_code
 
 #Input:node_id, a int, a node id which we want to check for all relationship types
-#      graph, a py2neo subgraph object
+#      graph, a py2neo graph object
 #Ouput: a dictionary where key is a relationship type name and the value is corresponding counter
 def get_all_relationship_type(graph,node_id):
     cypher = "match (n)-[p]-(m) where id(n) = {0} return type(p) as type, count(p) as amount"
