@@ -42,6 +42,14 @@ def getGraphData():
     # print(type(filtered_data))
     return Response(json.dumps(data))
 
+@app.route('/g', methods=['GET'])
+def getMapData():
+    f = open(f'{localfile_path}/ppod_map_initial_data.json')
+    # f = open('../../../local_data/graph.json')
+    data = json.load(f)
+    # print(type(filtered_data))
+    return Response(json.dumps(data))
+
 @app.route('/getTableData', methods=['GET'])
 def getTableData():
     ## Create a new py file config.py and add localfile_path to indicate the place of local_data folder
@@ -228,7 +236,7 @@ def get_graph_with_certain_relationship():
     return Response(json.dumps(dict_res),status = error_code)
 
 @app.route('/getCountyInfo', methods=['POST'])
-def get_graph_with_certain_relationship():
+def get_county_info():
     request_obj = request.get_json()
     try:
         if request_obj.get("node") is not None:
