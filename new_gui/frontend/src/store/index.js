@@ -33,6 +33,7 @@ function initialState () {
     mapInitialInfo: null, 
     mapQueryInfo: null, 
     mapInQueryStatus: false,  
+    activeTab: 0
   }
 }
 const mutations = {
@@ -116,6 +117,9 @@ const mutations = {
   }, 
   LOAD_QUERY_MAP_INFO(state, queryRes) {
     state.mapQueryInfo = queryRes
+  },
+  ACTIVE_TAB(state, activeTab){
+    state.activeTab = activeTab
   }
 
 }
@@ -256,6 +260,9 @@ const actions = {
         commit ("LOAD_QUERY_MAP_INFO", mapInfo)
       }
     }
+  },
+  active_tab({commit}, activeTab) {
+    commit("ACTIVE_TAB", activeTab)
   }
 }
 export default new Vuex.Store({

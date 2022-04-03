@@ -32,6 +32,7 @@ export default {
             ],
             us_map_ready: false,
             highLightInfo: null, 
+            warningMsgStack: []
         }
     }, 
     methods: {
@@ -50,7 +51,7 @@ export default {
             
             const counties = svg.append("g")
             const states = svg.append("g")
-            if (that.mapInQueryStatus && that.highLightInfo == null) {
+            if (that.mapInQueryStatus && Object.keys(that.highLightInfo) == 0) {
                 alert("No geo info about the selected node")
             }
             counties
@@ -123,8 +124,9 @@ export default {
                 county_id: [node_id, ...]
             }
             */
-            this.highLightInfo = {}
-            this.mapQueryInfo.forEach(obj => {
+            this.highLightInfo = {};
+            if (this.mapQueryInfo.length > 0) {
+               this.mapQueryInfo.forEach(obj => {
                 console.log(obj)
                 const node_id = obj.node_id; 
                 const county_id = obj.county_id
@@ -138,15 +140,27 @@ export default {
                     })
                 }
             })
+            }
+            
             
         }, 
 
         updateMapColoring(){
             d3.selectAll(".county-path").attr("fill", "white") 
-            Object.keys(this.highLightInfo).forEach(countyId => {
-                d3.select(`#county-${countyId}`).attr("fill", "#e4acac")
-            })
-        }
+            if (Object.keys(this.highLightInfo).length == 0) {
+                if (this.activeTab == 1) {
+                    alert("No geo info about the selected node")
+                } else {
+                    if (this.warningMsgStack.length == 0) {
+                        this.warningMsgStack.push("No geo info about the selected node")
+                    }
+                }
+            }else {
+                Object.keys(this.highLightInfo).forEach(countyId => {
+                    d3.select(`#county-${countyId}`).attr("fill", "#e4acac")
+                })
+            }
+        }, 
     },  
     created(){
         this.$store.dispatch("load_map")
@@ -157,13 +171,13 @@ export default {
             .html(function(d) {
               return `
                 <div class="tip-container">
-                    <p></p>
+                    <p>${d}</p>
                 </div>
               `;
     })
     },
     computed: {
-        ...mapState(['us', 'mapInitialInfo', 'mapQueryInfo', 'mapInQueryStatus']),
+        ...mapState(['us', 'mapInitialInfo', 'mapQueryInfo', 'mapInQueryStatus', 'activeTab']),
 
     },
     watch:{
@@ -185,6 +199,15 @@ export default {
             console.log("new query Info")
             console.log(val)
             this.updateQueryInfo() 
+            this.updateMapColoring()
+        },
+        activeTab(val) {
+            if (val == 1 && this.warningMsgStack.length > 0) {
+                while (this.warningMsgStack.length > 0) {
+                    let msg = this.warningMsgStack.pop(); 
+                    alert(msg)
+                }
+            }
         }
     }
 
