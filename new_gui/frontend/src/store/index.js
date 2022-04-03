@@ -8,7 +8,8 @@ import {generationEntityRelations,
         idParsingToDict,
         retrieveInteractiveTable} from '@/utils/storehelp'
 import {graphNodeLinkRemoval, 
-        graphNodeLinkExpand} from '@/utils/KGutils'
+        graphNodeLinkExpand, 
+        retrieveNodeLinkWithType} from '@/utils/KGutils'
 Vue.use(Vuex)
 function initialState () {
   return {
@@ -204,6 +205,18 @@ const actions = {
   async load_map({state, commit}) {
     const us = await d3.json('https://raw.githubusercontent.com/chrisdaly/map-data/master/us-counties.topojson.txt')
     commit("LOADIN_MAP", us)
+  },
+  async retrieveNodesLinksWithTypes({state, commit}, {entity_type, relationship_type}){
+    commit('SET_LOADING', true)
+    const updatedGraphData = await retrieveNodeLinkWithType(entity_type, relationship_type)
+    commit('SET_LOADING', false)
+    if (updatedGraphData.status == 200){
+      commit('NODE_EXPAND', {updatedGraphData: updatedGraphData['data']})
+      commit('SET_GRAPHDATA_RELATION_TYPE_DATA', updatedGraphData['data']) 
+      commit('RELATION_STATUS_ON')
+    } else {
+      alert("Expansion not successful")
+    }
   }
 }
 export default new Vuex.Store({

@@ -3,11 +3,14 @@
         <div
           class="graph-btn-container"
         >
-        <v-row no-gutters>
+        <v-row no-gutters
+          justify='space-between'
+        >
           <v-col
             key="0"
             sm="3"
-            cols=2>
+            cols=2
+            >
             <v-btn
             small
             class="kg-view-btn"
@@ -37,7 +40,7 @@
           </v-col>
           <v-col
             key="1"
-            cols=2
+            cols=4
             sm="3">
             <v-slider
               v-model="user_defined_thre"
@@ -46,10 +49,21 @@
               thumb-label="always"
             ></v-slider>
           </v-col>
-          
+          <v-col
+            key="2"
+            cols=1
+            sm="3">
+           <v-btn
+              small
+              class="retrieve-type-node-btn"
+              @click="retrieve_types_nodes"
+            >
+              Retrieve
+            </v-btn> 
+          </v-col> 
         </v-row>
         </div>
-        <v-row :style="{'height': OVERVIEW_HEIGHT}">
+        <v-row :style="{'height': OVERVIEW_HEIGHT, 'margin-top':'20px'}">
           <v-col cols="6">
             <div id="div_node_overview"></div>
           </v-col>
@@ -94,6 +108,7 @@ export default{
       tip: null,
       user_defined_thre: 5,// user defined threshold to show how many nodes we want to see if we expand one node 
       neo4jd3 : null,
+      brushed: {"entity_type": [], "relationship_type": []}
     }
   },
   created () {
@@ -361,6 +376,7 @@ export default{
     },
     drawBarChart(div, data_){
       // clean the data
+      let that = this
       var data = []
       const keys = Object.keys(data_);
       
@@ -458,7 +474,7 @@ export default{
                           .attr("height", height)
                           .attr("transform", "translate(" + margin.left + "," + margin.top + ")")
                           .attr('fill','none')
-function drawBar1(focus, data){
+              function drawBar1(focus, data){
 
                   bars1 = focus.selectAll("rect").data(data).enter().append("rect");
 
@@ -496,29 +512,57 @@ function drawBar1(focus, data){
                   
                   }
                   function brushed() {
-                  if (d3.event.sourceEvent && d3.event.sourceEvent.type === "zoom") return; // ignore brush-by-zoom
+                    if (d3.event.sourceEvent && d3.event.sourceEvent.type === "zoom") return; // ignore brush-by-zoom
 
-                  bar1bars.remove()
-                  bar1x.remove()
-                  bar1y.remove()
+                    bar1bars.remove()
+                    bar1x.remove()
+                    bar1y.remove()
 
-                  var s = d3.event.selection || x2.range();
-                  var temp_domain = x_domain.slice(Math.round(s[0]/x2.step()), Math.round(s[1]/x2.step()))
-                  x.domain(temp_domain);
+                    var s = d3.event.selection || x2.range();
+                    var temp_domain = x_domain.slice(Math.round(s[0]/x2.step()), Math.round(s[1]/x2.step()))
+                    x.domain(temp_domain);
+                    console.log(temp_domain)
+                    const container = d3.select(this).node().parentElement.parentElement.parentElement.id;
+                    if(container == "div_node_overview"){
+                      that.brushed['entity_type'] = temp_domain;
+                      that.brushed['relationship_type'] = [];
+                      that.toggleOverviewPanel("entity")
+                    }else if (container == "div_link_overview"){
+                      that.brushed['relationship_type'] = temp_domain; 
+                      that.brushed['entity_type'] = [];
+                      that.toggleOverviewPanel("relationship")
+                    }else{
+                      alert("error finding container")
+                    }
+                    var new_temp_data = temp_data.slice(Math.round(s[0]/x2.step()), Math.round(s[1]/x2.step()))
 
-                  var new_temp_data = temp_data.slice(Math.round(s[0]/x2.step()), Math.round(s[1]/x2.step()))
+                    var temp_rt =  drawBar1(focus, new_temp_data)
+                    bars1 = temp_rt[0]
+                    bar1bars = temp_rt[1]
+                    bar1x = temp_rt[2]
+                    bar1y = temp_rt[3]
 
-                  var temp_rt =  drawBar1(focus, new_temp_data)
-                  bars1 = temp_rt[0]
-                  bar1bars = temp_rt[1]
-                  bar1x = temp_rt[2]
-                  bar1y = temp_rt[3]
-
-                  focus.select("bar").attr("d", bars1);
-                  focus.select("axis axis--x").call(xAxis);
+                    focus.select("bar").attr("d", bars1);
+                    focus.select("axis axis--x").call(xAxis);
                   
                 }
                 
+    },
+    toggleOverviewPanel(focus){
+      if (focus == "entity") {
+        const containerFocus = document.querySelector("#div_node_overview")
+        const containerUnFocus = document.querySelector("#div_link_overview")
+        containerFocus.style.border = "2px solid green"
+        containerUnFocus.style.border = "None"
+      } else{
+        const containerFocus = document.querySelector("#div_link_overview")
+        const containerUnFocus = document.querySelector("#div_node_overview")
+        containerFocus.style.border = "2px solid green"
+        containerUnFocus.style.border = "None"
+      }
+    },
+    retrieve_types_nodes(){
+      this.$store.dispatch("retrieveNodesLinksWithTypes", this.brushed)
     }
   },
   watch: {
@@ -528,8 +572,8 @@ function drawBar1(focus, data){
       var node_overview_data = this.graphOverview['data']['entity']
       var link_overview_data = this.graphOverview['data']['relationship']
       console.log('fff', node_overview_data, link_overview_data)
-      this.drawBarChart('#div_node_overview', link_overview_data)
-      this.drawBarChart('#div_link_overview', node_overview_data)
+      this.drawBarChart('#div_link_overview', link_overview_data)
+      this.drawBarChart('#div_node_overview', node_overview_data)
     },
     graphData () {
       console.log(this.graphData)
@@ -564,6 +608,12 @@ function drawBar1(focus, data){
         this.$store.dispatch("retrieveSubTable", {entities: this.selectedEntities, relations: this.selectedRelations})
       }
     }, 
+    brushed:{
+      handler(val){
+          console.log(val);
+      },
+      deep:true 
+    },
     relationStatusReady(val){
       console.log("relation status: " + val) 
 
@@ -578,7 +628,8 @@ function drawBar1(focus, data){
     },
     loading(val){
       this.loading_value = val
-    }
+    },
+    
   },
   beforeMounted() {
 
@@ -647,7 +698,8 @@ function drawBar1(focus, data){
   cursor: pointer;
 }
 
-
-
+.neo4jd3{
+  margin-top:60px;
+}
 
 </style>
