@@ -367,7 +367,7 @@ def get_county_info_for_nodes(node_id_list,database,graph):
     output = []
     if database is "ppod":
         for n in node_list:
-            county_list = [r.end_node["geo_id"] for r in graph.match({graph.nodes.get(n.identity)},"in_county").all()]
+            county_list = list(set([r.end_node["geo_id"] for r in graph.match({graph.nodes.get(n.identity)},"in_county").all()]))
             county_dict = {"node_id":n.identity,"county_id":county_list}
             output.append(county_dict)
     elif database is "cfs":
