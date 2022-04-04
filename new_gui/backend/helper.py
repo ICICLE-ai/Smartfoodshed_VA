@@ -372,9 +372,11 @@ def get_county_info_for_nodes(node_id_list,database,graph):
             county_list = list(set([i['m.geo_id'] for i in cypher_result]))
             if len(county_list)==0:
                 node_name = None
+                error_code = 202
             elif county_list[0] is None: 
                 county_list = []
                 node_name = None
+                error_code = 202
             else:
                 node_name = cypher_result[0]['n.label']
             county_dict = {"node_id":node_id,"node_name":node_name,"county_id":county_list}
