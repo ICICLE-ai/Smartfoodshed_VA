@@ -44,7 +44,10 @@ def getGraphData():
 
 @app.route('/g', methods=['GET'])
 def getMapData():
-    f = open(f'{localfile_path}/ppod_map_initial_data.json')
+    global database
+    f = open(f'{localfile_path}/'+database+'_map_initial_data.json')
+    # f = open(f'{localfile_path}/cfs_map_initial_data.json')
+
     # f = open('../../../local_data/graph.json')
     data = json.load(f)
     # print(type(filtered_data))
@@ -259,6 +262,8 @@ if __name__ == '__main__':
         entity_type.remove("Resource")
         entity_type.remove("_GraphConfig")
 
+
+    
     graph_overview = helper.get_graph_overview(graph,entity_type,relationship_type)
     if len(entity_type) > 1:
         database = "ppod"

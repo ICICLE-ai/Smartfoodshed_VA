@@ -3,6 +3,7 @@
       <div>
         <v-select
         :items="items"
+        @change = "changeInitColor"
         label="Initialization"
         ></v-select>
       </div>
@@ -40,10 +41,17 @@ export default {
             ],
             us_map_ready: false,
             highLightInfo: {}, 
-            warningMsgStack: []
+            warningMsgStack: [],
+            initColor: null,
+            selectedInit: 'Total',
+            
         }
     }, 
     methods: {
+        changeInitColor(val){
+            // console.log(val)
+            this.selectedInit = val
+        },
         drawMap(){
             const that = this 
             if (! this.us_map_ready) {
@@ -62,6 +70,14 @@ export default {
             if (that.mapInQueryStatus && Object.keys(that.highLightInfo).length == 0) {
                 alert("No geo info about the selected node")
             }
+
+            
+            var all_values = Object.values(this.initColor)
+            var colors = d3.scaleLinear()
+            .domain([d3.min(all_values), d3.max(all_values)])
+            .range(['#6baed6','#084594']);
+
+            
             counties
                 .selectAll("path")
                 .data(topojson.feature(this.us, this.us.objects.counties).features)
@@ -88,7 +104,20 @@ export default {
                             return "white"
                         }
                     }else {
-                        return '#e4acac'
+                        let str = ""
+                        if(+d.id < 10000) {
+                            str = "0" + d.id
+                        }else{
+                            str = str + d.id
+                        }
+                        if(str in that.initColor){
+                            let value = that.initColor[str]
+                            return colors(value)
+                        }else{
+                            return "#eff3ff"
+                        }
+                        
+                        // return '#e4acac'
                     }
                 })
                 // .attr("fill", d => color(data.get(d.id)) != null ? color(data.get(d.id)) : "white")
@@ -187,6 +216,23 @@ export default {
                 }
             }
         }, 
+        initColorMapping(){
+            // compute the color mapping for intialization, map the specific value to color 
+            var val = this.mapInitialInfo
+            var colorMapping = {}
+            if(this.selectedInit=="Total"){
+                val.forEach(d=>{
+                    colorMapping[d['county_id']] = d['count_total']
+                })
+            }else{
+                val.forEach(d=>{
+                    colorMapping[d['county_id']] = d['count_details'][this.selectedInit]
+                })
+            }
+            console.log('change color mapping to ', colorMapping)
+            this.initColor = colorMapping
+            this.drawMap()
+        }   
     },  
     created(){
         this.$store.dispatch("load_map")
@@ -207,6 +253,9 @@ export default {
 
     },
     watch:{
+        selectedInit(){
+            this.initColorMapping()
+        },
         us(val){
             console.log("new val coming!!!")
             console.log(val)
@@ -214,12 +263,11 @@ export default {
             if (this.mapQueryInfo) {
                 this.updateQueryInfo() 
             }
-            this.drawMap()
+            // this.drawMap()
             // this.updateMapColoring()
         },
-        mapInitialInfo(val,) {
-            console.log("Map data initialized")
-            console.log(val)
+        mapInitialInfo() {
+            this.initColorMapping()
             
         }, 
         mapQueryInfo(val, ){
