@@ -84,7 +84,7 @@ def preprocess_county_entity(node_list,graph):
             geo_id = fips[fips.name.isin([node["label"]])]['fips'].values[0]
             graph.run(set_geoid_cypher.format(node.identity,geo_id))
 
-def get_county_info(node_list):
+def get_county_info(node_list,graph):
     count_type_cypher = "match (n)-[p]-(m) where id(n) = {} and type(p) = \"in_county\" return labels(m) as type, count(m) as amount"
     county_list = []
     for node in node_list:
@@ -363,17 +363,19 @@ def convert_subgraph_to_json(subgraph,entity_identifier):
 #       graph, a Py2neo graph object
 #Ouput: a list of dictionary containing the county information for each nodes in the node_id_list 
 def get_county_info_for_nodes(node_id_list,database,graph):
-    node_list = [graph.nodes.get(i) for i in node_id_list]
     output = []
-    if database is "ppod":
-        for n in node_list:
-            county_list = list(set([r.end_node["geo_id"] for r in graph.match({graph.nodes.get(n.identity)},"in_county").all()]))
-            county_dict = {"node_id":n.identity,"county_id":county_list}
+    # different database have slightly different logic
+    if database == "ppod":
+        geoid_cypher = "match (n)-[p:in_county]-(m) where id(n)={} return m.geo_id"
+        for node_id in node_id_list:
+            county_list = list(set([i['m.geo_id'] for i in graph.run(geoid_cypher.format(node_id)).data()]))
+            if county_list[0] is None: county_list = []
+            county_dict = {"node_id":node_id,"county_id":county_list}
             output.append(county_dict)
-    elif database is "cfs":
-        for n in node_list:
-            county_dict = {"node_id":n.identity,"county_id":[n['id']]}
-            output.append(county_dict)   
+    elif database == "cfs":
+        for node_id in node_id_list:
+            county_dict = {"node_id":node_id,"county_id":[graph.nodes.get(node_id)['id']]}
+            output.append(county_dict)    
     error_code = 200
     return output,error_code
 
