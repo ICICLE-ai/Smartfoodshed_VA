@@ -254,7 +254,7 @@ const actions = {
     if (node != null) {
       console.log(node)
       const mapInfo = await queryMapInfoWithNode(node)
-      console.log("map info back") 
+      alert("map info back") 
       console.log(mapInfo)
       if (mapInfo != null) {
         commit ("LOAD_QUERY_MAP_INFO", mapInfo)

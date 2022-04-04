@@ -31,7 +31,7 @@ export default {
                 },
             ],
             us_map_ready: false,
-            highLightInfo: null, 
+            highLightInfo: {}, 
             warningMsgStack: []
         }
     }, 
@@ -51,7 +51,7 @@ export default {
             
             const counties = svg.append("g")
             const states = svg.append("g")
-            if (that.mapInQueryStatus && Object.keys(that.highLightInfo) == 0) {
+            if (that.mapInQueryStatus && Object.keys(that.highLightInfo).length == 0) {
                 alert("No geo info about the selected node")
             }
             counties
@@ -59,7 +59,14 @@ export default {
                 .data(topojson.feature(this.us, this.us.objects.counties).features)
                 .enter().append("path")
                 .attr("class", "county-path")
-                .attr("id", d=>`county-${d.id}`)
+                .attr("id", d=>{
+                    let str = ""
+                    if(+d.id < 10000) {
+                        str = "0" + d.id
+                    }else{
+                        str = str + d.id
+                    }
+                    return `county-${str}`})
                 .attr('fill', d => {
                     if (that.mapInQueryStatus) {
                         if (that.highLightInfo) {
@@ -82,11 +89,17 @@ export default {
                 .on("mouseover", function(d){
                     d3.select(this).raise()
                     const county_id = d.id  
-                    if (that.mapInQueryStatus && that.highLightInfo && that.highLightInfo[county_id] != null) {
-                        that.mapTip.show(this.highLightInfo[county_id])
+                    let idStr = ""
+                    if (county_id < 10000) {
+                        idStr = "0" + county_id
+                    }else{
+                        idStr = "" + county_id 
+                    }
+                    if (that.mapInQueryStatus && that.highLightInfo && that.highLightInfo[idStr] != null) {
+                        that.mapTip.show(that.highLightInfo[idStr])
                     }
                     d3.select(this).attr("stroke", "green")
-                    that.mapTip.show(123)
+                    // that.mapTip.show()
                 })
                 .on("mouseout", function(d){
                     
@@ -125,6 +138,7 @@ export default {
             }
             */
             this.highLightInfo = {};
+            console.log(this.mapQueryInfo)
             if (this.mapQueryInfo.length > 0) {
                this.mapQueryInfo.forEach(obj => {
                 console.log(obj)
@@ -141,6 +155,7 @@ export default {
                 }
             })
             }
+            console.log(this.highLightInfo)
             
             
         }, 
@@ -159,6 +174,9 @@ export default {
                 Object.keys(this.highLightInfo).forEach(countyId => {
                     d3.select(`#county-${countyId}`).attr("fill", "#e4acac")
                 })
+                if (this.warningMsgStack.length > 0) {
+                        this.warningMsgStack.pop()
+                }
             }
         }, 
     },  
@@ -189,6 +207,7 @@ export default {
                 this.updateQueryInfo() 
             }
             this.drawMap()
+            // this.updateMapColoring()
         },
         mapInitialInfo(val,) {
             console.log("Map data initialized")
