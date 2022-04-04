@@ -244,6 +244,7 @@ def get_graph_with_certain_relationship():
 @app.route('/getCountyInfo', methods=['POST'])
 def get_county_info():
     request_obj = request.get_json()
+    print(request_obj)
     try:
         if request_obj.get("node") is not None:
             node = request_obj.get("node")
