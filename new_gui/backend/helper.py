@@ -370,7 +370,7 @@ def get_county_info_for_nodes(node_id_list,database,graph):
         for node_id in node_id_list:
             cypher_result = graph.run(geoid_cypher.format(node_id)).data()
             county_list = list(set([i['m.geo_id'] for i in cypher_result]))
-            if county_list[0] is None: county_list = []
+            if len(county_list)!=0 and county_list[0] is None: county_list = []
             county_dict = {"node_id":node_id,"node_name":cypher_result[0]['n.label'],"county_id":county_list}
             output.append(county_dict)
     elif database == "cfs":
