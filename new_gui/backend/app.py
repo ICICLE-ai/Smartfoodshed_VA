@@ -44,7 +44,10 @@ def getGraphData():
 
 @app.route('/g', methods=['GET'])
 def getMapData():
-    f = open(f'{localfile_path}/ppod_map_initial_data.json')
+    global database
+    f = open(f'{localfile_path}/'+database+'_map_initial_data.json')
+    # f = open(f'{localfile_path}/cfs_map_initial_data.json')
+
     # f = open('../../../local_data/graph.json')
     data = json.load(f)
     # print(type(filtered_data))
@@ -55,7 +58,10 @@ def getTableData():
     ## Create a new py file config.py and add localfile_path to indicate the place of local_data folder
     ## This config file will not be pushed to the osu code, so we don't need to always change path
     # f = open('../../../local_data/cfs_relation_table.json')
-    f = open(f'{localfile_path}/ppod_table.json')
+    if database == "ppod":
+        f = open(f'{localfile_path}/ppod_table.json')
+    elif database == "cfs":
+        f = open(f'{localfile_path}/cfs_table.json')
     data = json.load(f)
     output = {} ## tableName: {tableData:{}, tableInfo:{}}
     tableNames = []
@@ -239,12 +245,12 @@ def get_graph_with_certain_relationship():
 def get_county_info():
     request_obj = request.get_json()
     try:
-        print(request_obj)
         if request_obj.get("node") is not None:
             node = request_obj.get("node")
         dict_res,error_code = helper.get_county_info_for_nodes(node,database,graph)
         print(dict_res)
-    except:
+    except Exception as e:
+        print(e)
         error_code = 404
     return Response(json.dumps(dict_res),status = error_code)
 
@@ -259,6 +265,8 @@ if __name__ == '__main__':
         entity_type.remove("Resource")
         entity_type.remove("_GraphConfig")
 
+
+    
     graph_overview = helper.get_graph_overview(graph,entity_type,relationship_type)
     if len(entity_type) > 1:
         database = "ppod"
