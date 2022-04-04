@@ -1,5 +1,12 @@
 <template>
   <div>
+      <div>
+        <v-select
+        :items="items"
+        label="Initialization"
+        ></v-select>
+      </div>
+        
       <svg
         width="960px"
         height="960px"
@@ -20,6 +27,7 @@ export default {
     }, 
     data() {
         return {
+            items: ['BestPracticesAndMandates','Organization','Program','Project','Total'],
             schemes: [
                 {
                     name: "RdBu", 
