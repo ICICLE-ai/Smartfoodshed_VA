@@ -244,12 +244,10 @@ def get_graph_with_certain_relationship():
 @app.route('/getCountyInfo', methods=['POST'])
 def get_county_info():
     request_obj = request.get_json()
-    print(request_obj)
     try:
         if request_obj.get("node") is not None:
             node = request_obj.get("node")
         dict_res,error_code = helper.get_county_info_for_nodes(node,database,graph)
-        print(dict_res)
     except Exception as e:
         print(e)
         error_code = 404
