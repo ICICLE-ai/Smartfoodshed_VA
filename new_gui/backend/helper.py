@@ -366,15 +366,17 @@ def get_county_info_for_nodes(node_id_list,database,graph):
     output = []
     # different database have slightly different logic
     if database == "ppod":
-        geoid_cypher = "match (n)-[p:in_county]-(m) where id(n)={} return m.geo_id"
+        geoid_cypher = "match (n)-[p:in_county]-(m) where id(n)={} return m.geo_id,n.label"
         for node_id in node_id_list:
-            county_list = list(set([i['m.geo_id'] for i in graph.run(geoid_cypher.format(node_id)).data()]))
+            cypher_result = graph.run(geoid_cypher.format(node_id)).data()
+            county_list = list(set([i['m.geo_id'] for i in cypher_result]))
             if county_list[0] is None: county_list = []
-            county_dict = {"node_id":node_id,"county_id":county_list}
+            county_dict = {"node_id":node_id,"node_name":cypher_result[0]['n.label'],"county_id":county_list}
             output.append(county_dict)
     elif database == "cfs":
         for node_id in node_id_list:
-            county_dict = {"node_id":node_id,"county_id":[graph.nodes.get(node_id)['id']]}
+            node = graph.nodes.get(node_id)
+            county_dict = {"node_id":node_id,"node_name":node['county'],"county_id":[node['id']]}
             output.append(county_dict)    
     error_code = 200
     return output,error_code
