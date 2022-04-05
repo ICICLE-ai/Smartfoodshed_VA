@@ -53,6 +53,8 @@ export default {
             this.selectedInit = val
         },
         drawMap(){
+           
+            d3.select('.geo-map').html('')
             const that = this 
             if (! this.us_map_ready) {
                 alert("map data not ready yet!");
@@ -124,6 +126,7 @@ export default {
                 .attr("stroke", "lightgrey")
                 .attr("d", path)
                 .on("mouseover", function(d){
+
                     d3.select(this).raise()
                     const county_id = d.id  
                     let idStr = ""
@@ -138,6 +141,19 @@ export default {
                            return obj.node_name  
                         }) 
                         that.mapTip.show(displayStr.join(", "))
+                    }else{
+                        
+                        const countryHover = that.mapInitialInfo.filter(character => character.county_id === idStr)[0]
+                        console.log(countryHover,that.mapInitialInfo, idStr)
+                        let displayStr = "count:"
+                        if(that.selectedInit=="Total"){
+                            displayStr += countryHover['count_total']
+                        }else{
+                            displayStr += countryHover['count_details'][that.selectedInit]
+                        }
+                        displayStr+="<br> id:" + idStr
+                        that.mapTip.show(displayStr)
+
                     }
                     d3.select(this).attr("stroke", "green")
                     // that.mapTip.show()
@@ -234,14 +250,14 @@ export default {
                     colorMapping[d['county_id']] = d['count_details'][this.selectedInit]
                 })
             }
-            console.log('change color mapping to ', colorMapping)
+            // console.log('change color mapping to ', colorMapping)
             this.initColor = colorMapping
             this.drawMap()
         }   
     },  
     created(){
         this.$store.dispatch("load_map")
-        console.log(topojson);
+        // console.log(topojson);
         this.mapTip = d3tip()
             .attr('class', 'd3-tip-map')
             .offset([-10, 80])
