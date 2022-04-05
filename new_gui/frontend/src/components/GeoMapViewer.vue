@@ -133,7 +133,11 @@ export default {
                         idStr = "" + county_id 
                     }
                     if (that.mapInQueryStatus && that.highLightInfo && that.highLightInfo[idStr] != null) {
-                        that.mapTip.show(that.highLightInfo[idStr])
+                       
+                         let displayStr = that.highLightInfo[idStr].map(obj => {
+                           return obj.node_name  
+                        }) 
+                        that.mapTip.show(displayStr.join(", "))
                     }
                     d3.select(this).attr("stroke", "green")
                     // that.mapTip.show()
@@ -179,14 +183,15 @@ export default {
             if (this.mapQueryInfo.length > 0) {
                this.mapQueryInfo.forEach(obj => {
                 console.log(obj)
-                const node_id = obj.node_id; 
+                const node_id = obj.node_id 
                 const county_id = obj.county_id
+                const node_name = obj.node_name
                 if (node_id != null && county_id.length > 0) {
                     county_id.forEach(county => {
                         if (county in this.highLightInfo) {
-                            this.highLightInfo[county].push(node_id)
+                            this.highLightInfo[county].push({node_id, node_name})
                         }else{
-                            this.highLightInfo[county] = [node_id] 
+                            this.highLightInfo[county] = [{node_id, node_name}] 
                         }
                     })
                 }

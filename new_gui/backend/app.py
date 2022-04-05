@@ -248,7 +248,6 @@ def get_county_info():
         if request_obj.get("node") is not None:
             node = request_obj.get("node")
         dict_res,error_code = helper.get_county_info_for_nodes(node,database,graph)
-        print(dict_res)
     except Exception as e:
         print(e)
         error_code = 404
