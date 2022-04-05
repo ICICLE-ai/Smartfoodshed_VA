@@ -126,7 +126,7 @@ export default {
                 .attr("stroke", "lightgrey")
                 .attr("d", path)
                 .on("mouseover", function(d){
-
+                    console.log(that.mapInitialInfo)
                     d3.select(this).raise()
                     const county_id = d.id  
                     let idStr = ""
@@ -145,13 +145,15 @@ export default {
                         
                         const countryHover = that.mapInitialInfo.filter(character => character.county_id === idStr)[0]
                         console.log(countryHover,that.mapInitialInfo, idStr)
-                        let displayStr = "count:"
+                        let displayStr =""
+                        displayStr+="county:" + countryHover['county_name'].replace('County','') +"<br> count:"
+                        
                         if(that.selectedInit=="Total"){
                             displayStr += countryHover['count_total']
                         }else{
                             displayStr += countryHover['count_details'][that.selectedInit]
                         }
-                        displayStr+="<br> id:" + idStr
+                        
                         that.mapTip.show(displayStr)
 
                     }
