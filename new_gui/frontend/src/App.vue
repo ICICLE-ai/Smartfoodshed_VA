@@ -4,7 +4,9 @@
       <NavBar />
       <v-main>
         <transition name="slide-fade" mode="out-in">
-          <router-view />
+          <keep-alive>
+            <router-view />
+          </keep-alive>
         </transition>
       </v-main>
     </v-app>

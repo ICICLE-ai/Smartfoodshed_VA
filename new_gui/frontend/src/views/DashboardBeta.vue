@@ -5,18 +5,24 @@
     @drop="dropHandler"
   >
     <menu-bar/>
-    <c-table-viewer/>
+    <!-- <c-table-viewer/> -->
+    <!-- <c-template/> -->
+    <TemplateTable/>
   </div>
 </template>
 
 <script>
 import MenuBar from '@/components/MenuBar.vue'
 import CTableViewer from '@/components/CTableViewer.vue'
+import CTemplate from '@/components/CTemplate.vue'
+import TemplateTable from '@/components/TemplateTable.vue'
 import { mapState } from 'vuex';
 export default {
     components: {
         MenuBar,
-        CTableViewer
+        CTableViewer,
+        CTemplate,
+        TemplateTable
     },
     methods: {
       dragOver(e){

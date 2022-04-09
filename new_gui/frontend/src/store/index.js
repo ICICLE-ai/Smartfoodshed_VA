@@ -38,6 +38,9 @@ function initialState () {
     mapInQueryStatus: false,  
     activeTab: 0, 
     currentDragging: null,
+    tableContainer: {
+      height: 1000
+    }, 
   }
 }
 const mutations = {
@@ -273,6 +276,9 @@ const actions = {
   changeCurrentDraggingVM({commit}, vm){
     commit('SET_CRRENTDRAGGING', vm)
   },
+  containerSizeChange({commit, state}, {container, height}){
+    state.tableContainer.height = height
+  }
 }
 export default new Vuex.Store({
   state: initialState,
