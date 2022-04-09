@@ -1,58 +1,33 @@
 <template>
-  <v-app>
-    <v-main>
-      <v-row justify="center">
-        <v-col cols="5" align-self="center" style="height:100%">
-          <v-tabs @change="tabChange">
-            <v-tab tabid="1">
-              Tabular View
-            </v-tab>
-            <v-tab tabid="2">
-              GeoMap View
-            </v-tab>
-
-            <v-tab-item>
-              <table-viewer/>
-            </v-tab-item>
-
-            <v-tab-item>
-              <GeoMapViewer/>
-            </v-tab-item>
-
-          </v-tabs>
-        </v-col>
-
-        <v-col cols="7">
-          <kg-viewer/>
-        </v-col>
-      </v-row>
-    </v-main>
-  </v-app>
+  <div>
+    <v-app>
+      <NavBar />
+      <v-main>
+        <transition name="slide-fade" mode="out-in">
+          <router-view />
+        </transition>
+      </v-main>
+    </v-app>
+  </div>
 </template>
 
 <script>
-// import HelloWorld from './components/HelloWorld';
-import TableViewer from './components/TableViewer.vue'
-import KgViewer from './components/KgViewer.vue'
-import GeoMapViewer from './components/GeoMapViewer.vue'
+import NavBar from "@/components/NavBar";
 export default {
-  name: 'App',
-
+  data() {
+    return {};
+  },
   components: {
-    // HelloWorld,
-    TableViewer,
-    KgViewer,
-    GeoMapViewer,
+    NavBar,
   },
-  methods: {
-    tabChange(val) {
-      this.activeTab = val
-      this.$store.dispatch("active_tab", this.activeTab)
-    }
-  },
-  data: () => ({
-    //
-    activeTab: 0, 
-  }),
 };
 </script>
+
+<style>
+/* .svg-canvas{
+    position: absolute; 
+    width: 100%; 
+    height: 100%;
+    z-index: -1;
+  } */
+</style>

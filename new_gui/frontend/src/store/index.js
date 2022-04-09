@@ -2,6 +2,7 @@ import Vue from 'vue'
 import Vuex from 'vuex'
 import axios from 'axios'
 import * as d3 from 'd3'
+import menu from '@/store/modules/menu.js'
 import {generationEntityRelations, 
         addItemsToSelection, 
         removeItemsToSelection,
@@ -16,6 +17,8 @@ import {
 Vue.use(Vuex)
 function initialState () {
   return {
+    BETA_ROUTE: {'name': 'DashboardBeta', 'route': '/dashboard-beta'}, 
+    DASH_ROUTE: {'name': 'Dashboard', 'route': '/'}, 
     graphData: null,
     tableData: null, // raw data
     originalGraph: null, 
@@ -33,7 +36,8 @@ function initialState () {
     mapInitialInfo: null, 
     mapQueryInfo: null, 
     mapInQueryStatus: false,  
-    activeTab: 0
+    activeTab: 0, 
+    currentDragging: null,
   }
 }
 const mutations = {
@@ -120,7 +124,10 @@ const mutations = {
   },
   ACTIVE_TAB(state, activeTab){
     state.activeTab = activeTab
-  }
+  },
+  SET_CRRENTDRAGGING(state, vm){
+    state.currentDragging = vm;
+  },
 
 }
 const actions = {
@@ -262,7 +269,10 @@ const actions = {
   },
   active_tab({commit}, activeTab) {
     commit("ACTIVE_TAB", activeTab)
-  }
+  }, 
+  changeCurrentDraggingVM({commit}, vm){
+    commit('SET_CRRENTDRAGGING', vm)
+  },
 }
 export default new Vuex.Store({
   state: initialState,
@@ -271,5 +281,6 @@ export default new Vuex.Store({
   mutations: mutations,
   actions: actions,
   modules: {
+    menu,
   }
 })
