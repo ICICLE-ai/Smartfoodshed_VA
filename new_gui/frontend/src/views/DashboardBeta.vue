@@ -15,7 +15,7 @@
 import MenuBar from '@/components/MenuBar.vue'
 import CTableViewer from '@/components/CTableViewer.vue'
 import CTemplate from '@/components/CTemplate.vue'
-import TemplateTable from '@/components/TemplateTable.vue'
+import TemplateTable from '@/components/tableview/TemplateTable.vue'
 import { mapState } from 'vuex';
 export default {
     components: {

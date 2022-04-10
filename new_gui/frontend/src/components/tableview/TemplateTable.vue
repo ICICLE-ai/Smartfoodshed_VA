@@ -8,7 +8,7 @@
 
 <script>
 import CTemplate from '@/components/CTemplate.vue'
-import TableViewerCore from '@/components/TableViewerCore.vue'
+import TableViewerCore from '@/components/tableview/TableViewerCore.vue'
 export default {
     data(){
         return {
