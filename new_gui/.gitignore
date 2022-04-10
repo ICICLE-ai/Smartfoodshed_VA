@@ -2,6 +2,7 @@
 node_modules
 /dist
 
+/local_data/*
 /backend/config.py
 # local env files
 .env.local
