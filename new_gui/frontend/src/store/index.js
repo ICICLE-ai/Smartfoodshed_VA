@@ -219,6 +219,7 @@ const actions = {
     commit('RESET_GRAPHDATA')
   },
   async node_expand({commit, state}, {node_id, relation}){
+    
     commit('SET_LOADING', true)
     const updatedGraphData = await graphNodeLinkExpand(state.graphData, node_id, relation, state.expandThreshold)
     commit('SET_LOADING', false)
