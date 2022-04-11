@@ -1,11 +1,28 @@
 <template>
   <div>
       <div>
-        <v-select
-        :items="items"
-        @change = "changeInitColor"
-        label="Initialization"
-        ></v-select>
+          <v-divider></v-divider>
+          <v-row>
+              <v-col cols=3>
+                  <v-select
+                    :items="items"
+                    @change = "changeInitColor"
+                    label="Color"
+                    dense
+                    solo
+                    ></v-select>
+              </v-col>
+              <v-col cols=3>
+                  <v-select
+                    :items="eco_selections"
+                    @change = "drawEco"
+                    label="EcoRegion"
+                    dense
+                    solo
+                    ></v-select>
+              </v-col>
+          </v-row>
+        <v-divider></v-divider>
       </div>
         
       <svg
@@ -22,6 +39,9 @@ import * as d3 from 'd3'
 import * as topojson from 'topojson-client'
 import {mapState} from 'vuex'
 import * as d3tip from '@/utils/d3-tip'
+import EcoUSDA from '../../public/USDA_ecoreg.json';
+import EcoL3 from '../../public/EPA_ecoreg_l3.json'
+import EcoL4 from '../../public/EPA_ecoreg_l4.json'
 export default {
     components: {
 
@@ -29,6 +49,7 @@ export default {
     data() {
         return {
             items: ['BestPracticesAndMandates','Organization','Program','Project','Total'],
+            eco_selections: ['None','USDA','EPA_L3','EPA_L4'],
             schemes: [
                 {
                     name: "RdBu", 
@@ -48,12 +69,51 @@ export default {
         }
     }, 
     methods: {
+        addEco(data){
+            d3.select('#eco_g').remove()
+            var svg = d3.select(".geo-map")
+            var eco_g = svg.append('g').attr('id','eco_g')
+            const width = 700;
+            const height = 900;
+            const projection = d3.geoAlbersUsa().scale(800).translate([width/2, height/2])
+            const path = d3.geoPath().projection(projection) 
+            eco_g.selectAll('path')
+            .data(data)
+            .enter().append('path')
+            .attr('fill', 'none')
+            .attr('stroke','#fc9272')
+            .attr('d', path)
+            
+             svg.call(
+                d3
+                .zoom()
+                .extent([[0, 0], [width, height]])
+                .translateExtent([[0, 0], [width, height]])
+                .scaleExtent([1, 4])
+                .duration(500)
+                .on('zoom', function() {
+                    d3.selectAll('.geo-map g').attr('transform', d3.event.transform);
+                })
+            )
+            svg.call(this.mapTip)
+        },
+        drawEco(val){
+            if(val=="None"){
+                d3.select('#eco_g').remove()
+            }else if(val=="USDA"){
+                this.addEco(EcoUSDA.features)
+            }else if(val=="EPA_L3"){
+                this.addEco(EcoL3.features)
+            }else if(val=="EPA_L4"){
+                this.addEco(EcoL4.features)
+            }
+            
+        },
         changeInitColor(val){
             // console.log(val)
             this.selectedInit = val
         },
         drawMap(){
-           
             d3.select('.geo-map').html('')
             const that = this 
             if (! this.us_map_ready) {
@@ -69,6 +129,7 @@ export default {
             
             const counties = svg.append("g")
             const states = svg.append("g")
+            // const eco = svg.append('g')
             if (that.mapInQueryStatus && Object.keys(that.highLightInfo).length == 0) {
                 alert("No geo info about the selected node")
             }
@@ -126,7 +187,6 @@ export default {
                 .attr("stroke", "lightgrey")
                 .attr("d", path)
                 .on("mouseover", function(d){
-                    console.log(that.mapInitialInfo)
                     d3.select(this).raise()
                     const county_id = d.id  
                     let idStr = ""
@@ -144,7 +204,6 @@ export default {
                     }else{
                         
                         const countryHover = that.mapInitialInfo.filter(character => character.county_id === idStr)[0]
-                        console.log(countryHover,that.mapInitialInfo, idStr)
                         let displayStr =""
                         displayStr+="county:" + countryHover['county_name'].replace('County','') +"<br> count:"
                         
@@ -165,7 +224,7 @@ export default {
                     d3.select(this).attr("stroke", "lightgrey")
                     that.mapTip.hide()
                 })
-            
+         
             states.append("path")
                 .datum(topojson.mesh(this.us, this.us.objects.states))
                 .attr("class", "state-path")
@@ -173,7 +232,6 @@ export default {
                 .attr("stroke", "grey")
                 .attr("stroke-linejoin", "round")
                 .attr("d", path);
-
             
             svg.call(
                 d3
@@ -185,6 +243,7 @@ export default {
                 .on('zoom', function() {
                     counties.attr("transform", d3.event.transform);
                     states.attr("transform", d3.event.transform);
+                    // eco.attr('transform', d3.event.transform);
                 })
             )
             svg.call(that.mapTip)
@@ -259,7 +318,6 @@ export default {
     },  
     created(){
         this.$store.dispatch("load_map")
-        // console.log(topojson);
         this.mapTip = d3tip()
             .attr('class', 'd3-tip-map')
             .offset([-10, 80])
@@ -272,12 +330,15 @@ export default {
     })
     },
     computed: {
-        ...mapState(['us', 'mapInitialInfo', 'mapQueryInfo', 'mapInQueryStatus', 'activeTab']),
+        ...mapState(['us', 'mapInitialInfo', 'mapQueryInfo', 'mapInQueryStatus', 'activeTab', 'ecoregion']),
 
     },
     watch:{
         selectedInit(){
             this.initColorMapping()
+        },
+        ecoregion(val){
+            console.log(val)
         },
         us(val){
             console.log("new val coming!!!")
