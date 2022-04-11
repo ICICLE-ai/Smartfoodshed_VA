@@ -257,9 +257,14 @@ export default {
                     that.mapTip.hide()
                 })
                 .on('click',function(d){
-                    console.log('ddd')
-                    var id = d.id 
-                    that.$store.dispatch("county2node", id)
+                    let str = ""
+                    if(+d.id < 10000) {
+                        str = "0" + d.id
+                    }else{
+                        str = str + d.id
+                    }
+                   
+                    that.$store.dispatch("county2node", str)
                 })
          
             states.append("path")
