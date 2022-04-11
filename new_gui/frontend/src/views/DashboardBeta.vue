@@ -8,6 +8,7 @@
     <!-- <c-table-viewer/> -->
     <!-- <c-template/> -->
     <TemplateTable/>
+    <TemplateKG/>
   </div>
 </template>
 
@@ -16,13 +17,15 @@ import MenuBar from '@/components/MenuBar.vue'
 import CTableViewer from '@/components/CTableViewer.vue'
 import CTemplate from '@/components/CTemplate.vue'
 import TemplateTable from '@/components/tableview/TemplateTable.vue'
+import TemplateKG from '@/components/graphview/TemplateKG'
 import { mapState } from 'vuex';
 export default {
     components: {
         MenuBar,
-        CTableViewer,
-        CTemplate,
-        TemplateTable
+        // CTableViewer,
+        // CTemplate,
+        TemplateTable, 
+        TemplateKG,
     },
     methods: {
       dragOver(e){
@@ -42,13 +45,15 @@ export default {
         const id = e.dataTransfer.getData('item-id'); //
         const el = document.querySelector(`#${id}`);
         // this.updatePos(currentX-initialX, currentY-initialY, el);
-        el.style.left = (currentX + parseInt(initialLeft)) + 'px';
-        el.style.top = (currentY + parseInt(initialTop)) + 'px';
+        const marginLeft = currentX + parseInt(initialLeft)
+        const marginTop = currentY + parseInt(initialTop)
+        // el.style.left = marginLeft + 'px';
+        // el.style.top = marginLeft + 'px';
         console.log(this.currentDragging)
         if(this.currentDragging){
           console.log(this.currentDragging)
-          this.currentDragging.marginLeft = el.style.left;
-          this.currentDragging.marginTop = el.style.top;
+          this.currentDragging.marginLeft = marginLeft;
+          this.currentDragging.marginTop = marginTop;
         }
         e.preventDefault();
         return false;

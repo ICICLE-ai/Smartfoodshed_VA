@@ -11,6 +11,7 @@
         text
         rounded
         color="purple"
+        disabled
         @click="versionSwitch"
       >
         {{versionPrompt}}
