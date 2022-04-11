@@ -3,74 +3,152 @@
         <div
           class="graph-btn-container"
         >
+        <v-container>
         <v-row no-gutters
           justify='space-between'
         >
           <v-col
             key="0"
             sm="3"
-            cols=2
+            cols="11"
             >
-            <v-btn
-            small
-            class="kg-view-btn"
-            @click="resetGraphTableHandler"
-            >
-            Reset
-            </v-btn>
-             <v-btn
+            <v-tooltip bottom>
+              <template v-slot:activator="{ on, attrs }">
+                <v-btn 
+                  class="ma-2 menu-btn"
+                  icon
+                  text
+                  @click="resetGraphTableHandler"
+                >
+                  <v-icon
+                    v-bind="attrs"
+                    v-on="on"
+                  >
+                    mdi-refresh
+                  </v-icon>
+                </v-btn>
+              </template>
+              <span>Reset</span>
+            </v-tooltip>
+            <!-- <v-btn
+              small
+              class="kg-view-btn"
+              @click="resetGraphTableHandler"
+              >
+              Reset
+            </v-btn> -->
+            <v-tooltip bottom>
+              <template v-slot:activator="{ on, attrs }">
+                <v-btn 
+                  class="ma-2 menu-btn"
+                  icon
+                  text
+                  :color="zoomPanColor"
+                  @click="zoomPanToggleHandler"
+                >
+                  <v-icon
+                    v-bind="attrs"
+                    v-on="on"
+                  >
+                    mdi-arrow-expand-all
+                  </v-icon>
+                </v-btn>
+              </template>
+              <span>ZOOM</span>
+            </v-tooltip>
+
+            <!-- <v-btn
               small
               @click="zoomPanToggleHandler"
               :color="zoomPanColor"
               class="kg-view-btn"
-            ><v-icon>
-            mdi-arrow-expand-all
-              </v-icon>
-            </v-btn>
-            <v-btn
-              small
-              class="kg-view-btn"
-              @click="lassoToggleHandler"
-              :color="lassoColor"
-            >
+              >
               <v-icon>
-                mdi-lasso
+                mdi-arrow-expand-all
               </v-icon>
-            </v-btn>
-          </v-col>
-          <v-col
-            key="1"
-            cols=4
-            sm="3">
+            </v-btn> -->
+            <v-tooltip bottom>
+              <template v-slot:activator="{ on, attrs }">
+                <v-btn 
+                  class="ma-2 menu-btn"
+                  icon
+                  text
+                  :color="lassoColor"
+                  @click="lassoToggleHandler"
+                >
+                  <v-icon
+                    v-bind="attrs"
+                    v-on="on"
+                  >
+                    mdi-lasso
+                  </v-icon>
+                </v-btn>
+              </template>
+              <span>LASSO</span>
+            </v-tooltip>
+            <v-tooltip bottom>
+              <template v-slot:activator="{ on, attrs }">
+                <v-btn 
+                  class="ma-2 menu-btn"
+                  icon
+                  text
+                  @click="showOverview = !showOverview"
+                >
+                  <v-icon
+                    v-bind="attrs"
+                    v-on="on"
+                  >
+                    mdi-chart-bar
+                  </v-icon>
+                </v-btn>
+              </template>
+              <span>Node Link Overview</span>
+            </v-tooltip>
+
+            <v-tooltip bottom>
+              <template v-slot:activator="{ on, attrs }">
+                <v-btn 
+                  class="ma-2 menu-btn"
+                  icon
+                  text
+                  @click="showMaxRetrieve = !showMaxRetrieve"
+                >
+                  <v-icon
+                    v-bind="attrs"
+                    v-on="on"
+                  >
+                    mdi-soundbar
+                  </v-icon>
+                </v-btn>
+              </template>
+              <span>Maximum Retrieval #</span>
+            </v-tooltip>
+
             <v-slider
               v-model="user_defined_thre"
               :thumb-size="24"
               @click="changeThreshold"
               thumb-label="always"
+              v-show="showMaxRetrieve"
             ></v-slider>
+            <!-- <v-btn
+                small
+                class="kg-view-btn"
+                @click="lassoToggleHandler"
+                :color="lassoColor"
+              >
+                <v-icon>
+                  mdi-lasso
+                </v-icon>
+            </v-btn> -->
           </v-col>
-          <v-col
-            key="2"
-            cols=1
-            sm="3">
-           <v-btn
-              small
-              class="retrieve-type-node-btn"
-              @click="retrieve_types_nodes"
-            >
-              Retrieve
-            </v-btn> 
-          </v-col> 
         </v-row>
+        </v-container>
         </div>
-        <v-row :style="{'height': OVERVIEW_HEIGHT, 'margin-top':'20px'}">
-          <v-col cols="6">
-            <div id="div_node_overview"></div>
-          </v-col>
-          <v-col cols="6">
-            <div id="div_link_overview"></div>
-          </v-col>
-        </v-row>
+        <node-rel-overview
+          v-show="showOverview"
+          :graphOverview="graphOverview"
+        />
         <div id="div_graph" class="fullHeight" :style="{'height': HEIGHT}"></div>   
         <v-overlay :value="loading_value">
         <v-progress-circular
@@ -88,9 +166,10 @@ import * as d3 from 'd3'
 import * as KGutils from '@/utils/KGutils.js'
 import {mapState} from 'vuex'
 import * as d3tip from '@/utils/d3-tip'
+import NodeRelOverview from '@/components/NodeRelOverview'
 export default{
   components: {
-
+    NodeRelOverview
   },
   data () {
     return {
@@ -108,7 +187,9 @@ export default{
       tip: null,
       user_defined_thre: 5,// user defined threshold to show how many nodes we want to see if we expand one node 
       neo4jd3 : null,
-      brushed: {"entity_type": [], "relationship_type": []}
+      brushed: {"entity_type": [], "relationship_type": []},
+      showOverview:false, 
+      showMaxRetrieve:false,
     }
   },
   created () {
@@ -566,15 +647,6 @@ export default{
     }
   },
   watch: {
-    
-    graphOverview(){
-      console.log('tuymeieeeeee',this.graphOverview)
-      var node_overview_data = this.graphOverview['data']['entity']
-      var link_overview_data = this.graphOverview['data']['relationship']
-      console.log('fff', node_overview_data, link_overview_data)
-      this.drawBarChart('#div_link_overview', link_overview_data)
-      this.drawBarChart('#div_node_overview', node_overview_data)
-    },
     graphData () {
       console.log(this.graphData)
       this.graphData['results'][0]['data'][0]['graph']['nodes'].forEach(function (d) {
@@ -584,7 +656,6 @@ export default{
       console.log(this.graphData)
       KGutils.graphDataParsing(this.graphData, this.currentEntities, this.currentRelations)
       this.drawNeo4jd3()
-      
     }, 
     selectedEntities(val) {
       if (val.length > 0) {
@@ -631,12 +702,6 @@ export default{
       this.loading_value = val
     },
     
-  },
-  beforeMounted() {
-
-  }, 
-  mounted () {
-
   },
   computed: {
     ...mapState(['graphData', 'relationStatusReady', 'relationTypeData','loading', 'graphOverview']),

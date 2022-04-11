@@ -19,8 +19,7 @@
           position: 'absolute',
         }"
       > 
-        
-        
+         
         <template>
             <v-card-text v-if="!dataStatus" class="card-name">
                 No Table Data

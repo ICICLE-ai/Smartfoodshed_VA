@@ -19,13 +19,12 @@
               <GeoMapViewer/>
             </v-tab-item>
 
-            <v-tab-item>
+            <!-- <v-tab-item>
               <node-overview/>
-            </v-tab-item>
+            </v-tab-item> -->
 
           </v-tabs>
         </v-col>
-
         <v-col cols="7">
           <kg-viewer/>
         </v-col>
