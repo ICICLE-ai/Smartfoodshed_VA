@@ -253,6 +253,32 @@ def get_county_info():
         error_code = 404
     return Response(json.dumps(dict_res),status = error_code)
 
+@app.route('/getEcoregionInfo', methods=['POST'])
+def get_ecoregion_info():
+    request_obj = request.get_json()
+    try:
+        if request_obj.get("node") is not None:
+            node = request_obj.get("node")
+        dict_res,error_code = helper.get_ecoregion_info_for_nodes(node,database,graph)
+    except Exception as e:
+        print(e)
+        error_code = 404
+    return Response(json.dumps(dict_res),status = error_code)
+
+@app.route('/countyToNodes', methods=['POST'])
+def get_associated_node_from_county():
+    request_obj = request.get_json()
+    limit_number = 5
+    try:
+        if request_obj.get("county_id") is not None:
+            county_id = request_obj.get("county_id")
+        subgraph_res,error_code = helper.get_associated_nodes_for_county(county_id,database,graph,limit_number)
+        dict_res = helper.convert_subgraph_to_json_withR(subgraph_res,entity_identifier,graph)
+    except Exception as e:
+        print(e)
+        error_code = 404
+    return Response(json.dumps(dict_res),status = error_code)
+
 if __name__ == '__main__':
     global graph, entity_identifier,graph_overview,database
     # driver = GraphDatabase.driver("bolt://localhost:7687", auth=("neo4j", "123"))

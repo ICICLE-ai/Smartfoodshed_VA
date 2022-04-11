@@ -364,29 +364,71 @@ def convert_subgraph_to_json(subgraph,entity_identifier):
 #Ouput: a list of dictionary containing the county information for each nodes in the node_id_list 
 def get_county_info_for_nodes(node_id_list,database,graph):
     output = []
+    error_code = 200
     # different database have slightly different logic
     if database == "ppod":
-        geoid_cypher = "match (n)-[p:in_county]-(m) where id(n)={} return m.geo_id,n.label"
+        geoid_cypher = "match (n)-[p:in_county]-(m) where id(n)={} return m.geo_id, m.label,n.label"
         for node_id in node_id_list:
             cypher_result = graph.run(geoid_cypher.format(node_id)).data()
-            county_list = list(set([i['m.geo_id'] for i in cypher_result]))
-            if len(county_list)==0:
-                node_name = None
-                error_code = 202
-            elif county_list[0] is None: 
-                county_list = []
+            county_dict = {i['m.label']:i['m.geo_id'] for i in cypher_result}
+            if len(county_dict)==0:
                 node_name = None
                 error_code = 202
             else:
                 node_name = cypher_result[0]['n.label']
-            county_dict = {"node_id":node_id,"node_name":node_name,"county_id":county_list}
-            output.append(county_dict)
+            node_out = {"node_id":node_id,"node_name":node_name,"county":county_dict}
+            output.append(node_out)
     elif database == "cfs":
         for node_id in node_id_list:
             node = graph.nodes.get(node_id)
-            county_dict = {"node_id":node_id,"node_name":node['county'],"county_id":[node['id']]}
+            county_dict = {"node_id":node_id,"node_name":node['county'],"county":{node['county']:node['id']}}
             output.append(county_dict)    
+    return output,error_code
+
+#Input: county_id, a int
+#       database, a string, denotes the name of graph database we will query
+#       graph, a Py2neo graph object
+#       limit_number, maximum number of nodes to be returned
+#Ouput: a subgraph object in py2neo
+def get_associated_nodes_for_county(county_id,database,graph,limit_number):
     error_code = 200
+    # different database have slightly different logic
+    if database == "ppod":
+        county_cypher = "match (n)-[p:in_county]-(m) where m.geo_id='{}' return id(n) limit {}"
+        node_id_list = list(set([i['id(n)'] for i in graph.run(county_cypher.format(county_id,limit_number)).data()]))
+    elif database == "cfs":
+        county_cypher = "match (n) where n.id='{}' return id(n)"
+        cypher_result = graph.run(county_cypher.format(county_id)).data()
+        if len(cypher_result) != 0:
+            node_id_list = [cypher_result[0]['id(n)']]
+        else:
+            node_id_list = []
+    if len(node_id_list) == 0:
+        error_code = 202
+    node_list = [graph.nodes.get(i) for i in node_id_list]
+    subgraph = Subgraph(node_list)
+    return subgraph,error_code
+
+#Input: node_id_list, a list of int, a list of node id
+#       database, a string, denotes the name of graph database we will query
+#       graph, a Py2neo graph object
+#Ouput: a list of dictionary containing the ecoregion information for each nodes in the node_id_list 
+def get_ecoregion_info_for_nodes(node_id_list,database,graph):
+    output = []
+    error_code = 200
+    # different database have slightly different logic
+    if database == "ppod":
+        ecoid_cypher = "match (n)-[p:in_ecoregion]-(m) where id(n)={} return m.eco_id, m.label, n.label"
+        for node_id in node_id_list:
+            cypher_result = graph.run(ecoid_cypher.format(node_id)).data()
+            ecoregion_dict = {i['m.label']:i['m.eco_id'] for i in cypher_result}
+            if len(ecoregion_dict)==0:
+                node_name = None
+                error_code = 202
+            else:
+                node_name = cypher_result[0]['n.label']
+            node_out = {"node_id":node_id,"node_name":node_name,"ecoregion":ecoregion_dict}
+            output.append(node_out)   
     return output,error_code
 
 #Input:node_id, a int, a node id which we want to check for all relationship types

@@ -20,7 +20,7 @@ export default {
         CTemplate,
         // core comp
         TableViewerCore
-    },
+    }, 
 }
 </script>
 
