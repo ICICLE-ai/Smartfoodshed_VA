@@ -31,6 +31,7 @@ function initialState () {
     relationTypeData: null,
     loading: false,
     us: null,
+    // ecoregion: null,
     expandThreshold: 5, // node expand limit 
     graphOverview: null, // for link overview 
     mapInitialInfo: null, 
@@ -44,6 +45,9 @@ function initialState () {
   }
 }
 const mutations = {
+  // SET_ecoregion(state, val){
+  //   state.ecoregion = val
+  // },
   SET_graphOverview(state, val){
     state.graphOverview = val
   },
@@ -235,6 +239,7 @@ const actions = {
     commit('NODE_REMOVE', {updatedGraphData: updatedGraphData})
   },
   async load_map({state, commit}) {
+   
     // load map geo data
     const us = await d3.json('https://raw.githubusercontent.com/chrisdaly/map-data/master/us-counties.topojson.txt')
     // load map detail data 
