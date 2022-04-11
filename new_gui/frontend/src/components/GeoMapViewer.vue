@@ -83,6 +83,9 @@ export default {
             .attr('fill', 'none')
             .attr('stroke','#fc9272')
             .attr('d', path)
+            .on('mouseover', function(d){
+                d3.select(this).style('cursor','pointer')
+            })
             
              svg.call(
                 d3
@@ -179,14 +182,15 @@ export default {
                         }else{
                             return "#eff3ff"
                         }
-                        
-                        // return '#e4acac'
                     }
                 })
                 // .attr("fill", d => color(data.get(d.id)) != null ? color(data.get(d.id)) : "white")
                 .attr("stroke", "lightgrey")
                 .attr("d", path)
                 .on("mouseover", function(d){
+                    // console.log(d)
+                    // console.log('hover county')
+                    d3.select(this).style('cursor','pointer')
                     d3.select(this).raise()
                     const county_id = d.id  
                     let idStr = ""
@@ -204,6 +208,7 @@ export default {
                     }else{
                         
                         const countryHover = that.mapInitialInfo.filter(character => character.county_id === idStr)[0]
+                        console.log(countryHover)
                         let displayStr =""
                         displayStr+="county:" + countryHover['county_name'].replace('County','') +"<br> count:"
                         
@@ -218,11 +223,43 @@ export default {
                     }
                     d3.select(this).attr("stroke", "green")
                     // that.mapTip.show()
+                    d3.select(this).style('fill', 'red')
                 })
                 .on("mouseout", function(d){
-                    
+                    d3.select(this).style('fill',function(d){
+                        if (that.mapInQueryStatus) {
+                        if (that.highLightInfo) {
+                            const county_id = d.id 
+                            if(county_id in this.highLightInfo){
+                                return "#e4acac"
+                            } else {
+                                return "white"
+                            }
+                        } else {
+                            return "white"
+                        }
+                        }else {
+                            let str = ""
+                            if(+d.id < 10000) {
+                                str = "0" + d.id
+                            }else{
+                                str = str + d.id
+                            }
+                            if(str in that.initColor){
+                                let value = that.initColor[str]
+                                return colors(value)
+                            }else{
+                                return "#eff3ff"
+                            }
+                        }
+                    })
                     d3.select(this).attr("stroke", "lightgrey")
                     that.mapTip.hide()
+                })
+                .on('click',function(d){
+                    console.log('ddd')
+                    var id = d.id 
+                    that.$store.dispatch("county2node", id)
                 })
          
             states.append("path")

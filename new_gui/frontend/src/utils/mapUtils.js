@@ -52,4 +52,13 @@ async function getRequest(url, warningMsg) {
     } 
 }
 
-export {loadMapInitialData, queryMapInfoWithNode}
+async function getNode(id){
+    const path = "http://127.0.0.1:5000/countyToNodes"
+    const data = {
+        'county_id': id
+    }
+    const response = await axios.post(path, data)
+    return response 
+}
+
+export {loadMapInitialData, queryMapInfoWithNode,getNode}
