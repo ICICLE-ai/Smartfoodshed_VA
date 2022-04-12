@@ -231,9 +231,8 @@ export default {
                 .attr("stroke", "lightgrey")
                 .attr("d", path)
                 .on("mouseover", function(d){
-                    // console.log(d)
-                    that.hoveredEcoIds = d['properties']['ECO_US_']
-                    that.updateEco()
+                    console.log(d)
+                    
                     // console.log('hover county')
                     d3.select(this).style('cursor','pointer')
                     d3.select(this).raise()
@@ -253,7 +252,7 @@ export default {
                     }else{
                         
                         const countryHover = that.mapInitialInfo.filter(character => character.county_id === idStr)[0]
-                        // console.log(countryHover)
+                        console.log(countryHover)
                         let displayStr =""
                         displayStr+="County Name:" + countryHover['county_name'].replace('County','') +"<br> Count:"
                         
@@ -266,6 +265,8 @@ export default {
 
                     }
                     d3.select(this).attr("stroke", "green")
+                    that.hoveredEcoIds = d['properties']['ECO_US_']
+                    that.updateEco()
                     // that.mapTip.show()
                     // d3.select(this).style('fill', 'red')
                 })
