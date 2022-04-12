@@ -243,12 +243,17 @@ export default{
               console.log('nononono')
               //
             }else{
+              if(that.relationStatusReady=="fromMap"){
+              var relation_data = node['relationship_types']
+            }
+            else{
               console.log(that.relationTypeData['results'][0]['data'][0]['graph']['nodes'])
               console.log(idx)
-              let filtered_relation_type_data = that.relationTypeData['results'][0]['data'][0]['graph']['nodes'].filter(d => d.id == node.id)
-              let relation_data = filtered_relation_type_data[0]['relationship_types']
+              var filtered_relation_type_data = that.relationTypeData['results'][0]['data'][0]['graph']['nodes'].filter(d => d.id == node.id)
+              var relation_data = filtered_relation_type_data[0]['relationship_types']
               // get the sum of all rel counts 
-              const sumValues = obj => Object.values(obj).reduce((a, b) => a + b);
+            }
+            const sumValues = obj => Object.values(obj).reduce((a, b) => a + b);
               const total_c  = sumValues(relation_data)
               // generate the dount data
               for (const [key, value] of Object.entries(relation_data)) {
@@ -256,7 +261,8 @@ export default{
               }
               console.log("check data")
               console.log(data)
-            }
+            } 
+            
             // sorting 
             
             let this_g = d3.select(`#node-${node.id}`)
