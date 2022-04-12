@@ -204,6 +204,7 @@ export default {
                     }else{
                         
                         const countryHover = that.mapInitialInfo.filter(character => character.county_id === idStr)[0]
+                        console.log(countryHover)
                         let displayStr =""
                         displayStr+="county:" + countryHover['county_name'].replace('County','') +"<br> count:"
                         

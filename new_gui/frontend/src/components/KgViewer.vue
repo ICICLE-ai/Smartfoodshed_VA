@@ -57,16 +57,7 @@
               <span>ZOOM</span>
             </v-tooltip>
 
-            <!-- <v-btn
-              small
-              @click="zoomPanToggleHandler"
-              :color="zoomPanColor"
-              class="kg-view-btn"
-              >
-              <v-icon>
-                mdi-arrow-expand-all
-              </v-icon>
-            </v-btn> -->
+            
             <v-tooltip bottom>
               <template v-slot:activator="{ on, attrs }">
                 <v-btn 
