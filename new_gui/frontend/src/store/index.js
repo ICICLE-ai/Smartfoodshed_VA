@@ -12,7 +12,7 @@ import {graphNodeLinkRemoval,
         graphNodeLinkExpand, 
         retrieveNodeLinkWithType} from '@/utils/KGutils'
 import {
-        loadMapInitialData, 
+        loadMapInitialData, getNode,
         queryMapInfoWithNode} from '@/utils/mapUtils'
 Vue.use(Vuex)
 function initialState () {
@@ -284,6 +284,11 @@ const actions = {
   },
   containerSizeChange({commit, state}, {container, height}){
     state.tableContainer.height = height
+  },
+  async county2node({commit}, nodeid){
+    var result = await getNode(nodeid)
+    console.log(result)
+    commit('SET_graphData', result['data']) 
   }
 }
 export default new Vuex.Store({

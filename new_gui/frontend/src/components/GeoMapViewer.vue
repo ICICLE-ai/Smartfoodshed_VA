@@ -42,6 +42,8 @@ import * as d3tip from '@/utils/d3-tip'
 import EcoUSDA from '../../public/USDA_ecoreg.json';
 import EcoL3 from '../../public/EPA_ecoreg_l3.json'
 import EcoL4 from '../../public/EPA_ecoreg_l4.json'
+import MAP from '../../public/county_with_ecoregion_borderline.json'
+
 export default {
     components: {
 
@@ -65,7 +67,8 @@ export default {
             warningMsgStack: [],
             initColor: null,
             selectedInit: 'Total',
-            
+            hoveredEcoIds: [],
+            ecoColor: 'grey'
         }
     }, 
     methods: {
@@ -80,9 +83,17 @@ export default {
             eco_g.selectAll('path')
             .data(data)
             .enter().append('path')
+            .attr('class','eco-path')
             .attr('fill', 'none')
-            .attr('stroke','#fc9272')
+            .attr('stroke',this.ecoColor)
             .attr('d', path)
+            .attr('id', d=>{
+                let id = d['properties']['ECO_US_']
+                return `eco-${id}`
+            })
+            .on('mouseover', function(d){
+                d3.select(this).style('cursor','pointer')
+            })
             
              svg.call(
                 d3
@@ -140,10 +151,47 @@ export default {
             .domain([d3.min(all_values), d3.max(all_values)])
             .range(['#6baed6','#084594']);
 
+            //-------------------------------------   download file for xiaoqi start//-------------------------------------
+            // var a = topojson.feature(this.us, this.us.objects.counties)
+            // var b = topojson.mesh(this.us, this.us.objects.states)
             
+            // var jsonData = {
+            //     'county': a,
+            //     'state': b
+            // }
+            
+            // var saveJson = function(obj) {
+            //     var str = JSON.stringify(obj);
+            //     var data = encode( str );
+            
+            //     var blob = new Blob( [ data ], {
+            //     type: 'application/octet-stream'
+            //     });
+                
+            //     var url = URL.createObjectURL( blob );
+            //     var link = document.createElement( 'a' );
+            //     link.setAttribute( 'href', url );
+            //     link.setAttribute( 'download', 'data.json' );
+            //     var event = document.createEvent( 'MouseEvents' );
+            //     event.initMouseEvent( 'click', true, true, window, 1, 0, 0, 0, 0, false, false, false, false, 0, null);
+            //     link.dispatchEvent( event );
+            // }
+            
+            
+            // var encode = function( s ) {
+            //     var out = [];
+            //     for ( var i = 0; i < s.length; i++ ) {
+            //     out[i] = s.charCodeAt(i);
+            //     }
+            //     return new Uint8Array( out );
+            // }
+            // saveJson(jsonData)
+             //-------------------------------------   download file for xiaoqi end //-------------------------------------
+
             counties
                 .selectAll("path")
-                .data(topojson.feature(this.us, this.us.objects.counties).features)
+                .data(MAP.county.features)
+                // .data(topojson.feature(this.us, this.us.objects.counties).features)
                 .enter().append("path")
                 .attr("class", "county-path")
                 .attr("id", d=>{
@@ -173,20 +221,20 @@ export default {
                         }else{
                             str = str + d.id
                         }
-                        if(str in that.initColor){
-                            let value = that.initColor[str]
-                            return colors(value)
-                        }else{
-                            return "#eff3ff"
-                        }
                         
-                        // return '#e4acac'
+                        let value = that.initColor[str]
+                       
+                        return colors(value)
                     }
                 })
                 // .attr("fill", d => color(data.get(d.id)) != null ? color(data.get(d.id)) : "white")
                 .attr("stroke", "lightgrey")
                 .attr("d", path)
                 .on("mouseover", function(d){
+                    console.log(d)
+                    
+                    // console.log('hover county')
+                    d3.select(this).style('cursor','pointer')
                     d3.select(this).raise()
                     const county_id = d.id  
                     let idStr = ""
@@ -206,28 +254,41 @@ export default {
                         const countryHover = that.mapInitialInfo.filter(character => character.county_id === idStr)[0]
                         console.log(countryHover)
                         let displayStr =""
-                        displayStr+="county:" + countryHover['county_name'].replace('County','') +"<br> count:"
+                        displayStr+="County Name:" + countryHover['county_name'].replace('County','') +"<br> Count:"
                         
                         if(that.selectedInit=="Total"){
                             displayStr += countryHover['count_total']
                         }else{
                             displayStr += countryHover['count_details'][that.selectedInit]
                         }
-                        
                         that.mapTip.show(displayStr)
 
                     }
                     d3.select(this).attr("stroke", "green")
+                    that.hoveredEcoIds = d['properties']['ECO_US_']
+                    that.updateEco()
                     // that.mapTip.show()
+                    // d3.select(this).style('fill', 'red')
                 })
                 .on("mouseout", function(d){
-                    
+                    // d3.select('.eco-path').attr('stroke','blue')
                     d3.select(this).attr("stroke", "lightgrey")
                     that.mapTip.hide()
                 })
+                .on('click',function(d){
+                    let str = ""
+                    if(+d.id < 10000) {
+                        str = "0" + d.id
+                    }else{
+                        str = str + d.id
+                    }
+                   
+                    that.$store.dispatch("county2node", str)
+                })
          
             states.append("path")
-                .datum(topojson.mesh(this.us, this.us.objects.states))
+                .datum(MAP.state.features)
+                // .datum(topojson.mesh(this.us, this.us.objects.states))
                 .attr("class", "state-path")
                 .attr("fill", "none")
                 .attr("stroke", "grey")
@@ -257,12 +318,12 @@ export default {
             }
             */
             this.highLightInfo = {};
-            console.log(this.mapQueryInfo)
+            // console.log(this.mapQueryInfo)
             if (this.mapQueryInfo.length > 0) {
                this.mapQueryInfo.forEach(obj => {
                 console.log(obj)
                 const node_id = obj.node_id 
-                const county_id = obj.county_id
+                const county_id = Object.values(obj.county)
                 const node_name = obj.node_name
                 if (node_id != null && county_id.length > 0) {
                     county_id.forEach(county => {
@@ -292,13 +353,19 @@ export default {
                 }
             }else {
                 Object.keys(this.highLightInfo).forEach(countyId => {
-                    d3.select(`#county-${countyId}`).attr("fill", "#e4acac")
+                    d3.select(`#county-${countyId}`).attr("fill", "red")
                 })
                 if (this.warningMsgStack.length > 0) {
                         this.warningMsgStack.pop()
                 }
             }
         }, 
+        updateEco(){
+            d3.selectAll('.eco-path').attr('stroke',this.ecoColor)
+            this.hoveredEcoIds.forEach(d=>{
+                d3.select(`#eco-${d}`).attr('stroke', 'red')
+            })
+        },
         initColorMapping(){
             // compute the color mapping for intialization, map the specific value to color 
             var val = this.mapInitialInfo
@@ -312,7 +379,6 @@ export default {
                     colorMapping[d['county_id']] = d['count_details'][this.selectedInit]
                 })
             }
-            // console.log('change color mapping to ', colorMapping)
             this.initColor = colorMapping
             this.drawMap()
         }   
@@ -335,6 +401,7 @@ export default {
 
     },
     watch:{
+       
         selectedInit(){
             this.initColorMapping()
         },
@@ -379,7 +446,8 @@ export default {
     background-color: rgba(252, 247, 241, 0.7);
     background-opacity: 0.2;
     width: 130px; 
-    height: 70px;
+    height: 80px;
+    font-size:14px;
     border-radius: 5px;
 }
 .tip-container{ 
