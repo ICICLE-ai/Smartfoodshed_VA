@@ -85,6 +85,7 @@ const mutations = {
   TABLE_INTERACTIVE_OFF(state, ) {
     state.tableInteractiveMode = false
   },
+
   RESET_TABLE_SELECTED(state, ) {
     state.tableSelected = {}
   },
@@ -104,6 +105,9 @@ const mutations = {
   }, 
   NODE_REMOVE(state, {updatedGraphData}){
     state.graphData = updatedGraphData
+  },
+  RELATION_STATUS_COUNTY(state,){
+    state.relationStatusReady = 'fromMap'
   },
   RELATION_STATUS_OFF(state,){
     state.relationStatusReady = false 
@@ -288,7 +292,9 @@ const actions = {
   async county2node({commit}, nodeid){
     var result = await getNode(nodeid)
     console.log(result)
+    // commit('RELATION_STATUS_OFF')
     commit('SET_graphData', result['data']) 
+    commit('RELATION_STATUS_COUNTY')
   }
 }
 export default new Vuex.Store({
