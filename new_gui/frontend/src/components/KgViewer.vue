@@ -229,7 +229,7 @@ export default{
           onNodeClick: function (node,idx) {
             // console.log(node,id)
             // Create dummy data
-            console.log(node)
+            // console.log(node)
             if (node.showBtnPanel == true) {
               d3.select(`#node-${node.id}`).selectAll('.circle-button').remove()
               node.showBtnPanel = false
@@ -247,8 +247,8 @@ export default{
               var relation_data = node['relationship_types']
             }
             else{
-              console.log(that.relationTypeData['results'][0]['data'][0]['graph']['nodes'])
-              console.log(idx)
+              // console.log(that.relationTypeData['results'][0]['data'][0]['graph']['nodes'])
+              // console.log(idx)
               var filtered_relation_type_data = that.relationTypeData['results'][0]['data'][0]['graph']['nodes'].filter(d => d.id == node.id)
               var relation_data = filtered_relation_type_data[0]['relationship_types']
               // get the sum of all rel counts 
@@ -259,8 +259,8 @@ export default{
               for (const [key, value] of Object.entries(relation_data)) {
                 data[key] = {action: key, value: (value/total_c)*30}
               }
-              console.log("check data")
-              console.log(data)
+              // console.log("check data")
+              // console.log(data)
             } 
             
             // sorting 
@@ -326,14 +326,14 @@ export default{
               .on('click', function(d,i){
                 let clicked_node_id = node['id']
                 const action = d.data.value.action 
-                console.log(d)
+                // console.log(d)
                 that.tip.hide(d.data.value.action)
                 if (action == "remove"){
                   // tip.hide(d.data.value.action)
                   that.$store.dispatch("node_remove", {node_id: clicked_node_id})
                 }else {
                   
-                  console.log(d.data.value.action)
+                  // console.log(d.data.value.action)
                   that.$store.dispatch("node_expand", {node_id: clicked_node_id, relation: d.data.key})
                 }
               })

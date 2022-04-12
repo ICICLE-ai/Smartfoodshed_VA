@@ -73,6 +73,7 @@ export default {
     }, 
     methods: {
         addEco(data){
+            data = data.filter(d => d.geometry != null)
             d3.select('#eco_g').remove()
             var svg = d3.select(".geo-map")
             var eco_g = svg.append('g').attr('id','eco_g')
