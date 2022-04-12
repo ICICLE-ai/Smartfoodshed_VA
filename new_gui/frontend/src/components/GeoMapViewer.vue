@@ -75,12 +75,15 @@ export default {
         addEco(data){
             d3.select('#eco_g').remove()
             var svg = d3.select(".geo-map")
-            var eco_g = svg.append('g').attr('id','eco_g')
+            var eco_g = svg.selectAll('#eco-g').data([null])
+            var eco_gEnter = eco_g.enter().append('g').attr('id', 'eco_g')
+            
+            data = data.filter(d => d.geometry != null)
             const width = 700;
             const height = 900;
             const projection = d3.geoAlbersUsa().scale(800).translate([width/2, height/2])
             const path = d3.geoPath().projection(projection) 
-            eco_g.selectAll('path')
+            eco_g.merge(eco_gEnter).selectAll('path')
             .data(data)
             .enter().append('path')
             .attr('class','eco-path')
@@ -94,8 +97,8 @@ export default {
             .on('mouseover', function(d){
                 d3.select(this).style('cursor','pointer')
             })
-            
-             svg.call(
+            // d3.selectAll('.geo-map g').attr('transform', d3.event.transform); 
+            svg.call(
                 d3
                 .zoom()
                 .extent([[0, 0], [width, height]])
@@ -301,12 +304,12 @@ export default {
                 .extent([[0, 0], [width, height]])
                 .translateExtent([[0, 0], [width, height]])
                 .scaleExtent([1, 4])
-                .duration(500)
                 .on('zoom', function() {
-                    counties.attr("transform", d3.event.transform);
-                    states.attr("transform", d3.event.transform);
+                    d3.select(".geo-map").selectAll('path').attr("transform", d3.event.transform);
+                    // counties.attr("transform", d3.event.transform);
+                    // states.attr("transform", d3.event.transform);
                     // eco.attr('transform', d3.event.transform);
-                })
+                }) 
             )
             svg.call(that.mapTip)
         },
