@@ -56,8 +56,8 @@ export default {
       }
     }, 
     methods: { 
-        drawBarChart(div, data_){
-      // clean the data
+        drawBarChart(div, data_, title){
+        // clean the data
             let that = this
             var data = []
             const keys = Object.keys(data_);
@@ -70,35 +70,42 @@ export default {
             data.reverse();
             console.log("data",data)
 
-          const svg = d3.select('svg');
-          const svgContainer = d3.select('#container');
+          var svg = d3.select(div).append("svg");
           
           const margin = 80;
-          const width = 1000 - 2 * margin;
-          const height = 600 - 2 * margin;
+          const width = 500 - 2 * margin;
+          const height = 300 - 2 * margin;
 
+          var selected_bar = []
           const chart = svg.append('g')
             .attr('transform', `translate(${margin}, ${margin})`);
 
           const xScale = d3.scaleBand()
             .range([0, width])
             .domain(data.map((s) => s.key))
-            .padding(0.4)
+            .padding(0.1)
           
           const yScale = d3.scaleLinear()
             .range([height, 0])
-            .domain([0, 100]);
+            .domain([0, d3.max(data, function(d) { return d.value; })]);
 
           const makeYLines = () => d3.axisLeft()
             .scale(yScale)
 
+          var xAxis = d3.axisBottom(xScale).tickSize(0)
+
           chart.append('g')
-            .attr('transform', `translate(0, ${height})`)
-            .call(d3.axisBottom(xScale));
+          .attr("class", "axis axis--x")
+          .attr("transform", "translate(0," + height + ")")
+          .call(xAxis)
+          .selectAll("text")  
+          .style("text-anchor", "start")
+          .attr("dx", "-7em")
+          .attr("dy", "+.1em")
+          .attr("transform", "rotate(-90)" );
 
           chart.append('g')
             .call(d3.axisLeft(yScale));
-
 
           chart.append('g')
             .attr('class', 'grid')
@@ -119,20 +126,42 @@ export default {
             .attr('y', (g) => yScale(g.value))
             .attr('height', (g) => height - yScale(g.value))
             .attr('width', xScale.bandwidth())
+            .on('click', function(actual,i){ 
+              
+
+              if (selected_bar.includes(actual.key)){
+                selected_bar = selected_bar.filter(function(item) {return item !== actual.key})
+                d3.select(this).attr("stroke",'none')
+              }else{
+                selected_bar.push(actual.key)
+                d3.select(this).attr("stroke",'grey')
+                d3.select(this).attr("stroke-width",'1px')
+              }
+              
+              if (title == "Link Overview") {
+                that.brushed.relationship_type = selected_bar
+                console.log(that.brushed.relationship_type)
+              }else {
+                that.brushed.entity_type = selected_bar
+                console.log(that.brushed.entity_type)
+              } 
+              console.log(selected_bar)
+              console.log(that.brushed)
+            })
             .on('mouseenter', function (actual, i) {
-              d3.selectAll('.value')
+            d3.selectAll('.value')
                 .attr('opacity', 0)
 
-              d3.select(this)
-                .transition()
-                .duration(300)
-                .attr('opacity', 0.6)
-                .attr('x', (a) => xScale(a.key) - 5)
-                .attr('width', xScale.bandwidth() + 10)
+            d3.select(this)
+              .transition()
+              .duration(300)
+              .attr('opacity', 0.6)
+              .attr('x', (a) => xScale(a.key) - 5)
+              .attr('width', xScale.bandwidth() + 10)
 
-              const y = yScale(actual.value)
+              const y = yScale(actual.value);
 
-              line = chart.append('line')
+            let line = chart.append('line')
                 .attr('id', 'limit')
                 .attr('x1', 0)
                 .attr('y1', y)
@@ -147,10 +176,9 @@ export default {
                 .attr('text-anchor', 'middle')
                 .text((a, idx) => {
                   const divergence = (a.value - actual.value).toFixed(1)
-                  
                   let text = ''
                   if (divergence > 0) text += '+'
-                  text += `${divergence}%`
+                  text += `${divergence}`
 
                   return idx !== i ? text : '';
                 })
@@ -177,39 +205,35 @@ export default {
             .attr('x', (a) => xScale(a.key) + xScale.bandwidth() / 2)
             .attr('y', (a) => yScale(a.value) + 30)
             .attr('text-anchor', 'middle')
-            .text((a) => `${a.value}%`)
+            .text((a) => `${a.value}`)
           
-          svg
-            .append('text')
+          svg.append('text')
             .attr('class', 'label')
             .attr('x', -(height / 2) - margin)
             .attr('y', margin / 2.4)
             .attr('transform', 'rotate(-90)')
             .attr('text-anchor', 'middle')
-            .text('Love meter (%)')
-
-          svg.append('text')
-            .attr('class', 'label')
-            .attr('x', width / 2 + margin)
-            .attr('y', height + margin * 1.7)
-            .attr('text-anchor', 'middle')
-            .text('Languages')
+            .text('Frequency')
 
           svg.append('text')
             .attr('class', 'title')
             .attr('x', width / 2 + margin)
             .attr('y', 40)
             .attr('text-anchor', 'middle')
-            .text('Most loved programming languages in 2018')
-
-          svg.append('text')
-            .attr('class', 'source')
-            .attr('x', width - margin / 2)
-            .attr('y', height + margin * 1.7)
-            .attr('text-anchor', 'start')
-            .text('Source: Stack Overflow, 2018')
-          
-                
+            .text(title)
+          console.log("test",selected_bar)
+          console.log(div)
+          // if(title == "div_node_overview"){
+          //           that.brushed['entity_type'] = selected_bar;
+          //           that.brushed['relationship_type'] = [];
+          //           that.toggleOverviewPanel("entity")
+          //       }else if (container == "div_link_overview"){
+          //           that.brushed['relationship_type'] = selected_bar; 
+          //           that.brushed['entity_type'] = [];
+          //           that.toggleOverviewPanel("relationship")
+          //       }else{
+          //           alert("error finding container")
+          //       }
         },
         toggleOverviewPanel(focus){
           if (focus == "entity") {
@@ -232,8 +256,8 @@ export default {
         graphOverview(newVal) {
             var node_overview_data = this.graphOverview['data']['entity']
             var link_overview_data = this.graphOverview['data']['relationship']
-            // this.drawBarChart('#div_link_overview', link_overview_data)
-            this.drawBarChart('#div_node_overview', node_overview_data)
+            this.drawBarChart('#div_link_overview', link_overview_data,"Link Overview")
+            this.drawBarChart('#div_node_overview', node_overview_data, "Node Overview")
         }
     }
 }
@@ -241,4 +265,82 @@ export default {
 
 <style>
 
+body {
+  font-family: 'Open Sans', sans-serif;
+}
+
+div#layout {
+  text-align: center;
+}
+
+div#div_node_overview {
+  width: 400px;
+  height: 300px;
+  margin: auto;
+}
+div#div_link_overview {
+  width: 500px;
+  height: 300px;
+  margin: auto;
+}
+
+svg {
+  width: 100%;
+  height: 100%;
+}
+
+.bar {
+  fill: #80cbc4;
+}
+
+text {
+  font-size: 12px;
+  fill: #000;
+}
+
+path {
+  stroke: gray;
+}
+
+line {
+  stroke: gray;
+}
+
+line#limit {
+  stroke: #FED966;
+  stroke-width: 3;
+  stroke-dasharray: 3 6;
+}
+
+.grid path {
+  stroke-width: 0;
+}
+
+.grid .tick line {
+  stroke: #9FAAAE;
+  stroke-opacity: 0.3;
+}
+
+text.divergence {
+  font-size: 14px;
+  fill: #2F4A6D;
+}
+
+text.value {
+  font-size: 14px;
+}
+
+text.title {
+  font-size: 22px;
+  font-weight: 600;
+}
+
+text.label {
+  font-size: 14px;
+  font-weight: 400;
+}
+
+text.source {
+  font-size: 10px;
+}
 </style>
