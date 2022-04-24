@@ -38,7 +38,7 @@
 import TableViewer from '@/components/TableViewer.vue'
 import KgViewer from '@/components/KgViewer.vue'
 import GeoMapViewer from '@/components/GeoMapViewer.vue'
-import NodeOverview from '@/components/NodeOverview.vue'
+// import NodeOverview from '@/components/NodeOverview.vue'
 export default {
   name: 'App',
 
@@ -47,7 +47,7 @@ export default {
     TableViewer,
     KgViewer,
     GeoMapViewer,
-    NodeOverview
+    // NodeOverview
   },
 
   data: () => ({
