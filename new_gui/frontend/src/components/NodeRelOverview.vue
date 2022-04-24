@@ -74,7 +74,7 @@ export default {
           
           const margin = 80;
           const width = 500 - 2 * margin;
-          const height = 300 - 2 * margin;
+          const height = 400 - 2 * margin;
 
           var selected_bar = []
           const chart = svg.append('g')
@@ -102,7 +102,8 @@ export default {
           .style("text-anchor", "start")
           .attr("dx", "-7em")
           .attr("dy", "+.1em")
-          .attr("transform", "rotate(-90)" );
+          .attr("transform", "rotate(-80)" )
+          .style("font-size", "10px");
 
           chart.append('g')
             .call(d3.axisLeft(yScale));
@@ -127,7 +128,6 @@ export default {
             .attr('height', (g) => height - yScale(g.value))
             .attr('width', xScale.bandwidth())
             .on('click', function(actual,i){ 
-              
 
               if (selected_bar.includes(actual.key)){
                 selected_bar = selected_bar.filter(function(item) {return item !== actual.key})
@@ -135,18 +135,14 @@ export default {
               }else{
                 selected_bar.push(actual.key)
                 d3.select(this).attr("stroke",'grey')
-                d3.select(this).attr("stroke-width",'1px')
+                d3.select(this).attr("stroke-width",'2px')
               }
               
               if (title == "Link Overview") {
                 that.brushed.relationship_type = selected_bar
-                console.log(that.brushed.relationship_type)
               }else {
                 that.brushed.entity_type = selected_bar
-                console.log(that.brushed.entity_type)
               } 
-              console.log(selected_bar)
-              console.log(that.brushed)
             })
             .on('mouseenter', function (actual, i) {
             d3.selectAll('.value')
@@ -159,7 +155,7 @@ export default {
               .attr('x', (a) => xScale(a.key) - 5)
               .attr('width', xScale.bandwidth() + 10)
 
-              const y = yScale(actual.value);
+            const y = yScale(actual.value);
 
             let line = chart.append('line')
                 .attr('id', 'limit')
@@ -167,21 +163,6 @@ export default {
                 .attr('y1', y)
                 .attr('x2', width)
                 .attr('y2', y)
-
-              barGroups.append('text')
-                .attr('class', 'divergence')
-                .attr('x', (a) => xScale(a.key) + xScale.bandwidth() / 2)
-                .attr('y', (a) => yScale(a.value) + 30)
-                .attr('fill', 'white')
-                .attr('text-anchor', 'middle')
-                .text((a, idx) => {
-                  const divergence = (a.value - actual.value).toFixed(1)
-                  let text = ''
-                  if (divergence > 0) text += '+'
-                  text += `${divergence}`
-
-                  return idx !== i ? text : '';
-                })
 
             })
             .on('mouseleave', function () {
@@ -199,13 +180,13 @@ export default {
               chart.selectAll('.divergence').remove()
             })
 
-          barGroups 
-            .append('text')
-            .attr('class', 'value')
-            .attr('x', (a) => xScale(a.key) + xScale.bandwidth() / 2)
-            .attr('y', (a) => yScale(a.value) + 30)
-            .attr('text-anchor', 'middle')
-            .text((a) => `${a.value}`)
+          // barGroups 
+          //   .append('text')
+          //   .attr('class', 'value')
+          //   .attr('x', (a) => xScale(a.key) + xScale.bandwidth() / 2)
+          //   .attr('y', (a) => yScale(a.value))
+          //   .attr('text-anchor', 'middle')
+          //   .text((a) => `${a.value}`)
           
           svg.append('text')
             .attr('class', 'label')
@@ -221,19 +202,6 @@ export default {
             .attr('y', 40)
             .attr('text-anchor', 'middle')
             .text(title)
-          console.log("test",selected_bar)
-          console.log(div)
-          // if(title == "div_node_overview"){
-          //           that.brushed['entity_type'] = selected_bar;
-          //           that.brushed['relationship_type'] = [];
-          //           that.toggleOverviewPanel("entity")
-          //       }else if (container == "div_link_overview"){
-          //           that.brushed['relationship_type'] = selected_bar; 
-          //           that.brushed['entity_type'] = [];
-          //           that.toggleOverviewPanel("relationship")
-          //       }else{
-          //           alert("error finding container")
-          //       }
         },
         toggleOverviewPanel(focus){
           if (focus == "entity") {
@@ -274,14 +242,14 @@ div#layout {
 }
 
 div#div_node_overview {
-  width: 400px;
-  height: 300px;
-  margin: auto;
+  width: 500px;
+  height: 400px;
+  margin-right: 1em;
 }
 div#div_link_overview {
   width: 500px;
-  height: 300px;
-  margin: auto;
+  height: 400px;
+  margin-left: 1em;
 }
 
 svg {
