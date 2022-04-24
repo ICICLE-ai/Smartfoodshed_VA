@@ -282,15 +282,13 @@ def get_associated_node_from_county():
 if __name__ == '__main__':
     global graph, entity_identifier,graph_overview,database
     # driver = GraphDatabase.driver("bolt://localhost:7687", auth=("neo4j", "123"))
-    graph = Graph("bolt://localhost:7687", auth=("neo4j", "123")) # This should be a global variable in this app
+    graph = Graph("http://localhost:7474", auth=("neo4j", "123")) # This should be a global variable in this app
     schema = py2neo.database.Schema(graph)
     entity_type = list(schema.node_labels)
     relationship_type = list(schema.relationship_types)
     if len(entity_type) > 1:
         entity_type.remove("Resource")
         entity_type.remove("_GraphConfig")
-
-
     
     graph_overview = helper.get_graph_overview(graph,entity_type,relationship_type)
     if len(entity_type) > 1:

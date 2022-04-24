@@ -454,6 +454,7 @@ export default{
     },
     drawBarChart(div, data_){
       // clean the data
+      
       let that = this
       var data = []
       const keys = Object.keys(data_);

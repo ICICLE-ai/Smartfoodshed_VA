@@ -68,166 +68,147 @@ export default {
 
             data.sort((a, b) => a.value - b.value);
             data.reverse();
+            console.log("data",data)
 
-            var margin = {top: 20, right: 30, bottom: 90, left: 70},
-            margin2 = { top: 230, right: 30, bottom: 10, left: 70 },
-            width = window.innerWidth*(7/12)*0.5 - margin.left - margin.right,
-            height = 300 - margin.top - margin.bottom,
-            height2 = 300 - margin2.top - margin2.bottom;
+          const svg = d3.select('svg');
+          const svgContainer = d3.select('#container');
+          
+          const margin = 80;
+          const width = 1000 - 2 * margin;
+          const height = 600 - 2 * margin;
 
-            var svg = d3.select(div).append("svg")
-            // .append("rect")
-            .attr("width", width + margin.left + margin.right)
-            .attr("height", height + margin.top + margin.bottom);
+          const chart = svg.append('g')
+            .attr('transform', `translate(${margin}, ${margin})`);
 
-            var focus = svg.append("g")
-            .attr("class", "focus")
-            .attr("transform", "translate(" + margin.left + "," + margin.top + ")");
+          const xScale = d3.scaleBand()
+            .range([0, width])
+            .domain(data.map((s) => s.key))
+            .padding(0.4)
+          
+          const yScale = d3.scaleLinear()
+            .range([height, 0])
+            .domain([0, 100]);
 
-            var context = svg.append("g")
-            .attr("class", "context")
-            .attr("transform", "translate(" + margin2.left + "," + margin2.top + ")");
+          const makeYLines = () => d3.axisLeft()
+            .scale(yScale)
+
+          chart.append('g')
+            .attr('transform', `translate(0, ${height})`)
+            .call(d3.axisBottom(xScale));
+
+          chart.append('g')
+            .call(d3.axisLeft(yScale));
 
 
-            // set the ranges
-            var x_domain = 0;
-            var temp_data = 0;
-            var x = d3.scaleBand().range([0, width]).padding(0.1);
-            var y = d3.scaleLinear().range([height, 0]);
-            // set brushable ranges
-            var x2 = d3.scaleBand().range([0, width]).padding(0.1);
-            var y2 = d3.scaleLinear().range([height2, 0]);
+          chart.append('g')
+            .attr('class', 'grid')
+            .call(makeYLines()
+              .tickSize(-width, 0, 0)
+              .tickFormat('')
+            )
 
-            var xAxis = d3.axisBottom(x).tickSize(0),
-                xAxis2 = d3.axisBottom(x2).tickSize(0),
-                yAxis = d3.axisLeft(y);
+          const barGroups = chart.selectAll()
+            .data(data)
+            .enter()
+            .append('g')
 
-            var brush = d3.brushX()
-                .extent([[0, 0], [width, height2]])
-                .on("brush end", brushed);
+          barGroups
+            .append('rect')
+            .attr('class', 'bar')
+            .attr('x', (g) => xScale(g.key))
+            .attr('y', (g) => yScale(g.value))
+            .attr('height', (g) => height - yScale(g.value))
+            .attr('width', xScale.bandwidth())
+            .on('mouseenter', function (actual, i) {
+              d3.selectAll('.value')
+                .attr('opacity', 0)
 
-        
-            var bars1;
-            var bars2;
-        // Scale the range of the data in the domains
-            temp_data = data;
-            x_domain = data.map(function(d) { return d.key; })
-            // console.log(x_domain)
-            x.domain(data.map(function(d) { return d.key; }));
-            y.domain([0, d3.max(data, function(d) { return d.value; })]);
-            x2.domain(x.domain());
-            y2.domain(y.domain());
-        
-            var temp_rt =  drawBar1(focus, data)
-            var bars1 = temp_rt[0]
-            var bar1bars = temp_rt[1]
-            var bar1x = temp_rt[2]
-            var bar1y = temp_rt[3]
-            var bars2 = context.selectAll("rect").data(data).enter().append("rect");
+              d3.select(this)
+                .transition()
+                .duration(300)
+                .attr('opacity', 0.6)
+                .attr('x', (a) => xScale(a.key) - 5)
+                .attr('width', xScale.bandwidth() + 10)
 
-            bars2.attr("class", "bar").attr("x", function(d) { return x2(d.key); })
-                .attr("y", function(d) { return y2(d.value); })
-                .attr("width", x2.bandwidth())
-                .attr("height", function(d){ return height2-y2(d.value); })
-                .attr('fill','steelblue');
+              const y = yScale(actual.value)
 
-            focus.append("path")
-            .datum(data)
-            .attr("class", "bar")
-            .attr("d", bars1);
+              line = chart.append('line')
+                .attr('id', 'limit')
+                .attr('x1', 0)
+                .attr('y1', y)
+                .attr('x2', width)
+                .attr('y2', y)
 
-            context.append("path")
-                .datum(data)
-                .attr("class", "bar")
-                .attr("d", bars2);
+              barGroups.append('text')
+                .attr('class', 'divergence')
+                .attr('x', (a) => xScale(a.key) + xScale.bandwidth() / 2)
+                .attr('y', (a) => yScale(a.value) + 30)
+                .attr('fill', 'white')
+                .attr('text-anchor', 'middle')
+                .text((a, idx) => {
+                  const divergence = (a.value - actual.value).toFixed(1)
+                  
+                  let text = ''
+                  if (divergence > 0) text += '+'
+                  text += `${divergence}%`
 
-            context.append("g")
-                .attr("class", "axis axis--x")
-                .attr("transform", "translate(0," + height2 + ")");
-                // .call(xAxis2);
+                  return idx !== i ? text : '';
+                })
 
-            context.append("g")
-                .attr("class", "brush")
-                .call(brush)
-                .call(brush.move, x.range());
+            })
+            .on('mouseleave', function () {
+              d3.selectAll('.value')
+                .attr('opacity', 1)
 
-            svg.append("rect")
-                .attr("width", width)
-                .attr("height", height)
-                .attr("transform", "translate(" + margin.left + "," + margin.top + ")")
-                .attr('fill','none')
-            function drawBar1(focus, data){
+              d3.select(this)
+                .transition()
+                .duration(300)
+                .attr('opacity', 1)
+                .attr('x', (a) => xScale(a.key))
+                .attr('width', xScale.bandwidth())
 
-                bars1 = focus.selectAll("rect").data(data).enter().append("rect");
+              chart.selectAll('#limit').remove()
+              chart.selectAll('.divergence').remove()
+            })
 
-                bar1bars = bars1.attr("class", "bar").attr("x", function(d) { return x(d.key); })
-                .attr("y", function(d) { return y(d.value); })
-                .attr("width", x.bandwidth())
-                .attr("height", function(d){ return height-y(d.value); })
-                .attr('fill','steelblue')
+          barGroups 
+            .append('text')
+            .attr('class', 'value')
+            .attr('x', (a) => xScale(a.key) + xScale.bandwidth() / 2)
+            .attr('y', (a) => yScale(a.value) + 30)
+            .attr('text-anchor', 'middle')
+            .text((a) => `${a.value}%`)
+          
+          svg
+            .append('text')
+            .attr('class', 'label')
+            .attr('x', -(height / 2) - margin)
+            .attr('y', margin / 2.4)
+            .attr('transform', 'rotate(-90)')
+            .attr('text-anchor', 'middle')
+            .text('Love meter (%)')
 
-                bar1x = focus.append("g")
-                    .attr("class", "axis axis--x")
-                    .attr("transform", "translate(0," + height + ")")
-                    .call(xAxis)
-                    .selectAll("text")  // NAME 
-                    .style("text-anchor", "start")
-                    .attr("dx", "+.8em")
-                    .attr("dy", "+.1em")
-                    .attr("transform", "rotate(-90)" );
+          svg.append('text')
+            .attr('class', 'label')
+            .attr('x', width / 2 + margin)
+            .attr('y', height + margin * 1.7)
+            .attr('text-anchor', 'middle')
+            .text('Languages')
 
-                bar1y = focus.append("g")
-                    .attr("class", "axis axis--y")
-                    .call(yAxis);
+          svg.append('text')
+            .attr('class', 'title')
+            .attr('x', width / 2 + margin)
+            .attr('y', 40)
+            .attr('text-anchor', 'middle')
+            .text('Most loved programming languages in 2018')
 
-                // Create the Focus Y Axis Text Label
-                focus.append("text")
-                .style("font", "10px arial")
-                .attr("transform", "rotate(-90)")
-                .attr("y", 0 - margin.left)
-                .attr("x",0 - (height / 2))
-                .attr("dy", "2em")
-                .style("text-anchor", "middle")
-                .text("Frequency"); 
-
-                return [bars1, bar1bars, bar1x, bar1y];
-            
-            }
-            function brushed() {
-                if (d3.event.sourceEvent && d3.event.sourceEvent.type === "zoom") return; // ignore brush-by-zoom
-
-                bar1bars.remove()
-                bar1x.remove()
-                bar1y.remove()
-
-                var s = d3.event.selection || x2.range();
-                var temp_domain = x_domain.slice(Math.round(s[0]/x2.step()), Math.round(s[1]/x2.step()))
-                x.domain(temp_domain);
-                console.log(temp_domain)
-                const container = d3.select(this).node().parentElement.parentElement.parentElement.id;
-                if(container == "div_node_overview"){
-                    that.brushed['entity_type'] = temp_domain;
-                    that.brushed['relationship_type'] = [];
-                    that.toggleOverviewPanel("entity")
-                }else if (container == "div_link_overview"){
-                    that.brushed['relationship_type'] = temp_domain; 
-                    that.brushed['entity_type'] = [];
-                    that.toggleOverviewPanel("relationship")
-                }else{
-                    alert("error finding container")
-                }
-                var new_temp_data = temp_data.slice(Math.round(s[0]/x2.step()), Math.round(s[1]/x2.step()))
-
-                var temp_rt =  drawBar1(focus, new_temp_data)
-                bars1 = temp_rt[0]
-                bar1bars = temp_rt[1]
-                bar1x = temp_rt[2]
-                bar1y = temp_rt[3]
-
-                focus.select("bar").attr("d", bars1);
-                focus.select("axis axis--x").call(xAxis);
-            
-            }
+          svg.append('text')
+            .attr('class', 'source')
+            .attr('x', width - margin / 2)
+            .attr('y', height + margin * 1.7)
+            .attr('text-anchor', 'start')
+            .text('Source: Stack Overflow, 2018')
+          
                 
         },
         toggleOverviewPanel(focus){
@@ -249,11 +230,9 @@ export default {
     },
     watch: { 
         graphOverview(newVal) {
-            console.log(newVal) 
             var node_overview_data = this.graphOverview['data']['entity']
             var link_overview_data = this.graphOverview['data']['relationship']
-            console.log('fff', node_overview_data, link_overview_data)
-            this.drawBarChart('#div_link_overview', link_overview_data)
+            // this.drawBarChart('#div_link_overview', link_overview_data)
             this.drawBarChart('#div_node_overview', node_overview_data)
         }
     }

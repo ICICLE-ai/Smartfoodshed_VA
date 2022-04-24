@@ -34,7 +34,6 @@ export default {
         // console.log(e)
       },
       dropHandler(e){
-        console.log(1)
         const currentX = e.clientX;
         const currentY = e.clientY; 
         if(!e.dataTransfer.getData('item-id')){
