@@ -114,6 +114,42 @@
               </template>
               <span>Maximum Retrieval #</span>
             </v-tooltip>
+            
+            <v-menu
+              v-model="menu"
+              :close-on-content-click="false"
+              :nudge-width="200"
+              offset-x
+            > 
+              <template v-slot:activator="{ on: menu, attrs }">
+              <v-tooltip bottom>
+                <template v-slot:activator="{ on: tooltip}">
+                  <v-btn 
+                    class="ma-2 menu-btn"
+                    icon
+                    text 
+                  >
+                    <v-icon
+                      v-bind="attrs"
+                      v-on="{ ...tooltip, ...menu }"
+                      :style="{color: selectedColor?selectedColor.hex:'green'}"
+                    >
+                      mdi-palette
+                    </v-icon>
+                  </v-btn>
+                </template>
+                <span>Color Picker</span>
+              </v-tooltip>
+              </template>
+              <v-card>
+                <v-color-picker
+                  class="ma-2"
+                  show-swatches
+                  swatches-max-height="300px"
+                  v-model = "selectedColor"
+                ></v-color-picker>
+              </v-card>
+            </v-menu>
 
             <v-slider
               v-model="user_defined_thre"
@@ -181,6 +217,11 @@ export default{
       brushed: {"entity_type": [], "relationship_type": []},
       showOverview:false, 
       showMaxRetrieve:false,
+      fav: true,
+      menu: false,
+      message: false,
+      hints: true,
+      selectedColor: null, 
     }
   },
   created () {
@@ -470,6 +511,9 @@ export default{
     }
   },
   watch: {
+    selectedColor() {
+      console.log(this.selectedColor)
+    },
     graphData () {
       console.log(this.graphData)
       this.graphData['results'][0]['data'][0]['graph']['nodes'].forEach(function (d) {
