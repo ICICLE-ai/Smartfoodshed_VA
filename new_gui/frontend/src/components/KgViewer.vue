@@ -508,11 +508,17 @@ export default{
     },
     retrieve_types_nodes(){
       this.$store.dispatch("retrieveNodesLinksWithTypes", this.brushed)
+    },
+    circleUpdateMatchColor(){
+      if (this.selectedColor) {
+        d3.selectAll('circle').style('fill', this.selectedColor.hex)
+      }
     }
   },
   watch: {
     selectedColor() {
       console.log(this.selectedColor)
+      d3.selectAll('circle').style('fill', this.selectedColor.hex)
     },
     graphData () {
       console.log(this.graphData)
@@ -523,6 +529,8 @@ export default{
       console.log(this.graphData)
       KGutils.graphDataParsing(this.graphData, this.currentEntities, this.currentRelations)
       this.drawNeo4jd3()
+      this.circleUpdateMatchColor()
+
     }, 
     selectedEntities(val) {
       if (val.length > 0) {
