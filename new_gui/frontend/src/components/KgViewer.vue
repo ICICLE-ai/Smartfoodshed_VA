@@ -150,7 +150,26 @@
                 ></v-color-picker>
               </v-card>
             </v-menu>
-
+            
+            <v-tooltip bottom>
+              <template v-slot:activator="{ on, attrs }">
+                <v-btn 
+                  class="ma-2 menu-btn"
+                  icon
+                  text
+                  @click="showResThre = !showResThre"
+                >
+                  <v-icon
+                    v-bind="attrs"
+                    v-on="on"
+                  >
+                    mdi-soundbar
+                  </v-icon>
+                </v-btn>
+              </template>
+              <span>Resilience Threshold #</span>
+            </v-tooltip>
+            
             <v-slider
               v-model="user_defined_thre"
               :thumb-size="24"
@@ -158,16 +177,16 @@
               thumb-label="always"
               v-show="showMaxRetrieve"
             ></v-slider>
-            <!-- <v-btn
-                small
-                class="kg-view-btn"
-                @click="lassoToggleHandler"
-                :color="lassoColor"
-              >
-                <v-icon>
-                  mdi-lasso
-                </v-icon>
-            </v-btn> -->
+
+            <v-slider
+              v-model="resilience_thre"
+              :thumb-size="24"
+              min="0"
+              :max = max_resilience
+              thumb-label="always"
+              v-show="showResThre"
+            ></v-slider>
+           
           </v-col>
         </v-row>
         </v-container>
@@ -222,6 +241,10 @@ export default{
       message: false,
       hints: true,
       selectedColor: null, 
+      showResThre: false, // resilience threshold bar 
+      resilience_thre: 0,  // selected threshold of resilience 
+      // min_resilience: 0,
+      max_resilience: 100, // maximum value of the scroll bar for resilience threshold 
     }
   },
   created () {
@@ -513,20 +536,47 @@ export default{
       if (this.selectedColor) {
         d3.selectAll('circle').style('fill', this.selectedColor.hex)
       }
+    },
+    recolorNode(){
+      var that = this
+      d3.select('#div_graph').selectAll('circle').style('fill',function(d){
+      // check cold chain data
+        if('betweenness' in d['properties']){
+          if(d['properties']['betweenness']>=that.resilience_thre){
+            if(that.selectedColor){
+              return that.selectedColor.hex
+            }else{
+              return "#78b3d0"
+            }
+            
+          }else{
+            return "#b3b3b3"
+          }
+        }
+      })
     }
   },
   watch: {
     selectedColor() {
-      console.log(this.selectedColor)
-      d3.selectAll('circle').style('fill', this.selectedColor.hex)
+      this.recolorNode()
+      // d3.selectAll('circle').style('fill', this.selectedColor.hex)
+    },
+    resilience_thre(){
+      this.recolorNode()
     },
     graphData () {
-      console.log(this.graphData)
+      var all_resilience = []
       this.graphData['results'][0]['data'][0]['graph']['nodes'].forEach(function (d) {
         d['status'] = 'unclicked'
+        // check if this is cold chain data or not 
+        if("betweenness" in d['properties']){
+          all_resilience.push(d['properties']['betweenness'])
+        }
+        
       })
-      console.log("check graph data")
-      console.log(this.graphData)
+      // this.min_resilience = d3.min(all_resilience)
+      this.max_resilience = d3.max(all_resilience)
+      //inital the selected resilience
       KGutils.graphDataParsing(this.graphData, this.currentEntities, this.currentRelations)
       this.drawNeo4jd3()
       this.circleUpdateMatchColor()
