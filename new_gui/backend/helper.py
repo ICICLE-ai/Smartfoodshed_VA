@@ -309,12 +309,17 @@ def graph_after_expand_node(graph,node_id_list,relation_id_list,expand_node,limi
 def convert_subgraph_to_json_withR(subgraph,entity_identifier,graph):
     #construct list of node dicitionary 
     node_dict_list = []
+    node_id_list = []
     for n in list(subgraph.nodes):
-        node_property = dict(n)
-        node_property.update({"mapping":entity_identifier})
-        relationship_types,_ = get_all_relationship_type(graph,n.identity)
-        node_dict = {"id":n.identity,"labels":[],"relationship_types":relationship_types,"properties":node_property,"type":"node"}
-        node_dict_list.append(node_dict)
+        if n.identity in node_id_list:
+            continue
+        else:
+            node_id_list.append(n.identity)
+            node_property = dict(n)
+            node_property.update({"mapping":entity_identifier})
+            relationship_types,_ = get_all_relationship_type(graph,n.identity)
+            node_dict = {"id":n.identity,"labels":[],"relationship_types":relationship_types,"properties":node_property,"type":"node"}
+            node_dict_list.append(node_dict)
     
     #construct list of relationship dicitionary
     relation_dict_list = []
@@ -337,11 +342,16 @@ def convert_subgraph_to_json_withR(subgraph,entity_identifier,graph):
 def convert_subgraph_to_json(subgraph,entity_identifier):
     #construct list of node dicitionary 
     node_dict_list = []
+    node_id_list = []
     for n in list(subgraph.nodes):
-        node_property = dict(n)
-        node_property.update({"mapping":entity_identifier})
-        node_dict = {"id":n.identity,"labels":[],"properties":node_property,"type":"node"}
-        node_dict_list.append(node_dict)
+        if n.identity in node_id_list:
+            continue
+        else:
+            node_id_list.append(n.identity)
+            node_property = dict(n)
+            node_property.update({"mapping":entity_identifier})
+            node_dict = {"id":n.identity,"labels":[],"properties":node_property,"type":"node"}
+            node_dict_list.append(node_dict)
 
     #construct list of relationship dicitionary
     relation_dict_list = []
@@ -458,7 +468,6 @@ def get_graph_overview(graph,entity_type,relationship_type):
     entity_dist_dict = {}
     for n in entity_type:
         entity_dist_dict[n] = graph.nodes.match(n).__len__()
-
     relationship_dist_dict = {}
     for r in relationship_type:
         relationship_dist_dict[r] = graph.relationships.match(r_type=r).__len__()
