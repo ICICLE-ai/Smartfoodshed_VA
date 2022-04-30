@@ -351,6 +351,7 @@ def convert_subgraph_to_json(subgraph,entity_identifier):
             node_id_list.append(n.identity)
             node_property = dict(n)
             node_property.update({"mapping":entity_identifier})
+            node_property.update({"entity_type":list(n.labels)[-1]})
             node_dict = {"id":n.identity,"labels":[],"properties":node_property,"type":"node"}
             node_dict_list.append(node_dict)
 
