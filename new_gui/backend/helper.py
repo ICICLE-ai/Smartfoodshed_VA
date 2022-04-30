@@ -317,6 +317,7 @@ def convert_subgraph_to_json_withR(subgraph,entity_identifier,graph):
             node_id_list.append(n.identity)
             node_property = dict(n)
             node_property.update({"mapping":entity_identifier})
+            node_property.update({"entity_type":list(n.labels)[-1]})
             relationship_types,_ = get_all_relationship_type(graph,n.identity)
             node_dict = {"id":n.identity,"labels":[],"relationship_types":relationship_types,"properties":node_property,"type":"node"}
             node_dict_list.append(node_dict)
