@@ -162,7 +162,7 @@ def expand_node():
         # print(nodes_list)
         # print(relation_list)
         # print(expand_node)
-        subgraph_res,error_code = helper.graph_after_expand_node(graph,nodes_list,relation_list,expand_node,limit_number,relationship_name)
+        subgraph_res,error_code = helper.graph_after_expand_node(graph,nodes_list,relation_list,expand_node,limit_number,relationship_name,database)
         dict_res = helper.convert_subgraph_to_json(subgraph_res, entity_identifier)
     except:
         error_code = 404
@@ -177,23 +177,23 @@ def expand_node_with_relationship_type():
     limit_number = request_obj['threshold']
     print(limit_number)
     # limit_number = 5
-    try:
-        if request_obj.get("nodes") is not None:
-            nodes_list = request_obj.get("nodes")
-        if request_obj.get("relations") is not None:
-            relation_list = request_obj.get("relations")
-        if request_obj.get("expand_node") is not None:
-            expand_node = request_obj.get("expand_node")
-        if request_obj.get("limit_number") is not None:
-            limit_number = request_obj.get("limit_number")
-        relationship_name = request_obj.get("relationship_name")
-        # print(nodes_list)
-        # print(relation_list)
-        # print(expand_node)
-        subgraph_res,error_code = helper.graph_after_expand_node(graph,nodes_list,relation_list,expand_node,limit_number,relationship_name)
-        dict_res = helper.convert_subgraph_to_json_withR(subgraph_res, entity_identifier,graph)
-    except:
-        error_code = 404
+    # try:
+    if request_obj.get("nodes") is not None:
+        nodes_list = request_obj.get("nodes")
+    if request_obj.get("relations") is not None:
+        relation_list = request_obj.get("relations")
+    if request_obj.get("expand_node") is not None:
+        expand_node = request_obj.get("expand_node")
+    if request_obj.get("limit_number") is not None:
+        limit_number = request_obj.get("limit_number")
+    relationship_name = request_obj.get("relationship_name")
+    # print(nodes_list)
+    # print(relation_list)
+    # print(expand_node)
+    subgraph_res,error_code = helper.graph_after_expand_node(graph,nodes_list,relation_list,expand_node,limit_number,relationship_name,database)
+    dict_res = helper.convert_subgraph_to_json_withR(subgraph_res, entity_identifier,graph)
+    # except:
+    #     error_code = 404
     return Response(json.dumps(dict_res),status = error_code)
 
 @app.route('/getRType', methods=['POST'])

@@ -262,7 +262,7 @@ def graph_after_delete_node(node_id_list,relation_id_list,delete_node,graph):
 #       limit_number, a int, the maximum number of nodes we could add after expansion
 #       relationship_name, a certain relationship we want to expand, if it is None then we just expand on random relationship
 #Output: a subgraph object in py2neo after expansion
-def graph_after_expand_node(graph,node_id_list,relation_id_list,expand_node,limit_number,relationship_name):
+def graph_after_expand_node(graph,node_id_list,relation_id_list,expand_node,limit_number,relationship_name,database):
     node_list = [graph.nodes.get(i) for i in node_id_list]
     relation_list = [graph.relationships.get(i) for i in relation_id_list]
 
@@ -271,16 +271,26 @@ def graph_after_expand_node(graph,node_id_list,relation_id_list,expand_node,limi
     subgraph = subgraph | Subgraph((),relation_list)
     subgraph = subgraph | Subgraph(node_list)
 
-    #find the expanded relationship from the expand_node
     if relationship_name is None:
-        #expand on random relationship
-        new_sub = Subgraph((),graph.match({graph.nodes.get(expand_node)}).limit(limit_number).all())
+        if database == "cfs":
+            cypher = "MATCH (n)-[r]-(p) WHERE id(n) = {} RETURN id(r) as id order by r.Value DESC limit {}"
+            new_relation_id = [i['id'] for i in graph.run(cypher.format(expand_node,limit_number)).data()]
+        elif database == "ppod":
+            cypher = "MATCH (n)-[r]-(p) WHERE id(n) = {} RETURN id(r) as id limit {}"
+            new_relation_id = [i['id'] for i in graph.run(cypher.format(expand_node,limit_number)).data()]
     else:
-        #expand on certain relationship
-        new_sub = Subgraph((),graph.match({graph.nodes.get(expand_node)},relationship_name).limit(limit_number).all())
-       
-    #check for possible connection between the newly added node and old node
+        if database == "cfs":
+            cypher = "MATCH (n)-[r:{}]-(p) WHERE id(n) = {} RETURN id(r) as id order by r.Value DESC limit {}"
+            new_relation_id = [i['id'] for i in graph.run(cypher.format(relationship_name,expand_node,limit_number)).data()]
+        elif database == "ppod":
+            cypher = "MATCH (n)-[r:{}]-(p) WHERE id(n) = {} RETURN id(r) as id limit {}"
+            new_relation_id = [i['id'] for i in graph.run(cypher.format(relationship_name,expand_node,limit_number)).data()]
+    
+    new_relation_list = [graph.relationships.get(i) for i in new_relation_id]
+    new_sub = Subgraph((),new_relation_list)
     new_node_id = [n.identity for n in list(new_sub.nodes)]
+
+    #check for possible connection between the newly added node and old node
     if len(new_node_id) != 0:
         error_code = 200
         new_node_id.remove(expand_node)
