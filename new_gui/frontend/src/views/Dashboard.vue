@@ -10,13 +10,19 @@
             <v-tab>
               GeoMap View
             </v-tab>
-            
+            <v-tab>
+              Leaflet View
+            </v-tab>
             <v-tab-item>
               <table-viewer/>
             </v-tab-item>
 
             <v-tab-item>
               <GeoMapViewer/>
+            </v-tab-item>
+
+            <v-tab-item>
+              <leaflet/>
             </v-tab-item>
 
             <!-- <v-tab-item>
@@ -38,6 +44,7 @@
 import TableViewer from '@/components/TableViewer.vue'
 import KgViewer from '@/components/KgViewer.vue'
 import GeoMapViewer from '@/components/GeoMapViewer.vue'
+import Leaflet from '@/components/Leaflet.vue'
 // import NodeOverview from '@/components/NodeOverview.vue'
 export default {
   name: 'App',
@@ -47,6 +54,7 @@ export default {
     TableViewer,
     KgViewer,
     GeoMapViewer,
+    Leaflet
     // NodeOverview
   },
 
