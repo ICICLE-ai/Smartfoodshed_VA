@@ -316,7 +316,7 @@ def graph_after_expand_node(graph,node_id_list,relation_id_list,expand_node,limi
 #       graph, the entire neo4j graphDB
 #       entity_identifier, a string, denotes the property name which you want to display in the front end (same as the mapping property)
 #Ouput: a dictionary containing the graph in json format
-def convert_subgraph_to_json_withR(subgraph,entity_identifier,graph):
+def convert_subgraph_to_json_withR(subgraph,entity_identifier,graph,database,fips):
     #construct list of node dicitionary 
     node_dict_list = []
     node_id_list = []
@@ -327,7 +327,10 @@ def convert_subgraph_to_json_withR(subgraph,entity_identifier,graph):
             node_id_list.append(n.identity)
             node_property = dict(n)
             node_property.update({"mapping":entity_identifier})
-            node_property.update({"entity_type":list(n.labels)[-1]})
+            entity_type = list(n.labels)[-1]
+            node_property.update({"entity_type":entity_type})
+            if database == "ppod" and entity_type == "County":
+                node_property.update({"county_id":fips[fips.name.isin([n['label']])]['fips'].values[0]})
             relationship_types,_ = get_all_relationship_type(graph,n.identity)
             node_dict = {"id":n.identity,"labels":[],"relationship_types":relationship_types,"properties":node_property,"type":"node"}
             node_dict_list.append(node_dict)
@@ -350,7 +353,7 @@ def convert_subgraph_to_json_withR(subgraph,entity_identifier,graph):
 #Input: subgraph, a subgraph object in py2neo
 #       entity_identifier, a string, denotes the property name which you want to display in the front end (same as the mapping property)
 #Ouput: a dictionary containing the graph in json format
-def convert_subgraph_to_json(subgraph,entity_identifier):
+def convert_subgraph_to_json(subgraph,entity_identifier,database,fips):
     #construct list of node dicitionary 
     node_dict_list = []
     node_id_list = []
@@ -361,7 +364,10 @@ def convert_subgraph_to_json(subgraph,entity_identifier):
             node_id_list.append(n.identity)
             node_property = dict(n)
             node_property.update({"mapping":entity_identifier})
-            node_property.update({"entity_type":list(n.labels)[-1]})
+            entity_type = list(n.labels)[-1]
+            node_property.update({"entity_type":entity_type})
+            if database == "ppod" and entity_type == "County":
+                node_property.update({"county_id":fips[fips.name.isin([n['label']])]['fips'].values[0]})
             node_dict = {"id":n.identity,"labels":[],"properties":node_property,"type":"node"}
             node_dict_list.append(node_dict)
 
