@@ -35,7 +35,19 @@
             </v-tooltip>
           </v-col>
         </v-row>
-
+        <v-menu 
+          offset-y
+          v-model="showColorPickerMenu"
+          absolute
+          class="colorPickerMenu"
+        >
+          <v-list-item
+            v-for="(item, index) in arr"
+            :key="index"
+          >
+            <v-list-item-title>{{ item }}</v-list-item-title>
+          </v-list-item>
+        </v-menu>
     </v-container>
 </template>
 
@@ -47,6 +59,8 @@ export default {
     data(){
       return {
         brushed: {"entity_type": [], "relationship_type": []}, 
+        showColorPickerMenu: true,
+        arr: [1,2,3]
 
       }
     },
@@ -249,8 +263,7 @@ div#div_node_overview {
 div#div_link_overview {
   width: 500px;
   height: 400px;
-  margin-left: 1em;
-}
+  margin-left: 1em;}
 
 svg {
   width: 100%;
