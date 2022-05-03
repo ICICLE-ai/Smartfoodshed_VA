@@ -27,15 +27,16 @@ async function queryMapInfoWithNode(node_list){
 async function postRequest(url, data, warningMsg) { 
     const response = await axios.post(url, data)
     const statusCode = response.status
-    if (statusCode == "200") {
-        return response['data'] 
-    } else if (statusCode == "204") {
+    console.log(statusCode)
+    if (statusCode == "204") {
         alert(warningMsg['204'])
         return null
-    } else {
+    } else  if(statusCode == "400"){
         alert(warningMsg['400'])
         return null
-    } 
+    } else {
+        return response['data'] 
+    }
 }
 
 async function getRequest(url, warningMsg) { 

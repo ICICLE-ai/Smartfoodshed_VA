@@ -155,12 +155,11 @@ export default {
       }
   },
   computed:{
-     ...mapState(['us', 'mapInitialInfo', 'mapQueryInfo', 'mapInQueryStatus', 'activeTab', 'ecoregion']),
+     ...mapState(['graphData', 'mapInitialInfo', 'mapQueryInfo', 'mapInQueryStatus', 'activeTab', 'ecoregion']),
   },
   watch:{
-      us(){
-        
-          console.log('test', this.us)
+      graphData(){
+          console.log('graph changed', this.graphData)
       },
       mapInitialInfo(){
           this.initMarker()
