@@ -29,10 +29,9 @@
                     v-for="circle in circles" :key="circle.key"
                     :lat-lng="circle.center"
                     :radius="circle.radius"
-                    stroke= true
+                    :stroke= "circle.stroke"
                     :fillColor="circle.color"
                     :color = "circle.color"
-                    weight=2
                     :fillOpacity = "circle.opacity">
                     <l-popup :content="circle.content"/>
                 </l-circle-marker>
@@ -116,6 +115,7 @@ export default {
                         center: [ele['lat'],ele['long']],
                         radius:8,
                         opacity:0.8,
+                        stroke: true,
                         content: d['county_name']+':'+val.toString(),
                         color: color_mapping(val)
                     }
@@ -127,21 +127,31 @@ export default {
         })
         this.circles = circles
         this.show_marker = true
-        // var color = d3.scaleLinear()
-        // .domain(d3.)
-        // var val = this.mapInitialInfo
-        // var colorMapping = {}
-
-        // if(this.selectedInit=="Total"){
-        //     val.forEach(d=>{
-        //         colorMapping[d['county_id']] = d['count_total']
-        //     })
-        // }else{
-        //     val.forEach(d=>{
-        //         colorMapping[d['county_id']] = d['count_details'][this.selectedInit]
-        //     })
-        // }
           
+      },
+      updateMarker(){
+          console.log('i[date',this.mapQueryInfo)
+          var output = []
+          var c = 0
+          this.show_marker = false
+          this.mapQueryInfo.forEach(d=>{
+              for (let [key, value] of Object.entries(d['county'])) {
+                var ele = MAPPING[value]
+                var temp = {
+                    key: c,
+                    center: [ele['lat'],ele['long']],
+                    radius:8,
+                    opacity:0.8,
+                    stroke: true,
+                    content: d['node_name']+ ' is located in '+ key,
+                    color: 'red'
+                }
+                c+=1
+                output.push(temp)
+            }
+          })
+          this.circles = output 
+          this.show_marker = true
       }
   },
   computed:{
@@ -149,11 +159,17 @@ export default {
   },
   watch:{
       us(){
+        
           console.log('test', this.us)
       },
       mapInitialInfo(){
           this.initMarker()
           console.log('test',this.mapInitialInfo)
+      },
+      mapQueryInfo(){
+          console.log('mapp query info')
+        this.updateMarker() 
+        // this.updateMapColoring()
       },
       selectedInit(){
           this.initMarker()
