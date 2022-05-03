@@ -317,9 +317,10 @@ function Neo4jD3 (_selector, _options) {
 
   function appendOutlineToNode (node) {
     return node.append('circle')
-      .attr('class', 'outline')
+      .attr('class', d=>`outline nodetype_${d.properties.entity_type?d.properties.entity_type:'undefined'}`)
       .attr('r', options.nodeRadius)
       .style('fill', function (d) {
+        console.log(d)
         return '#78b3d0'
         //    return options.nodeOutlineFillColor ? options.nodeOutlineFillColor : class2color(d.labels[0]);
       })
@@ -386,7 +387,7 @@ function Neo4jD3 (_selector, _options) {
 
   function appendOutlineToRelationship (r) {
     return r.append('path')
-      .attr('class', 'outline')
+      .attr('class', d=>`outline nodetype_${d.properties.relationship_type?d.properties.relationship_type:'undefined'}`)
       .attr('fill', '#a5abb6')
       .attr('stroke', 'none')
   }

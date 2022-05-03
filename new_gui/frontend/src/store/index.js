@@ -42,6 +42,9 @@ function initialState () {
     tableContainer: {
       height: 1000
     }, 
+    colorMapping: {
+
+    }
   }
 }
 const mutations = {
@@ -139,7 +142,9 @@ const mutations = {
   SET_CRRENTDRAGGING(state, vm){
     state.currentDragging = vm;
   },
-
+  UPDATE_COLOR_MAPPING(state, {label, color}) {
+    state.colorMapping[label] = color
+  }
 }
 const actions = {
   async setExpandTh ({commit, dispatch, state}, data){
@@ -295,6 +300,9 @@ const actions = {
     // commit('RELATION_STATUS_OFF')
     commit('SET_graphData', result['data']) 
     commit('RELATION_STATUS_COUNTY')
+  }, 
+  updateColorMapping({commit}, {label, color}){
+    commit('UPDATE_COLOR_MAPPING', {label, color})
   }
 }
 export default new Vuex.Store({

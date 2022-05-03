@@ -533,8 +533,10 @@ export default{
       this.$store.dispatch("retrieveNodesLinksWithTypes", this.brushed)
     },
     circleUpdateMatchColor(){
-      if (this.selectedColor) {
-        d3.selectAll('circle').style('fill', this.selectedColor.hex)
+      if (this.colorMapping) {
+        Object.keys(this.colorMapping).forEach(category => {
+          d3.selectAll('.'+category).style('fill', this.colorMapping[category])
+        })
       }
     },
     recolorNode(){
@@ -629,7 +631,7 @@ export default{
     
   },
   computed: {
-    ...mapState(['graphData', 'relationStatusReady', 'relationTypeData','loading', 'graphOverview']),
+    ...mapState(['graphData', 'relationStatusReady', 'relationTypeData','loading', 'graphOverview', 'colorMapping']),
     HEIGHT () {
       return window.innerHeight*0.7 + 'px'
     },

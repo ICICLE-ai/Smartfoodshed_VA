@@ -36,17 +36,18 @@
           </v-col>
         </v-row>
         <v-menu 
-          offset-y
           v-model="showColorPickerMenu"
           absolute
           class="colorPickerMenu"
+          :position-x="pickerX"
+          :position-y="pickerY"
         >
-          <v-list-item
-            v-for="(item, index) in arr"
-            :key="index"
-          >
-            <v-list-item-title>{{ item }}</v-list-item-title>
-          </v-list-item>
+         <v-color-picker
+                  class="ma-2"
+                  show-swatches
+                  swatches-max-height="300px"
+                  v-model="selectedColor"
+          ></v-color-picker>
         </v-menu>
     </v-container>
 </template>
@@ -59,8 +60,11 @@ export default {
     data(){
       return {
         brushed: {"entity_type": [], "relationship_type": []}, 
-        showColorPickerMenu: true,
-        arr: [1,2,3]
+        showColorPickerMenu: false,
+        arr: [1,2,3], 
+        pickerX: 0,
+        pickerY: 0, 
+        selectedColor:'#80cbc4',
       }
     },
     computed: {
@@ -69,6 +73,23 @@ export default {
       }
     }, 
     methods: { 
+        getContainerX(title){
+          const container = document.querySelector(`.container_${title.split(' ').join('_')}`)
+          if (container!=null) {
+            
+            return container.getBoundingClientRect().x
+          }else {
+            return 0; 
+          }
+        },
+        getContainerY(title){
+          const container = document.querySelector(`.container_${title.split(' ').join('_')}`)
+          if (container!=null) {
+            return container.getBoundingClientRect().y
+          }else {
+            return 0; 
+          }
+        },
         drawBarChart(div, data_, title){
         // clean the data
             let that = this
@@ -83,7 +104,7 @@ export default {
             data.reverse();
             console.log("data",data)
 
-          var svg = d3.select(div).append("svg");
+          var svg = d3.select(div).append("svg").attr('class', `container_${title.split(' ').join('_')}`);
           
           const margin = 80;
           const width = 500 - 2 * margin;
@@ -135,13 +156,22 @@ export default {
 
           barGroups
             .append('rect')
-            .attr('class', 'bar')
+            .attr('class', d=>`bar nodetype_${d.key?d.key:'undefined'}`)
             .attr('x', (g) => xScale(g.key))
             .attr('y', (g) => yScale(g.value))
             .attr('height', (g) => height - yScale(g.value))
             .attr('width', xScale.bandwidth())
             .on('contextmenu', function(d, i) {
+              const coordinates = d3.mouse(this)
+              that.pickerX = that.getContainerX(title) + coordinates[0]
+              that.pickerY = that.getContainerY(title) + coordinates[1]
               d3.event.preventDefault()
+              that.currentNodeForColorPicker = `nodetype_${d.key?d.key:'undefined'}`
+              if (d.selectedColor == null) {
+                that.selectedColor = '#80cbc4'
+              }else {
+                that.selectedColor = d.selectedColor
+              }
               that.showColorPickerMenu = true
             })
             .on('click', function(actual,i){ 
@@ -196,6 +226,7 @@ export default {
               chart.selectAll('#limit').remove()
               chart.selectAll('.divergence').remove()
             })
+            .style('fill', '#80cbc4')
 
           // barGroups 
           //   .append('text')
@@ -243,6 +274,17 @@ export default {
             var link_overview_data = this.graphOverview['data']['relationship']
             this.drawBarChart('#div_link_overview', link_overview_data,"Link Overview")
             this.drawBarChart('#div_node_overview', node_overview_data, "Node Overview")
+        },
+        selectedColor(newVal) {
+          const that = this
+          d3.selectAll('.'+this.currentNodeForColorPicker).style('fill', d=>{
+            d.selectedColor = newVal
+            that.$store.dispatch('updateColorMapping', {label: this.currentNodeForColorPicker, color:newVal})
+            return newVal
+          })
+          console.log(d3.selectAll('.'+this.currentNodeForColorPicker))
+          console.log('.'+this.currentNodeForColorPicker)
+          console.log(newVal)
         }
     }
 }
@@ -273,9 +315,6 @@ div#div_link_overview {
   height: 100%;
 }
 
-.bar {
-  fill: #80cbc4;
-}
 
 text {
   font-size: 12px;
