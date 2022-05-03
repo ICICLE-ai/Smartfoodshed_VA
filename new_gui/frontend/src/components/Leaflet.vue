@@ -23,9 +23,11 @@
             <l-map style="height: 650px" :zoom="zoom" :center="center">
                 <l-tile-layer :url="url" :attribution="attribution"></l-tile-layer>
                 <l-geo-json :geojson="geojson" v-if="show_eco"></l-geo-json>
-                <!-- <l-marker :lat-lng="markerLatLng"></l-marker> -->
+                <l-marker :v-if="show_marker" :lat-lng="marker.center" :opacity="marker.opacity" v-for ="marker in markers" :key="marker.key">
+                    <l-popup :content="marker.content"/>
+                </l-marker>
                 <l-circle-marker
-                    :v-if = "show_marker"
+                    :v-if = "show_circle_marker"
                     v-for="circle in circles" :key="circle.key"
                     :lat-lng="circle.center"
                     :radius="circle.radius"
@@ -69,9 +71,11 @@ export default {
       geojson: null,
       show_eco: false,
       circles: null,
-      show_marker: false,
+      show_circle_marker: false,
       markerLatLng: [39.1014537, -84.5124602],
       selectedInit: 'Total',
+      markers:null,
+      show_marker: false
     };
   },
   async created () {
@@ -79,13 +83,18 @@ export default {
     this.geojson = await EcoUSDA
     this.$store.dispatch("load_map")
     // this.show_eco = true
+    console.log(this.graphData)
+    if(this.graphData){
+        this.initCircleMarkerWithG()
+    }else{
+        this.initCircleMarker()
+    }
   },
   methods:{
     changeInitColor(val){
         this.selectedInit = val
     },
-    initMarker(){
-        console.log(this.mapInitialInfo)
+    initCircleMarker(){
         if(this.selectedInit=='Total'){
             var min = d3.min(this.mapInitialInfo, d=> {if(d.count_total>0) return d.count_total})
             var max = d3.max(this.mapInitialInfo, d=> +d.count_total)
@@ -95,7 +104,7 @@ export default {
         }
         var color_mapping = d3.scaleLinear()
         .domain([min, max])
-        .range(['#9ecae1','#084594'])
+        .range(['#ffffb2','#b10026'])
         
         var circles = []
         var that = this
@@ -116,20 +125,19 @@ export default {
                         radius:8,
                         opacity:0.8,
                         stroke: true,
-                        content: d['county_name']+':'+val.toString(),
+                        content: 'the number of entities related to '+d['county_name']+':'+val.toString(),
                         color: color_mapping(val)
                     }
                     circles.push(temp)
                 }
             } else{
-                console.log('do not have this county lat long:',d['county_id'])
+                // console.log('do not have this county lat long:',d['county_id'])
             }
         })
         this.circles = circles
-        this.show_marker = true
-          
-      },
-      updateMarker(){
+        this.show_circle_marker = true
+    },
+    updateMarker(){
           console.log('i[date',this.mapQueryInfo)
           var output = []
           var c = 0
@@ -150,9 +158,12 @@ export default {
                 output.push(temp)
             }
           })
-          this.circles = output 
+          this.markers = output 
           this.show_marker = true
-      }
+    },
+    initCircleMarkerWithG(){
+        console.log('initG',this.graphData)
+    }
   },
   computed:{
      ...mapState(['graphData', 'mapInitialInfo', 'mapQueryInfo', 'mapInQueryStatus', 'activeTab', 'ecoregion']),
@@ -162,16 +173,14 @@ export default {
           console.log('graph changed', this.graphData)
       },
       mapInitialInfo(){
-          this.initMarker()
-          console.log('test',this.mapInitialInfo)
+          this.initCircleMarker()
       },
       mapQueryInfo(){
-          console.log('mapp query info')
         this.updateMarker() 
         // this.updateMapColoring()
       },
       selectedInit(){
-          this.initMarker()
+          this.initCircleMarker()
       }
   }
 }
