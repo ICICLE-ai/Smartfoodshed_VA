@@ -279,9 +279,9 @@ export default {
           const that = this
           d3.selectAll('.'+this.currentNodeForColorPicker).style('fill', d=>{
             d.selectedColor = newVal
-            that.$store.dispatch('updateColorMapping', {label: this.currentNodeForColorPicker, color:newVal})
             return newVal
           })
+          that.$store.dispatch('updateColorMapping', {label: this.currentNodeForColorPicker, color:newVal})
           console.log(d3.selectAll('.'+this.currentNodeForColorPicker))
           console.log('.'+this.currentNodeForColorPicker)
           console.log(newVal)
