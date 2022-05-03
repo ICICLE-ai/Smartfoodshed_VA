@@ -7,6 +7,7 @@ from neo4j import GraphDatabase
 from py2neo import Graph
 from py2neo import Subgraph
 import py2neo
+import pandas as pd
 """ config.py
 // Adding config file to config your local data folder please !!!!!!!!!!!
 
@@ -97,7 +98,7 @@ def getSubGraphFromTable():
         if request_obj.get("relations") is not None:
             relation_list = request_obj.get("relations")
         subgraph_res,error_code = helper.get_subgraph(graph, nodes_list, relation_list)
-        dict_res = helper.convert_subgraph_to_json(subgraph_res, entity_identifier)
+        dict_res = helper.convert_subgraph_to_json(subgraph_res, entity_identifier,database,fips)
         print(error_code)
     except:
         print("404")
@@ -116,7 +117,7 @@ def getSubGraphFromTableWithR():
         if request_obj.get("relations") is not None:
             relation_list = request_obj.get("relations")
         subgraph_res,error_code = helper.get_subgraph(graph, nodes_list, relation_list)
-        dict_res = helper.convert_subgraph_to_json_withR(subgraph_res, entity_identifier,graph)
+        dict_res = helper.convert_subgraph_to_json_withR(subgraph_res, entity_identifier,graph,database,fips)
     except:
         error_code = 404
     return Response(json.dumps(dict_res),status = error_code)
@@ -137,7 +138,7 @@ def delete_node_from_graph():
 
         subgraph_res,error_code = helper.graph_after_delete_node(nodes_list,relation_list,delete_node,graph)
 
-        dict_res = helper.convert_subgraph_to_json(subgraph_res, entity_identifier,graph)
+        dict_res = helper.convert_subgraph_to_json(subgraph_res, entity_identifier,graph,database,fips)
     except:
         error_code = 404
     return Response(json.dumps(dict_res),status = error_code)
@@ -163,7 +164,7 @@ def expand_node():
         # print(relation_list)
         # print(expand_node)
         subgraph_res,error_code = helper.graph_after_expand_node(graph,nodes_list,relation_list,expand_node,limit_number,relationship_name,database)
-        dict_res = helper.convert_subgraph_to_json(subgraph_res, entity_identifier)
+        dict_res = helper.convert_subgraph_to_json(subgraph_res, entity_identifier,database,fips)
     except:
         error_code = 404
     return Response(json.dumps(dict_res),status = error_code)
@@ -191,7 +192,7 @@ def expand_node_with_relationship_type():
     # print(relation_list)
     # print(expand_node)
     subgraph_res,error_code = helper.graph_after_expand_node(graph,nodes_list,relation_list,expand_node,limit_number,relationship_name,database)
-    dict_res = helper.convert_subgraph_to_json_withR(subgraph_res, entity_identifier,graph)
+    dict_res = helper.convert_subgraph_to_json_withR(subgraph_res, entity_identifier,graph,database,fips)
     # except:
     #     error_code = 404
     return Response(json.dumps(dict_res),status = error_code)
@@ -221,7 +222,7 @@ def get_graph_with_certain_entity():
             entity_type = request_obj.get("entity_type")
             print(entity_type)
         subgraph_res,error_code = helper.get_graph_with_certain_entity(graph,entity_type,limit_number)
-        dict_res = helper.convert_subgraph_to_json_withR(subgraph_res,entity_identifier,graph)
+        dict_res = helper.convert_subgraph_to_json_withR(subgraph_res,entity_identifier,graph,database,fips)
     except:
         print("Error!!!!!")
         error_code = 404
@@ -236,7 +237,7 @@ def get_graph_with_certain_relationship():
         if request_obj.get("relationship_type") is not None:
             relationship_type = request_obj.get("relationship_type")
         subgraph_res,error_code = helper.get_graph_with_certain_relationship(graph,relationship_type,limit_number)
-        dict_res = helper.convert_subgraph_to_json_withR(subgraph_res,entity_identifier,graph)
+        dict_res = helper.convert_subgraph_to_json_withR(subgraph_res,entity_identifier,graph,database,fips)
     except:
         error_code = 404
     return Response(json.dumps(dict_res),status = error_code)
@@ -273,14 +274,14 @@ def get_associated_node_from_county():
         if request_obj.get("county_id") is not None:
             county_id = request_obj.get("county_id")
         subgraph_res,error_code = helper.get_associated_nodes_for_county(county_id,database,graph,limit_number)
-        dict_res = helper.convert_subgraph_to_json_withR(subgraph_res,entity_identifier,graph)
+        dict_res = helper.convert_subgraph_to_json_withR(subgraph_res,entity_identifier,graph,database,fips)
     except Exception as e:
         print(e)
         error_code = 404
     return Response(json.dumps(dict_res),status = error_code)
 
 if __name__ == '__main__':
-    global graph, entity_identifier,graph_overview,database
+    global graph, entity_identifier,graph_overview,database,fips
     # driver = GraphDatabase.driver("bolt://localhost:7687", auth=("neo4j", "123"))
     graph = Graph("bolt://localhost:7687", auth=("neo4j", "123")) # This should be a global variable in this app
     # graph = Graph("http://localhost:7687", auth=("neo4j", "123")) # This should be a global variable in this app
@@ -298,4 +299,9 @@ if __name__ == '__main__':
     else:
         database = "cfs"
         entity_identifier = "county" # This should be a global variable in this app
+
+    fips = pd.read_csv("data/county_fips.csv")
+    fips = fips.astype({"fips": str})
+    fips['fips'] = fips['fips'].apply(lambda x: x.zfill(5))
+    fips = fips.append({'fips':'46102', 'name':'Oglala Lakota County','state':'SD'},ignore_index=True)
     app.run()

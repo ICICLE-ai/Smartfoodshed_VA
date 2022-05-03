@@ -1,5 +1,5 @@
 <template>
-    <v-container>
+    <v-container id="noderel">
         <v-row :style="{'height': 'OVERVIEW_HEIGHT', 'margin-top':'20px'}">
             <v-col cols="6">
                 <div id="div_node_overview"></div>
@@ -265,7 +265,7 @@ div#div_link_overview {
   height: 400px;
   margin-left: 1em;}
 
-svg {
+#noderel svg {
   width: 100%;
   height: 100%;
 }
@@ -279,9 +279,9 @@ text {
   fill: #000;
 }
 
-path {
+/* path {
   stroke: gray;
-}
+} */
 
 line {
   stroke: gray;
