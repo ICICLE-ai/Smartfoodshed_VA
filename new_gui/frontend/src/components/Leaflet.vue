@@ -87,7 +87,7 @@ export default {
     if(this.graphData){
         this.initCircleMarkerWithG()
     }else{
-        this.initCircleMarker()
+        // this.initCircleMarker()
     }
   },
   methods:{
@@ -145,24 +145,34 @@ export default {
           this.mapQueryInfo.forEach(d=>{
               for (let [key, value] of Object.entries(d['county'])) {
                 var ele = MAPPING[value]
-                var temp = {
-                    key: c,
-                    center: [ele['lat'],ele['long']],
-                    radius:8,
-                    opacity:0.8,
-                    stroke: true,
-                    content: d['node_name']+ ' is located in '+ key,
-                    color: 'red'
+                // check we have the longtitude latitude for the county
+                if(value in MAPPING){
+                    var temp = {
+                        key: c,
+                        center: [ele['lat'],ele['long']],
+                        radius:8,
+                        opacity:0.8,
+                        stroke: true,
+                        content: d['node_name']+ ' is located in '+ key,
+                        color: 'red'
+                    }
+                    c+=1
+                    output.push(temp)
+                }else{
+                    
                 }
-                c+=1
-                output.push(temp)
             }
           })
+          if(output.length==0){
+            alert('No relevent county info for brushed nodes!') 
+          }
           this.markers = output 
-          this.show_marker = true
+            this.show_marker = true
+          
     },
     initCircleMarkerWithG(){
-        console.log('initG',this.graphData)
+        var nodes = this.graphData['results'][0]['data'][0]['graph']['nodes']
+        console.log('initG',nodes)
     }
   },
   computed:{
