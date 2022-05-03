@@ -61,7 +61,6 @@ export default {
         brushed: {"entity_type": [], "relationship_type": []}, 
         showColorPickerMenu: true,
         arr: [1,2,3]
-
       }
     },
     computed: {
@@ -141,6 +140,10 @@ export default {
             .attr('y', (g) => yScale(g.value))
             .attr('height', (g) => height - yScale(g.value))
             .attr('width', xScale.bandwidth())
+            .on('contextmenu', function(d, i) {
+              d3.event.preventDefault()
+              that.showColorPickerMenu = true
+            })
             .on('click', function(actual,i){ 
 
               if (selected_bar.includes(actual.key)){
