@@ -327,7 +327,11 @@ def convert_subgraph_to_json_withR(subgraph,entity_identifier,graph,database,fip
             node_id_list.append(n.identity)
             node_property = dict(n)
             node_property.update({"mapping":entity_identifier})
-            entity_type = list(n.labels)[-1]
+            entity_type_list = list(n.labels)
+            if len(entity_type_list) == 1:
+                entity_type = 'Resource'
+            else:
+                entity_type = [i for i in entity_type_list if i!= 'Resource'][0]
             node_property.update({"entity_type":entity_type})
             if database == "ppod" and entity_type == "County":
                 node_property.update({"county_id":fips[fips.name.isin([n['label']])]['fips'].values[0]})
@@ -364,7 +368,11 @@ def convert_subgraph_to_json(subgraph,entity_identifier,database,fips):
             node_id_list.append(n.identity)
             node_property = dict(n)
             node_property.update({"mapping":entity_identifier})
-            entity_type = list(n.labels)[-1]
+            entity_type_list = list(n.labels)
+            if len(entity_type_list) == 1:
+                entity_type = 'Resource'
+            else:
+                entity_type = [i for i in entity_type_list if i!= 'Resource'][0]
             node_property.update({"entity_type":entity_type})
             if database == "ppod" and entity_type == "County":
                 node_property.update({"county_id":fips[fips.name.isin([n['label']])]['fips'].values[0]})
