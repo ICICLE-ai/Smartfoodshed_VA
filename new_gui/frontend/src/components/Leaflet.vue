@@ -8,6 +8,13 @@
                         :label="`Show Eco-Region: ${show_eco.toString()}`"
                     ></v-switch>
             </v-col>
+            <v-col cols=6>
+                 <v-switch
+                    style="margin-left:20px"
+                        v-model="show_county"
+                        :label="`Show County: ${show_county.toString()}`"
+                    ></v-switch>
+            </v-col>
            
              <v-col cols=6>
                   <v-select
@@ -22,8 +29,18 @@
         </v-row>
         <v-row>
             <l-map style="height: 650px" :zoom="zoom" :center="center">
-                <l-tile-layer :url="url" :attribution="attribution"></l-tile-layer>
+                <!-- <l-tile-layer :url="url" :attribution="attribution"></l-tile-layer> -->
+                <l-control-layers position="topright"></l-control-layers>
+                <l-tile-layer
+                    v-for="tileProvider in tileProviders"
+                    :key="tileProvider.name"
+                    :name="tileProvider.name"
+                    :visible="tileProvider.visible"
+                    :url="tileProvider.url"
+                    :attribution="tileProvider.attribution"
+                    layer-type="base"/>
                 <l-geo-json :geojson="geojson" v-if="show_eco"></l-geo-json>
+                <l-geo-json :geojson="geojson_county" v-if="show_county"></l-geo-json>
                 <l-marker :v-if="show_marker" :lat-lng="marker.center" :opacity="marker.opacity" v-for ="marker in markers" :key="marker.key">
                     <l-popup :content="marker.content"/>
                 </l-marker>
@@ -46,12 +63,13 @@
 
 <script>
 import { latLng } from "leaflet";
-import {LatLng, LMap, LTileLayer, LGeoJson,LMarker,LCircleMarker,LPopup} from 'vue2-leaflet';
+import {LatLng, LMap, LTileLayer, LGeoJson,LMarker,LCircleMarker,LPopup,LControlLayers} from 'vue2-leaflet';
 // import 'leaflet/dist/leaflet.css';
 import {mapState} from 'vuex'
 import * as d3 from 'd3'
 import EcoUSDA from '../../public/USDA_ecoreg.json';
 import MAPPING from '../../public/id2lonlat_cleaned.json';
+import USCounties from '../../public/county_with_ecoregion_borderline.json';
 export default {
   components: {
     LMap,
@@ -59,7 +77,8 @@ export default {
     LGeoJson,
     LMarker,
     LCircleMarker,
-    LPopup
+    LPopup,
+    LControlLayers
   },
   data () {
     return {
@@ -70,21 +89,40 @@ export default {
       zoom: 4.5,
       center: [36.967483, -114.357571],
       geojson: null,
+      geojson_county: null,
       show_eco: false,
       circles: null,
       show_circle_marker: false,
       markerLatLng: [39.1014537, -84.5124602],
       selectedInit: 'Total',
       markers:null,
-      show_marker: false
+      show_county: false,
+      show_marker: false,
+      tileProviders: [
+        {
+          name: 'OpenStreetMap',
+          visible: true,
+          attribution:
+            '&copy; <a target="_blank" href="http://osm.org/copyright">OpenStreetMap</a> contributors',
+          url: 'https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png',
+        },
+        {
+          name: 'OpenTopoMap',
+          visible: false,
+          url: 'https://{s}.tile.opentopomap.org/{z}/{x}/{y}.png',
+          attribution:
+            'Map data: &copy; <a href="http://www.openstreetmap.org/copyright">OpenStreetMap</a>, <a href="http://viewfinderpanoramas.org">SRTM</a> | Map style: &copy; <a href="https://opentopomap.org">OpenTopoMap</a> (<a href="https://creativecommons.org/licenses/by-sa/3.0/">CC-BY-SA</a>)',
+        },
+      ],
     };
   },
   async created () {
     // const response = await fetch('https://rawgit.com/gregoiredavid/france-geojson/master/regions/pays-de-la-loire/communes-pays-de-la-loire.geojson');
     this.geojson = await EcoUSDA
+    this.geojson_county = await USCounties.county
     this.$store.dispatch("load_map")
     // this.show_eco = true
-    console.log(this.graphData)
+    // console.log(this.graphData)
     if(this.graphData){
         this.initCircleMarkerWithG()
     }else{

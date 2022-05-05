@@ -252,9 +252,10 @@ const actions = {
    
     // load map geo data
     // const us = await d3.json('https://raw.githubusercontent.com/chrisdaly/map-data/master/us-counties.topojson.txt')
-    var us = {'test':'test'}
+    // var us = {'test':'test'}
+    // const us = await d3.json('../assets/us-countries.topojson.txt')
     // load map detail data 
-    commit("LOADIN_MAP", us)
+    // commit("LOADIN_MAP", us)
     const mapInitialInfo = await loadMapInitialData(); 
     if (mapInitialInfo != null) {
       // 
