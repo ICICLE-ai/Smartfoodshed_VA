@@ -16,6 +16,7 @@
                     label="Color"
                     dense
                     solo
+                    style="z-index:1000"
                     ></v-select>
               </v-col>
         </v-row>

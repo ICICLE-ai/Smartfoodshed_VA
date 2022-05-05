@@ -251,7 +251,8 @@ const actions = {
   async load_map({state, commit}) {
    
     // load map geo data
-    const us = await d3.json('https://raw.githubusercontent.com/chrisdaly/map-data/master/us-counties.topojson.txt')
+    // const us = await d3.json('https://raw.githubusercontent.com/chrisdaly/map-data/master/us-counties.topojson.txt')
+    var us = {'test':'test'}
     // load map detail data 
     commit("LOADIN_MAP", us)
     const mapInitialInfo = await loadMapInitialData(); 
