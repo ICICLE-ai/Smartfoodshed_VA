@@ -8,6 +8,7 @@ from py2neo import Graph
 from py2neo import Subgraph
 import py2neo
 import pandas as pd
+import requests
 """ config.py
 // Adding config file to config your local data folder please !!!!!!!!!!!
 
@@ -47,8 +48,10 @@ def getGraphData():
 def getMapData():
     global database
     f = open(f'{localfile_path}/'+database+'_map_initial_data.json')
+    # f = open(f'https://raw.githubusercontent.com/yasmineTYM/PPOD_KG/main/'+database+'_map_initial_data.json')
     # f = open(f'{localfile_path}/cfs_map_initial_data.json')
-
+    # url = requests.get("https://raw.githubusercontent.com/yasmineTYM/PPOD_KG/main/"+database+"_map_initial_data.json")
+    # text = url.text
     # f = open('../../../local_data/graph.json')
     data = json.load(f)
     # print(type(filtered_data))
@@ -283,11 +286,13 @@ def get_associated_node_from_county():
 if __name__ == '__main__':
     global graph, entity_identifier,graph_overview,database,fips
     # driver = GraphDatabase.driver("bolt://localhost:7687", auth=("neo4j", "123"))
-    graph = Graph("bolt://localhost:7687", auth=("neo4j", "123")) # This should be a global variable in this app
+    # graph = Graph("bolt://localhost:7687", auth=("neo4j", "123")) # This should be a global variable in this app
     # graph = Graph("http://localhost:7687", auth=("neo4j", "123")) # This should be a global variable in this app
+    graph = Graph("bolt://neo1.develop.tapis.io:443", auth=("neo4j", "LVIXYVYW0EexkWnsmZAMRhVrrbKkZ0"), secure=True, verify=True)
     schema = py2neo.database.Schema(graph)
     entity_type = list(schema.node_labels)
     relationship_type = list(schema.relationship_types)
+    print(entity_type)
     if len(entity_type) > 1:
         entity_type.remove("Resource")
         entity_type.remove("_GraphConfig")
@@ -305,3 +310,4 @@ if __name__ == '__main__':
     fips['fips'] = fips['fips'].apply(lambda x: x.zfill(5))
     fips = fips.append({'fips':'46102', 'name':'Oglala Lakota County','state':'SD'},ignore_index=True)
     app.run()
+
