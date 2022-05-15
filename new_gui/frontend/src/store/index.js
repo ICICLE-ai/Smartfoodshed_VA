@@ -20,6 +20,7 @@ function initialState () {
     BETA_ROUTE: {'name': 'DashboardBeta', 'route': '/dashboard-beta'}, 
     DASH_ROUTE: {'name': 'Dashboard', 'route': '/'}, 
     graphData: null,
+    DATABASE_NAME: null, // ppod or cfs 
     tableData: null, // raw data
     originalGraph: null, 
     tableSelection: null,
@@ -51,6 +52,9 @@ const mutations = {
   // SET_ecoregion(state, val){
   //   state.ecoregion = val
   // },
+  SET_DATABASE_NAME(state, val){
+    state.DATABASE_NAME = val
+  },
   SET_graphOverview(state, val){
     state.graphOverview = val
   },
@@ -259,7 +263,8 @@ const actions = {
     const mapInitialInfo = await loadMapInitialData(); 
     if (mapInitialInfo != null) {
       // 
-      commit ("LOADIN_MAP_DATA", mapInitialInfo)
+      commit ("LOADIN_MAP_DATA", mapInitialInfo['data'])
+      commit('SET_DATABASE_NAME', mapInitialInfo['database'])
     }
     
   },

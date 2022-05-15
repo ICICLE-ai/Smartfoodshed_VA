@@ -47,15 +47,13 @@ def getGraphData():
 @app.route('/g', methods=['GET'])
 def getMapData():
     global database
-    f = open(f'{localfile_path}/'+database+'_map_initial_data.json')
-    # f = open(f'https://raw.githubusercontent.com/yasmineTYM/PPOD_KG/main/'+database+'_map_initial_data.json')
-    # f = open(f'{localfile_path}/cfs_map_initial_data.json')
-    # url = requests.get("https://raw.githubusercontent.com/yasmineTYM/PPOD_KG/main/"+database+"_map_initial_data.json")
-    # text = url.text
-    # f = open('../../../local_data/graph.json')
+    f = open(f'{localfile_path}/'+database+'_map_initial_data_0515.json')
     data = json.load(f)
-    # print(type(filtered_data))
-    return Response(json.dumps(data))
+    output = {
+        'data': data,
+        'database': database
+    }
+    return Response(json.dumps(output))
 
 @app.route('/getTableData', methods=['GET'])
 def getTableData():
@@ -288,7 +286,8 @@ if __name__ == '__main__':
     # driver = GraphDatabase.driver("bolt://localhost:7687", auth=("neo4j", "123"))
     # graph = Graph("bolt://localhost:7687", auth=("neo4j", "123")) # This should be a global variable in this app
     # graph = Graph("http://localhost:7687", auth=("neo4j", "123")) # This should be a global variable in this app
-    graph = Graph("bolt://neo1.develop.tapis.io:443", auth=("neo4j", "LVIXYVYW0EexkWnsmZAMRhVrrbKkZ0"), secure=True, verify=True)
+    # graph = Graph("bolt://neo1.develop.tapis.io:443", auth=("neo4j", "LVIXYVYW0EexkWnsmZAMRhVrrbKkZ0"), secure=True, verify=True)
+    graph = Graph("bolt://neo2.develop.tapis.io:443", auth=("neo4j", "rH2utoEltpbifJqOIHONkpYqkfpNBy"), secure=True, verify=True)
     schema = py2neo.database.Schema(graph)
     entity_type = list(schema.node_labels)
     relationship_type = list(schema.relationship_types)

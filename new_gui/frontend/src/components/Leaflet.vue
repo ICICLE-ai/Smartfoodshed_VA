@@ -164,7 +164,7 @@ export default {
                         radius:8,
                         opacity:0.8,
                         stroke: true,
-                        content: 'the number of entities related to '+d['county_name']+':'+val.toString(),
+                        content: 'The '+that.selectedInit+' of '+d['county_name']+' is:'+val.toString(),
                         color: color_mapping(val)
                     }
                     circles.push(temp)
@@ -173,6 +173,7 @@ export default {
                 // console.log('do not have this county lat long:',d['county_id'])
             }
         })
+        console.log(circles)
         this.circles = circles
         this.show_circle_marker = true
     },
@@ -211,15 +212,23 @@ export default {
     },
     initCircleMarkerWithG(){
         var nodes = this.graphData['results'][0]['data'][0]['graph']['nodes']
-        console.log('initG',nodes)
+        // console.log('initG',nodes)
     }
   },
   computed:{
-     ...mapState(['graphData', 'mapInitialInfo', 'mapQueryInfo', 'mapInQueryStatus', 'activeTab', 'ecoregion']),
+     ...mapState(['graphData', 'mapInitialInfo', 'mapQueryInfo', 'mapInQueryStatus', 'activeTab', 'ecoregion','DATABASE_NAME']),
   },
   watch:{
+      DATABASE_NAME(){
+        // console.log(this.DATABASE_NAME, this.mapInitialInfo)
+        if(this.DATABASE_NAME=="ppod"){
+            this.items= ['BestPracticesAndMandates','Organization','Program','Project','Total']
+        }else{
+            this.items= ['in_flow','out_flow','resilience','degree','degree_in','degree_out','strength_in','strength_out','strength','betweenness','Total']
+        }
+      },
       graphData(){
-          console.log('graph changed', this.graphData)
+        console.log('graph changed', this.graphData)
       },
       mapInitialInfo(){
           this.initCircleMarker()
