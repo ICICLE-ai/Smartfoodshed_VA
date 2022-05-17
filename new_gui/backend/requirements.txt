@@ -1,5 +1,7 @@
 flask
 neo4j
 flask_cors
-neo4j
+pandas
+numpy
 py2neo
+requests
