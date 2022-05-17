@@ -9,6 +9,7 @@ from py2neo import Subgraph
 import py2neo
 import pandas as pd
 import requests
+import os 
 """ config.py
 // Adding config file to config your local data folder please !!!!!!!!!!!
 
@@ -287,7 +288,9 @@ if __name__ == '__main__':
     # graph = Graph("bolt://localhost:7687", auth=("neo4j", "123")) # This should be a global variable in this app
     # graph = Graph("http://localhost:7687", auth=("neo4j", "123")) # This should be a global variable in this app
     # graph = Graph("bolt://neo1.develop.tapis.io:443", auth=("neo4j", "LVIXYVYW0EexkWnsmZAMRhVrrbKkZ0"), secure=True, verify=True)
-    graph = Graph("bolt://neo2.develop.tapis.io:443", auth=("neo4j", "rH2utoEltpbifJqOIHONkpYqkfpNBy"), secure=True, verify=True)
+    passw = os.getenv("db_password")
+    # graph = Graph("bolt://neo2.develop.tapis.io:443", auth=("neo4j", "rH2utoEltpbifJqOIHONkpYqkfpNBy"), secure=True, verify=True)
+    graph = Graph("bolt://neo2.develop.tapis.io:443", auth=("neo4j", passw), secure=True, verity=True)
     schema = py2neo.database.Schema(graph)
     entity_type = list(schema.node_labels)
     relationship_type = list(schema.relationship_types)
