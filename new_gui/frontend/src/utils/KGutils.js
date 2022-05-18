@@ -1,5 +1,6 @@
 import axios from 'axios'
 
+var base_request_url = "https://vaapi.develop.tapis.io/"
 function graphDataParsing(neo4jD3DataObj, entitiesContainer, relationsContainer) {
 
     const nodes = neo4jD3DataObj.results[0].data[0].graph.nodes 
@@ -60,7 +61,7 @@ async function graphNodeLinkExpand(graphData, nodeId, relation, threshold) {
     })
     
     const passingData = {nodes: nodeList, relations: relationList, expand_node: nodeId, relationship_name:relation, threshold: threshold}
-    const path = "http://127.0.0.1:5000/expandNodeWithR"
+    const path = base_request_url+"expandNodeWithR"
     const updatedGraphData = await axios.post(path, passingData)
     console.log(updatedGraphData)
     return updatedGraphData
@@ -70,10 +71,10 @@ async function retrieveNodeLinkWithType(entity_type, relationship_type) {
     let data; 
     let path; 
     if(relationship_type.length == 0){
-        path = "http://127.0.0.1:5000/getGwithEntityType"
+        path = base_request_url+"getGwithEntityType"
         data = {"entity_type":entity_type}
     } else {
-        path = "http://127.0.0.1:5000/getGwithRelationshipType"
+        path = base_request_url+"getGwithRelationshipType"
         data = {"relationship_type":relationship_type}
     }
     console.log(entity_type) 

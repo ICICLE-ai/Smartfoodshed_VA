@@ -10,25 +10,12 @@
             <v-tab>
               GeoMap View
             </v-tab>
-            <v-tab>
-              Leaflet View
-            </v-tab>
             <v-tab-item>
               <table-viewer/>
             </v-tab-item>
-
-            <v-tab-item>
-              <GeoMapViewer/>
-            </v-tab-item>
-
             <v-tab-item>
               <leaflet/>
             </v-tab-item>
-
-            <!-- <v-tab-item>
-              <node-overview/>
-            </v-tab-item> -->
-
           </v-tabs>
         </v-col>
         <v-col cols="7">
@@ -40,22 +27,16 @@
 </template>
 
 <script>
-// import HelloWorld from './components/HelloWorld';
 import TableViewer from '@/components/TableViewer.vue'
 import KgViewer from '@/components/KgViewer.vue'
-import GeoMapViewer from '@/components/GeoMapViewer.vue'
 import Leaflet from '@/components/Leaflet.vue'
-// import NodeOverview from '@/components/NodeOverview.vue'
 export default {
   name: 'App',
 
   components: {
-    // HelloWorld,
     TableViewer,
     KgViewer,
-    GeoMapViewer,
     Leaflet
-    // NodeOverview
   },
 
   data: () => ({

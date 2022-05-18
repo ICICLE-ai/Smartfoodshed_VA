@@ -1,8 +1,9 @@
 import axios from 'axios'
 
+var base_request_url = "https://vaapi.develop.tapis.io/"
 
 async function loadMapInitialData(){
-    const path = "http://127.0.0.1:5000/g"
+    const path = base_request_url+"g"
     const responseData = getRequest(path, {
         "204": "No content retrieved for initializing map", 
         "400": "Error in initializing map"
@@ -13,7 +14,7 @@ async function loadMapInitialData(){
 
 
 async function queryMapInfoWithNode(node_list){
-    const path = "http://127.0.0.1:5000/getCountyInfo" 
+    const path = base_request_url+"getCountyInfo" 
     const data = {
         "node": node_list
     }
@@ -54,7 +55,7 @@ async function getRequest(url, warningMsg) {
 }
 
 async function getNode(id){
-    const path = "http://127.0.0.1:5000/countyToNodes"
+    const path = base_request_url+"countyToNodes"
     const data = {
         'county_id': id
     }

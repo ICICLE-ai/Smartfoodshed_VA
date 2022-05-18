@@ -278,10 +278,10 @@ if __name__ == '__main__':
     # 
     passw = os.getenv("db_password")
     ## local 
-    # graph = Graph("bolt://neo1.develop.tapis.io:443", auth=("neo4j", "LVIXYVYW0EexkWnsmZAMRhVrrbKkZ0"), secure=True, verify=True) ## ppod 
+    graph = Graph("bolt://neo1.develop.tapis.io:443", auth=("neo4j", "LVIXYVYW0EexkWnsmZAMRhVrrbKkZ0"), secure=True, verify=True) ## ppod 
     # graph = Graph("bolt://neo2.develop.tapis.io:443", auth=("neo4j", "rH2utoEltpbifJqOIHONkpYqkfpNBy"), secure=True, verify=True) ## cfs 
     ## server 
-    graph = Graph("bolt://neo1.develop.tapis.io:443", auth=("neo4j", passw), secure=True, verify=True) ## ppod
+    # graph = Graph("bolt://neo1.develop.tapis.io:443", auth=("neo4j", passw), secure=True, verify=True) ## ppod
     # graph = Graph("bolt://neo2.develop.tapis.io:443", auth=("neo4j", passw), secure=True, verify=True) ## cfs
     schema = py2neo.database.Schema(graph)
     entity_type = list(schema.node_labels)

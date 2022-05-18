@@ -45,7 +45,8 @@ function initialState () {
     }, 
     colorMapping: {
 
-    }
+    },
+    base_request_url: 'https://vaapi.develop.tapis.io/'
   }
 }
 const mutations = {
@@ -155,19 +156,19 @@ const actions = {
     commit('SET_expandThreshold', data)
   },
   async getGraphData ({commit, dispatch, state}) {
-    const path = 'http://127.0.0.1:5000/getGraphData'
+    const path = state.base_request_url+'getGraphData'
     var result = await axios.get(path)
     commit('SET_graphData', result['data'])
     commit('SET_graphDataBackUp', result['data'])
    
   },
   async getGraphOverview({commit, dispatch, state}){
-    axios.get("http://127.0.0.1:5000/getGraphOverview").then(result=>{
+    axios.get(state.base_request_url+"getGraphOverview").then(result=>{
       commit('SET_graphOverview', result)
     })
   },
   async getTableData ({commit, dispatch, state}) {
-    const path = 'http://127.0.0.1:5000/getTableData'
+    const path = state.base_request_url+'getTableData'
     var result = await axios.get(path)
     var tableSelection_temp = {}
     var sheet = result['data']['sheet'] // list of sheet name
@@ -196,8 +197,8 @@ const actions = {
     commit('SET_LOADING', true)
     // data preparation
     let {nodes, relations} = generationEntityRelations(state.tableSelected)
-    const path_retrieve_graph = 'http://127.0.0.1:5000/retrieveSubgraph'
-    const path_retrieve_graph_relation = 'http://127.0.0.1:5000/retrieveSubgraphWithR' 
+    const path_retrieve_graph = state.base_request_url+'retrieveSubgraph'
+    const path_retrieve_graph_relation = state.base_request_url+'retrieveSubgraphWithR' 
     // set getDataRelationStatus to be false to indicate 
     commit('RELATION_STATUS_OFF')
     // retrieve data
