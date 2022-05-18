@@ -1,0 +1,51 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>flex布局</title>
+    <style>
+        *{
+            margin: 0;   
+            padding: 0;
+        }
+        .all{
+            display: flex;
+            height: 70px;
+            justify-content: space-between;
+            padding-left: 20px;
+            padding-right: 20px;
+        }
+        .left{
+            width: 100px;
+            height: 50px;
+            background-color: darksalmon; 
+            /* align-items: flex-start;  */
+            display: flex;
+            /* align-items: center; */
+        }
+        .right{
+            /* flex:1;            */
+            background-color: blue;
+            height: 50px;
+            width: 100px;
+            /* align-items: flex-end; */
+            display: flex;
+            /* align-items: center; */
+        }
+    </style>
+</head>
+<body>
+<div class="all">
+    <div class="left">
+        <div class="img1">图片</div>
+        <span class="text">one</span>
+    </div>
+    <div class="right">
+        <div class="">图片</div>
+        <span>two</span>
+    </div>
+</div>
+
+</body>
+</html>

@@ -1,0 +1,8 @@
+.classComponent{
+    border:1px solid #DCDFE6;
+    /* border-radius: 10px; */
+    height: 100%;
+}
+.fullHeight{
+    height: 100%;
+}

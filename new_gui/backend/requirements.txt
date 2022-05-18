@@ -1,0 +1,7 @@
+flask
+neo4j
+flask_cors
+pandas
+numpy
+py2neo
+requests
