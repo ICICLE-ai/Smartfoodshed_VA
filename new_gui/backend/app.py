@@ -16,7 +16,9 @@ import os
 // e.g.
 localfile_path = "../../../local_data"
 """
-from config import localfile_path
+# from config import localfile_path
+
+localfile_path = "https://raw.githubusercontent.com/yasmineTYM/PPOD_KG/main/"
 import helper
 # configuration
 DEBUG = True
@@ -39,17 +41,14 @@ def ping_pong():
 
 @app.route('/getGraphData', methods=['GET'])
 def getGraphData():
-    f = open(f'{localfile_path}/input_graph.json')
-    # f = open('../../../local_data/graph.json')
-    data = json.load(f)
+    data = helper.readJsonFromGit(localfile_path+'input_graph.json')
     # print(type(filtered_data))
     return Response(json.dumps(data))
 
 @app.route('/g', methods=['GET'])
 def getMapData():
     global database
-    f = open(f'{localfile_path}/'+database+'_map_initial_data_0515.json')
-    data = json.load(f)
+    data = helper.readJsonFromGit(localfile_path+database+'_map_initial_data.json')
     output = {
         'data': data,
         'database': database
@@ -60,12 +59,7 @@ def getMapData():
 def getTableData():
     ## Create a new py file config.py and add localfile_path to indicate the place of local_data folder
     ## This config file will not be pushed to the osu code, so we don't need to always change path
-    # f = open('../../../local_data/cfs_relation_table.json')
-    if database == "ppod":
-        f = open(f'{localfile_path}/ppod_table.json')
-    elif database == "cfs":
-        f = open(f'{localfile_path}/cfs_table.json')
-    data = json.load(f)
+    data = helper.readJsonFromGit(localfile_path+database+'_table.json')
     output = {} ## tableName: {tableData:{}, tableInfo:{}}
     tableNames = []
     for ele in data:
@@ -78,14 +72,6 @@ def getTableData():
         'data': output,
         'sheet': tableNames
     }
-    # data = data.fillna('')
-    # print(data.columns)
-
-    # dados = data.to_dict('records')
-    # output = {
-    #     'data': dados,
-    # }
-    # print(data.keys())
     return Response(json.dumps(result))
 
 @app.route('/retrieveSubgraph', methods=['POST'])
@@ -288,13 +274,13 @@ if __name__ == '__main__':
     # graph = Graph("bolt://localhost:7687", auth=("neo4j", "123")) # This should be a global variable in this app
     # graph = Graph("http://localhost:7687", auth=("neo4j", "123")) # This should be a global variable in this app
     # graph = Graph("bolt://neo1.develop.tapis.io:443", auth=("neo4j", "LVIXYVYW0EexkWnsmZAMRhVrrbKkZ0"), secure=True, verify=True)
-    passw = os.getenv("db_password")
-    # graph = Graph("bolt://neo2.develop.tapis.io:443", auth=("neo4j", "rH2utoEltpbifJqOIHONkpYqkfpNBy"), secure=True, verify=True)
-    graph = Graph("bolt://neo2.develop.tapis.io:443", auth=("neo4j", passw), secure=True, verity=True)
+    # passw = os.getenv("db_password")
+    graph = Graph("bolt://neo2.develop.tapis.io:443", auth=("neo4j", "rH2utoEltpbifJqOIHONkpYqkfpNBy"), secure=True, verify=True)
+    # graph = Graph("bolt://neo2.develop.tapis.io:443", auth=("neo4j", passw), secure=True, verify=True)
     schema = py2neo.database.Schema(graph)
     entity_type = list(schema.node_labels)
     relationship_type = list(schema.relationship_types)
-    print(entity_type)
+    # print(entity_type)
     if len(entity_type) > 1:
         entity_type.remove("Resource")
         entity_type.remove("_GraphConfig")
@@ -307,9 +293,10 @@ if __name__ == '__main__':
         database = "cfs"
         entity_identifier = "county" # This should be a global variable in this app
 
-    fips = pd.read_csv("data/county_fips.csv")
+    fips = pd.read_csv(localfile_path+"county_fips.csv")
     fips = fips.astype({"fips": str})
     fips['fips'] = fips['fips'].apply(lambda x: x.zfill(5))
     fips = fips.append({'fips':'46102', 'name':'Oglala Lakota County','state':'SD'},ignore_index=True)
+    # app.run(host="0.0.0.0")
     app.run()
 

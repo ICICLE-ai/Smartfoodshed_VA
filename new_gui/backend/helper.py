@@ -5,8 +5,11 @@ from itertools import combinations,product
 from py2neo import Subgraph
 import collections
 import py2neo
-
-
+import requests 
+def readJsonFromGit(url):
+    resp = requests.get(url)
+    data = json.loads(resp.text)
+    return data
 def filterGraph(data, num, sort):
     ## filter nodes 
     nodes = data['results'][0]['data'][0]['graph']['nodes']
