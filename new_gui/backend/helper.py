@@ -76,7 +76,8 @@ def preprocess_county_entity(node_list,graph):
     #Add node label "County" to all county entities
     set_county_label_cypher = "MATCH (n) WHERE id(n) = {} SET n:County"
     set_geoid_cypher = "MATCH (n) WHERE id(n) = {} SET n.geo_id = '{}'"
-    fips = pd.read_csv("county_fips.csv")
+    localfile_path = "https://raw.githubusercontent.com/yasmineTYM/PPOD_KG/main/"
+    fips = pd.read_csv(localfile_path+"county_fips.csv")
     fips = fips.astype({"fips": str})
     fips['fips'] = fips['fips'].apply(lambda x: x.zfill(5))
     fips = fips.append({'fips':'46102', 'name':'Oglala Lakota County','state':'SD'},ignore_index=True)

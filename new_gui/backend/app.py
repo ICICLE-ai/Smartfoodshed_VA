@@ -10,6 +10,8 @@ import py2neo
 import pandas as pd
 import requests
 import os 
+import helper
+
 """ config.py
 // Adding config file to config your local data folder please !!!!!!!!!!!
 
@@ -19,7 +21,7 @@ localfile_path = "../../../local_data"
 # from config import localfile_path
 
 localfile_path = "https://raw.githubusercontent.com/yasmineTYM/PPOD_KG/main/"
-import helper
+
 # configuration
 DEBUG = True
 GRAPH_DRIVER = None
@@ -273,10 +275,14 @@ if __name__ == '__main__':
     # driver = GraphDatabase.driver("bolt://localhost:7687", auth=("neo4j", "123"))
     # graph = Graph("bolt://localhost:7687", auth=("neo4j", "123")) # This should be a global variable in this app
     # graph = Graph("http://localhost:7687", auth=("neo4j", "123")) # This should be a global variable in this app
-    # graph = Graph("bolt://neo1.develop.tapis.io:443", auth=("neo4j", "LVIXYVYW0EexkWnsmZAMRhVrrbKkZ0"), secure=True, verify=True)
-    # passw = os.getenv("db_password")
-    graph = Graph("bolt://neo2.develop.tapis.io:443", auth=("neo4j", "rH2utoEltpbifJqOIHONkpYqkfpNBy"), secure=True, verify=True)
-    # graph = Graph("bolt://neo2.develop.tapis.io:443", auth=("neo4j", passw), secure=True, verify=True)
+    # 
+    passw = os.getenv("db_password")
+    ## local 
+    # graph = Graph("bolt://neo1.develop.tapis.io:443", auth=("neo4j", "LVIXYVYW0EexkWnsmZAMRhVrrbKkZ0"), secure=True, verify=True) ## ppod 
+    # graph = Graph("bolt://neo2.develop.tapis.io:443", auth=("neo4j", "rH2utoEltpbifJqOIHONkpYqkfpNBy"), secure=True, verify=True) ## cfs 
+    ## server 
+    graph = Graph("bolt://neo1.develop.tapis.io:443", auth=("neo4j", passw), secure=True, verify=True) ## ppod
+    # graph = Graph("bolt://neo2.develop.tapis.io:443", auth=("neo4j", passw), secure=True, verify=True) ## cfs
     schema = py2neo.database.Schema(graph)
     entity_type = list(schema.node_labels)
     relationship_type = list(schema.relationship_types)
