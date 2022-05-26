@@ -207,12 +207,17 @@ export default {
             alert('No relevent county info for brushed nodes!') 
           }
           this.markers = output 
-            this.show_marker = true
+          this.show_marker = true
           
     },
     initCircleMarkerWithG(){
         var nodes = this.graphData['results'][0]['data'][0]['graph']['nodes']
-        // console.log('initG',nodes)
+        console.log('initG', nodes)
+        var circles = []
+        var that = this
+        nodes.forEach((d,i)=>{
+
+        })
     }
   },
   computed:{

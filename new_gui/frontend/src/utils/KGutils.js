@@ -1,6 +1,7 @@
 import axios from 'axios'
-
-var base_request_url = "https://vaapi.develop.tapis.io/"
+import { base_request_url } from './base_url'
+// var base_request_url = "https://vaapi.develop.tapis.io/"
+// var base_request_url= "http://127.0.0.1:5000/"
 function graphDataParsing(neo4jD3DataObj, entitiesContainer, relationsContainer) {
 
     const nodes = neo4jD3DataObj.results[0].data[0].graph.nodes 

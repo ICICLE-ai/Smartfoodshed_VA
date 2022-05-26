@@ -276,13 +276,15 @@ if __name__ == '__main__':
     # graph = Graph("bolt://localhost:7687", auth=("neo4j", "123")) # This should be a global variable in this app
     # graph = Graph("http://localhost:7687", auth=("neo4j", "123")) # This should be a global variable in this app
     # 
-    passw = os.getenv("db_password")
+    # passw = os.getenv("db_password")
     ## local 
-    graph = Graph("bolt://neo1.develop.tapis.io:443", auth=("neo4j", "LVIXYVYW0EexkWnsmZAMRhVrrbKkZ0"), secure=True, verify=True) ## ppod 
+    # graph = Graph("bolt://neo1.develop.tapis.io:443", auth=("neo4j", "LVIXYVYW0EexkWnsmZAMRhVrrbKkZ0"), secure=True, verify=True) ## ppod 
     # graph = Graph("bolt://neo2.develop.tapis.io:443", auth=("neo4j", "rH2utoEltpbifJqOIHONkpYqkfpNBy"), secure=True, verify=True) ## cfs 
     ## server 
     # graph = Graph("bolt://neo1.develop.tapis.io:443", auth=("neo4j", passw), secure=True, verify=True) ## ppod
     # graph = Graph("bolt://neo2.develop.tapis.io:443", auth=("neo4j", passw), secure=True, verify=True) ## cfs
+
+    graph = Graph("bolt://localhost:7687", auth=("neo4j","123"))
     schema = py2neo.database.Schema(graph)
     entity_type = list(schema.node_labels)
     relationship_type = list(schema.relationship_types)

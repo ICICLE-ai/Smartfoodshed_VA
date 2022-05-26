@@ -3,6 +3,7 @@ import Vuex from 'vuex'
 import axios from 'axios'
 import * as d3 from 'd3'
 import menu from '@/store/modules/menu.js'
+import { base_request_url } from '@/utils/base_url'
 import {generationEntityRelations, 
         addItemsToSelection, 
         removeItemsToSelection,
@@ -46,7 +47,8 @@ function initialState () {
     colorMapping: {
 
     },
-    base_request_url: 'https://vaapi.develop.tapis.io/'
+    // base_request_url: "http://127.0.0.1:5000/"
+    // base_request_url: 'https://vaapi.develop.tapis.io/'
   }
 }
 const mutations = {
@@ -156,19 +158,19 @@ const actions = {
     commit('SET_expandThreshold', data)
   },
   async getGraphData ({commit, dispatch, state}) {
-    const path = state.base_request_url+'getGraphData'
+    const path = base_request_url+'getGraphData'
     var result = await axios.get(path)
     commit('SET_graphData', result['data'])
     commit('SET_graphDataBackUp', result['data'])
    
   },
   async getGraphOverview({commit, dispatch, state}){
-    axios.get(state.base_request_url+"getGraphOverview").then(result=>{
+    axios.get(base_request_url+"getGraphOverview").then(result=>{
       commit('SET_graphOverview', result)
     })
   },
   async getTableData ({commit, dispatch, state}) {
-    const path = state.base_request_url+'getTableData'
+    const path = base_request_url+'getTableData'
     var result = await axios.get(path)
     var tableSelection_temp = {}
     var sheet = result['data']['sheet'] // list of sheet name
@@ -197,8 +199,8 @@ const actions = {
     commit('SET_LOADING', true)
     // data preparation
     let {nodes, relations} = generationEntityRelations(state.tableSelected)
-    const path_retrieve_graph = state.base_request_url+'retrieveSubgraph'
-    const path_retrieve_graph_relation = state.base_request_url+'retrieveSubgraphWithR' 
+    const path_retrieve_graph = base_request_url+'retrieveSubgraph'
+    const path_retrieve_graph_relation = base_request_url+'retrieveSubgraphWithR' 
     // set getDataRelationStatus to be false to indicate 
     commit('RELATION_STATUS_OFF')
     // retrieve data

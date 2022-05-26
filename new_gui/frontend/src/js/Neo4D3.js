@@ -203,6 +203,7 @@ function Neo4jD3 (_selector, _options) {
             .style('font-size', '10px')
             .style('text-anchor', 'middle')
             .style('fill', 'white')
+            .style('pointer-events', 'none')
             .style('font-weight', 'bold')
             .text(text_nodes[0])
         } else if (text_nodes.length == 2) {
@@ -211,6 +212,7 @@ function Neo4jD3 (_selector, _options) {
             .attr('y', '-4')
             .style('font-size', '10px')
             .style('text-anchor', 'middle')
+            .style('pointer-events', 'none')
             .style('fill', 'white')
             .style('font-weight', 'bold')
             .text(text_nodes[0])
@@ -220,6 +222,7 @@ function Neo4jD3 (_selector, _options) {
             .attr('y', '12')
             .style('font-size', '10px')
             .style('text-anchor', 'middle')
+            .style('pointer-events', 'none')
             .style('fill', 'white')
             .style('font-weight', 'bold')
             .text(text_nodes[1])
@@ -228,6 +231,7 @@ function Neo4jD3 (_selector, _options) {
             .attr('x', '0')
             .attr('y', '-12')
             .style('font-size', '10px')
+            .style('pointer-events', 'none')
             .style('text-anchor', 'middle')
             .style('fill', 'white')
             .style('font-weight', 'bold')
@@ -238,6 +242,7 @@ function Neo4jD3 (_selector, _options) {
             .attr('y', '0')
             .style('font-size', '10px')
             .style('text-anchor', 'middle')
+            .style('pointer-events', 'none')
             .style('fill', 'white')
             .style('font-weight', 'bold')
             .text(text_nodes[1])
@@ -246,6 +251,7 @@ function Neo4jD3 (_selector, _options) {
             .attr('x', '0')
             .attr('y', '12')
             .style('font-size', '10px')
+            .style('pointer-events', 'none')
             .style('text-anchor', 'middle')
             .style('fill', 'white')
             .style('font-weight', 'bold')
@@ -320,7 +326,6 @@ function Neo4jD3 (_selector, _options) {
       .attr('class', d=>`outline nodetype_${d.properties.entity_type?d.properties.entity_type:'undefined'}`)
       .attr('r', options.nodeRadius)
       .style('fill', function (d) {
-        console.log(d)
         return '#78b3d0'
         //    return options.nodeOutlineFillColor ? options.nodeOutlineFillColor : class2color(d.labels[0]);
       })
@@ -329,7 +334,8 @@ function Neo4jD3 (_selector, _options) {
         //    return options.nodeOutlineFillColor ? class2darkenColor(options.nodeOutlineFillColor) : class2darkenColor(d.labels[0]);
       })
       .append('title').text(function (d) {
-        return toString(d)
+        console.log('teeeee', d)
+        return d.properties.label
       })
   }
 
@@ -337,9 +343,9 @@ function Neo4jD3 (_selector, _options) {
     return node.append('circle')
       .attr('class', 'ring')
       .attr('r', options.nodeRadius * 1.16)
-      .append('title').text(function (d) {
-        return toString(d)
-      })
+      // .append('title').text(function (d) {
+      //   return toString(d.label)
+      // })
   }
 
   function appendTextToNode (node) {
@@ -351,7 +357,7 @@ function Neo4jD3 (_selector, _options) {
       .attr('font-size', function (d) {
         return icon(d) ? (options.nodeRadius + 'px') : '10px'
       })
-      .attr('pointer-events', 'none')
+      .style('pointer-events', 'none')
       .attr('text-anchor', 'middle')
       .attr('y', function (d) {
         return icon(d) ? (parseInt(Math.round(options.nodeRadius * 0.32)) + 'px') : '4px'
@@ -360,6 +366,7 @@ function Neo4jD3 (_selector, _options) {
         var _icon = icon(d)
         return _icon ? '&#x' + _icon : d.id
       })
+
   }
 
   function appendRandomDataToNode (d, maxNodesToGenerate) {

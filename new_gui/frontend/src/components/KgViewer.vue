@@ -280,6 +280,7 @@ export default{
           },
           onNodeMouseEnter: function (node) {
             that.hover_node = node
+            console.log('hovering', node)
           },
           onNodeClick: function (node,idx) {
             // console.log(node,id)

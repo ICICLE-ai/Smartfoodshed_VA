@@ -410,6 +410,7 @@ def get_county_info_for_nodes(node_id_list,database,graph):
         geoid_cypher = "match (n)-[p:in_county]-(m) where id(n)={} return m.geo_id, m.label,n.label"
         for node_id in node_id_list:
             cypher_result = graph.run(geoid_cypher.format(node_id)).data()
+            print('cypher',cypher_result)
             county_dict = {i['m.label']:i['m.geo_id'] for i in cypher_result}
             if len(county_dict)==0:
                 node_name = None
