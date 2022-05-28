@@ -296,7 +296,7 @@ export default {
       }
     }
   },
-
+  
   created() {
     // Initialize initial position
     this.$store.dispatch('getTableData')

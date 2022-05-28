@@ -61,6 +61,8 @@ def getMapData():
 def getTableData():
     ## Create a new py file config.py and add localfile_path to indicate the place of local_data folder
     ## This config file will not be pushed to the osu code, so we don't need to always change path
+    # global database
+    print('gettabledata', database)
     data = helper.readJsonFromGit(localfile_path+database+'_table.json')
     output = {} ## tableName: {tableData:{}, tableInfo:{}}
     tableNames = []
@@ -270,41 +272,79 @@ def get_associated_node_from_county():
         error_code = 404
     return Response(json.dumps(dict_res),status = error_code)
 
-if __name__ == '__main__':
-    global graph, entity_identifier,graph_overview,database,fips
-    # driver = GraphDatabase.driver("bolt://localhost:7687", auth=("neo4j", "123"))
-    # graph = Graph("bolt://localhost:7687", auth=("neo4j", "123")) # This should be a global variable in this app
-    # graph = Graph("http://localhost:7687", auth=("neo4j", "123")) # This should be a global variable in this app
-    # 
-    # passw = os.getenv("db_password")
-    ## local 
-    # graph = Graph("bolt://neo1.develop.tapis.io:443", auth=("neo4j", "LVIXYVYW0EexkWnsmZAMRhVrrbKkZ0"), secure=True, verify=True) ## ppod 
-    # graph = Graph("bolt://neo2.develop.tapis.io:443", auth=("neo4j", "rH2utoEltpbifJqOIHONkpYqkfpNBy"), secure=True, verify=True) ## cfs 
-    ## server 
-    # graph = Graph("bolt://neo1.develop.tapis.io:443", auth=("neo4j", passw), secure=True, verify=True) ## ppod
-    # graph = Graph("bolt://neo2.develop.tapis.io:443", auth=("neo4j", passw), secure=True, verify=True) ## cfs
 
-    graph = Graph("bolt://localhost:7687", auth=("neo4j","123"))
+@app.route('/changeDataBase', methods=['POST'])
+def changeDataBase():
+
+    request_obj = request.get_json()
+    global graph, entity_identifier,graph_overview,database,fips
+    database = request_obj['database']
+    if database=="ppod":
+        graph = G1
+        database = "ppod"
+        entity_identifier = "label"
+    else:
+        graph= G2
+        database = "cfs"
+        entity_identifier = "county"
+    print('change data to:', database)
     schema = py2neo.database.Schema(graph)
     entity_type = list(schema.node_labels)
     relationship_type = list(schema.relationship_types)
-    # print(entity_type)
+    print(entity_type)
     if len(entity_type) > 1:
         entity_type.remove("Resource")
         entity_type.remove("_GraphConfig")
     
     graph_overview = helper.get_graph_overview(graph,entity_type,relationship_type)
-    if len(entity_type) > 1:
-        database = "ppod"
-        entity_identifier = "label" # This should be a global variable in this app
-    else:
-        database = "cfs"
-        entity_identifier = "county" # This should be a global variable in this app
-
+   
     fips = pd.read_csv(localfile_path+"county_fips.csv")
     fips = fips.astype({"fips": str})
     fips['fips'] = fips['fips'].apply(lambda x: x.zfill(5))
     fips = fips.append({'fips':'46102', 'name':'Oglala Lakota County','state':'SD'},ignore_index=True)
+    return Response(json.dumps({}), status=200)
+
+if __name__ == '__main__':
+    # global graph, entity_identifier,graph_overview,database,fips
+    # driver = GraphDatabase.driver("bolt://localhost:7687", auth=("neo4j", "123"))
+    # graph = Graph("bolt://localhost:7687", auth=("neo4j", "123")) # This should be a global variable in this app
+    # graph = Graph("http://localhost:7687", auth=("neo4j", "123")) # This should be a global variable in this app
+    # 
+  
+    global G1, G2
+    ## local 
+    G1 = Graph("bolt://localhost:7687", auth=("neo4j", "123"), name="ppod")
+    G2 = Graph("bolt://localhost:7687", auth=("neo4j", "123"), name="cfs")
+
+
+    # graph1 = Graph("bolt://neo1.develop.tapis.io:443", auth=("neo4j", "LVIXYVYW0EexkWnsmZAMRhVrrbKkZ0"), secure=True, verify=True) ## ppod 
+    # graph2 = Graph("bolt://neo2.develop.tapis.io:443", auth=("neo4j", "rH2utoEltpbifJqOIHONkpYqkfpNBy"), secure=True, verify=True) ## cfs 
+    ## server 
+    # passw = os.getenv("db_password")
+    # graph = Graph("bolt://neo1.develop.tapis.io:443", auth=("neo4j", passw), secure=True, verify=True) ## ppod
+    # graph = Graph("bolt://neo2.develop.tapis.io:443", auth=("neo4j", passw), secure=True, verify=True) ## cfs
+
+    # graph = Graph("bolt://localhost:7687", auth=("neo4j","123"))
+    # schema = py2neo.database.Schema(graph)
+    # entity_type = list(schema.node_labels)
+    # relationship_type = list(schema.relationship_types)
+    # print(entity_type)
+    # if len(entity_type) > 1:
+    #     entity_type.remove("Resource")
+    #     entity_type.remove("_GraphConfig")
+    
+    # graph_overview = helper.get_graph_overview(graph,entity_type,relationship_type)
+    # if len(entity_type) > 1:
+    #     database = "ppod"
+    #     entity_identifier = "label" # This should be a global variable in this app
+    # else:
+    #     database = "cfs"
+    #     entity_identifier = "county" # This should be a global variable in this app
+    # print(database)
+    # fips = pd.read_csv(localfile_path+"county_fips.csv")
+    # fips = fips.astype({"fips": str})
+    # fips['fips'] = fips['fips'].apply(lambda x: x.zfill(5))
+    # fips = fips.append({'fips':'46102', 'name':'Oglala Lakota County','state':'SD'},ignore_index=True)
     # app.run(host="0.0.0.0")
     app.run()
 

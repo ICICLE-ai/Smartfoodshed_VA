@@ -4,5 +4,6 @@ module.exports = defineConfig({
     'vuetify'
   ],
   lintOnSave: false,
-  publicPath: '/'
+  publicPath: '/'    //local development
+  // publicPath: '/ICICLE' //deployment
 })

@@ -5,7 +5,12 @@ Vue.use(VueRouter)
 
 const routes = [
   {
-    path: '/',
+    path:'/',
+    name:'dataset',
+    component:()=>import('../views/Dataset.vue')
+  },
+  {
+    path: '/dashboard',
     name: 'Dashboard',
     component: () => import('../views/Dashboard.vue')
   },

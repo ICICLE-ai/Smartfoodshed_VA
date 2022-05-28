@@ -49,12 +49,13 @@ function initialState () {
     },
     // base_request_url: "http://127.0.0.1:5000/"
     // base_request_url: 'https://vaapi.develop.tapis.io/'
+    database: "", //ppod or cfs 
   }
 }
 const mutations = {
-  // SET_ecoregion(state, val){
-  //   state.ecoregion = val
-  // },
+  SET_DATABASE(state, val){
+    state.database = val 
+  },
   SET_DATABASE_NAME(state, val){
     state.DATABASE_NAME = val
   },
@@ -154,6 +155,10 @@ const mutations = {
   }
 }
 const actions = {
+  async changeDB({commit, dispatch, state}, data){
+    commit('SET_DATABASE', data['database'])
+    await axios.post(base_request_url+"changeDataBase", data)
+  },
   async setExpandTh ({commit, dispatch, state}, data){
     commit('SET_expandThreshold', data)
   },

@@ -14,7 +14,7 @@
         
         @click="versionSwitch"
       >
-        {{versionPrompt}}
+        Back to Dataset
       </v-btn>
     </v-app-bar>
   </div>
@@ -30,14 +30,15 @@ export default {
   }, 
   methods: {
     versionSwitch() {
-      const currentRoute = this.$route.name
-      if (currentRoute == this.DASH_ROUTE.name) { 
-        // this.versionPrompt = "Try Dashboard beta"
-        this.$router.push(this.BETA_ROUTE.route)
-      }else {
-        // this.versionPrompt == "Old Version" 
-        this.$router.push(this.DASH_ROUTE.route)
-      }
+      this.$router.push('/')
+      // const currentRoute = this.$route.name
+      // if (currentRoute == this.DASH_ROUTE.name) { 
+      //   // this.versionPrompt = "Try Dashboard beta"
+      //   this.$router.push(this.BETA_ROUTE.route)
+      // }else {
+      //   // this.versionPrompt == "Old Version" 
+      //   this.$router.push(this.DASH_ROUTE.route)
+      // }
       
     }
   }, 
