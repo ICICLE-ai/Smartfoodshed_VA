@@ -287,11 +287,9 @@ def changeDataBase():
         graph= G2
         database = "cfs"
         entity_identifier = "county"
-    print('change data to:', database)
     schema = py2neo.database.Schema(graph)
     entity_type = list(schema.node_labels)
     relationship_type = list(schema.relationship_types)
-    print(entity_type)
     if len(entity_type) > 1:
         entity_type.remove("Resource")
         entity_type.remove("_GraphConfig")
@@ -305,46 +303,16 @@ def changeDataBase():
     return Response(json.dumps({}), status=200)
 
 if __name__ == '__main__':
-    # global graph, entity_identifier,graph_overview,database,fips
-    # driver = GraphDatabase.driver("bolt://localhost:7687", auth=("neo4j", "123"))
-    # graph = Graph("bolt://localhost:7687", auth=("neo4j", "123")) # This should be a global variable in this app
-    # graph = Graph("http://localhost:7687", auth=("neo4j", "123")) # This should be a global variable in this app
-    # 
   
     global G1, G2
     ## local 
     G1 = Graph("bolt://localhost:7687", auth=("neo4j", "123"), name="ppod")
     G2 = Graph("bolt://localhost:7687", auth=("neo4j", "123"), name="cfs")
 
-
-    # graph1 = Graph("bolt://neo1.develop.tapis.io:443", auth=("neo4j", "LVIXYVYW0EexkWnsmZAMRhVrrbKkZ0"), secure=True, verify=True) ## ppod 
-    # graph2 = Graph("bolt://neo2.develop.tapis.io:443", auth=("neo4j", "rH2utoEltpbifJqOIHONkpYqkfpNBy"), secure=True, verify=True) ## cfs 
-    ## server 
+    ## server
     # passw = os.getenv("db_password")
-    # graph = Graph("bolt://neo1.develop.tapis.io:443", auth=("neo4j", passw), secure=True, verify=True) ## ppod
-    # graph = Graph("bolt://neo2.develop.tapis.io:443", auth=("neo4j", passw), secure=True, verify=True) ## cfs
-
-    # graph = Graph("bolt://localhost:7687", auth=("neo4j","123"))
-    # schema = py2neo.database.Schema(graph)
-    # entity_type = list(schema.node_labels)
-    # relationship_type = list(schema.relationship_types)
-    # print(entity_type)
-    # if len(entity_type) > 1:
-    #     entity_type.remove("Resource")
-    #     entity_type.remove("_GraphConfig")
-    
-    # graph_overview = helper.get_graph_overview(graph,entity_type,relationship_type)
-    # if len(entity_type) > 1:
-    #     database = "ppod"
-    #     entity_identifier = "label" # This should be a global variable in this app
-    # else:
-    #     database = "cfs"
-    #     entity_identifier = "county" # This should be a global variable in this app
-    # print(database)
-    # fips = pd.read_csv(localfile_path+"county_fips.csv")
-    # fips = fips.astype({"fips": str})
-    # fips['fips'] = fips['fips'].apply(lambda x: x.zfill(5))
-    # fips = fips.append({'fips':'46102', 'name':'Oglala Lakota County','state':'SD'},ignore_index=True)
-    # app.run(host="0.0.0.0")
+    # G1 =  Graph("bolt://neo1.develop.tapis.io:443", auth=("neo4j", passw), secure=True, verify=True)
+    # G1 = Graph("bolt://neo2.develop.tapis.io:443", auth=("neo4j", passw), secure=True, verify=True)
+   
     app.run()
 
