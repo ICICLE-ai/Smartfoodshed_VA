@@ -5,12 +5,13 @@
             <v-col key="1" cols="5">
                 <v-hover v-slot="{hover}">
                     <v-card
+                    :loading="loading1"
                     :elevation="hover ? 12 : 2"
                     :class="{ 'on-hover': hover }"
                     @click="changeDB1"
                     >
                         <v-img
-                            src="https://images.squarespace-cdn.com/content/v1/59a9c2ff8dd041f31701dea3/1504467172022-HKSMZ42NRYB2Y268V1H7/PlantacaodeSoja.JPG?format=2500w"
+                            src="https://images.squarespace-cdn.com/content/v1/59a9c2ff8dd041f31701dea3/1602745366392-62IIKPSCRXAO464UJ4HA/IC-FOODS+Logo+Better.png?format=1500w"
                             height="400px"
                         ></v-img>
                         <v-card-title>
@@ -23,6 +24,7 @@
             <v-col key="2" cols="5">
                 <v-hover v-slot="{hover}">
                     <v-card
+                    :loading = "loading2"
                     :elevation="hover ? 12 : 2"
                     :class="{ 'on-hover': hover }"
                     @click="changeDB2"
@@ -47,22 +49,29 @@
 export default{
     data(){
         return{
-            database: ""
+            database: "",
+            loading1: false,
+            loading2: false
         }
     },
     methods:{ 
         changeDB1(){
             this.database = "ppod"
+            this.loading1 = true
             this.goToNext()
+            
         },
         changeDB2(){
             this.database = "cfs"
+            this.loading2 = true
             this.goToNext()
         },
         async goToNext(){
             await this.$store.dispatch('changeDB',{'database': this.database})
             await this.$store.dispatch('getTableData')
             await this.$store.dispatch('getGraphOverview')
+            this.loading1 = false
+            this.loading2 = false
             this.$router.push('Dashboard')
         }
     },

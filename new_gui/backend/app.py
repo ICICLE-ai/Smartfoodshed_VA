@@ -305,13 +305,17 @@ def changeDataBase():
 if __name__ == '__main__':
     global G1, G2
     ## local 
-    G1 = Graph("bolt://localhost:7687", auth=("neo4j", "123"), name="ppod")
-    G2 = Graph("bolt://localhost:7687", auth=("neo4j", "123"), name="cfs")
+    # G1 = Graph("bolt://localhost:7687", auth=("neo4j", "123"), name="ppod")
+    # G2 = Graph("bolt://localhost:7687", auth=("neo4j", "123"), name="cfs")
+    ## server test 
+    G1 =  Graph("bolt://neo1.develop.tapis.io:443", auth=("neo4j", "LVIXYVYW0EexkWnsmZAMRhVrrbKkZ0"), secure=True, verify=True)
+    G2 = Graph("bolt://neo2.develop.tapis.io:443", auth=("neo4j", "rH2utoEltpbifJqOIHONkpYqkfpNBy"), secure=True, verify=True)
     app.run()
     ## server
-    # passw = os.getenv("db_password")
-    # G1 =  Graph("bolt://neo1.develop.tapis.io:443", auth=("neo4j", passw), secure=True, verify=True)
-    # G1 = Graph("bolt://neo2.develop.tapis.io:443", auth=("neo4j", passw), secure=True, verify=True)
+    # passw1 = os.getenv("db_password1")
+    # passw2 = os.getenv("db_password2")
+    # G1 =  Graph("bolt://neo1.develop.tapis.io:443", auth=("neo4j", passw1), secure=True, verify=True)
+    # G2 =  Graph("bolt://neo2.develop.tapis.io:443", auth=("neo4j", passw2), secure=True, verify=True)
     # app.run(host="0.0.0.0")
     
 
