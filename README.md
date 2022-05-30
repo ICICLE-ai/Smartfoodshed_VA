@@ -6,7 +6,8 @@ git clone the repo
 
 cd Smartfoodshed_VA/new_gui/frontend
 
-npm install
+please use nodejs version 16.
+npm install --legacy-peer-deps
 
 ## how to run 
 ### backend 
