@@ -1,5 +1,5 @@
 <template>
-    <div>
+    <div id="leaflet_div">
         <v-row>
             <v-col cols=6>
                  <v-switch
@@ -249,7 +249,6 @@ export default {
 }
 </script>
 
-<style>
-@import "https://unpkg.com/leaflet@1.6.0/dist/leaflet.css";
-
+<style scoped>
+  @import "https://unpkg.com/leaflet@1.6.0/dist/leaflet.css";
 </style>

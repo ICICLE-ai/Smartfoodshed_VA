@@ -51,6 +51,8 @@ def getGraphData():
 def getMapData():
     global database
     data = helper.readJsonFromGit(localfile_path+database+'_map_initial_data.json')
+    # with open('../../../local_data/'+database+"_map_initial_data_v1.json") as f:
+    #     data = json.loads(f.read())
     output = {
         'data': data,
         'database': database
@@ -62,8 +64,11 @@ def getTableData():
     ## Create a new py file config.py and add localfile_path to indicate the place of local_data folder
     ## This config file will not be pushed to the osu code, so we don't need to always change path
     # global database
-    print('gettabledata', database)
+    # print('gettabledata', database)
     data = helper.readJsonFromGit(localfile_path+database+'_table.json')
+
+    # with open('../../../local_data/'+database+"_table_localserver.json") as f:
+    #     data = json.loads(f.read())
     output = {} ## tableName: {tableData:{}, tableInfo:{}}
     tableNames = []
     for ele in data:
@@ -305,17 +310,23 @@ def changeDataBase():
 if __name__ == '__main__':
     global G1, G2
     ## local 
-    # G1 = Graph("bolt://localhost:7687", auth=("neo4j", "123"), name="ppod")
-    # G2 = Graph("bolt://localhost:7687", auth=("neo4j", "123"), name="cfs")
+    G1 = Graph("bolt://localhost:7687", auth=("neo4j", "123"), name="ppod")
+    G2 = Graph("bolt://localhost:7687", auth=("neo4j", "123"), name="cfs")
     ## server test 
-    G1 =  Graph("bolt://neo1.develop.tapis.io:443", auth=("neo4j", "LVIXYVYW0EexkWnsmZAMRhVrrbKkZ0"), secure=True, verify=True)
-    G2 = Graph("bolt://neo2.develop.tapis.io:443", auth=("neo4j", "rH2utoEltpbifJqOIHONkpYqkfpNBy"), secure=True, verify=True)
+    # G1 = Graph("bolt://neo1.develop.tapis.io:443", auth=("neo1", "1froUwrQD6qhc99qbIrreVBLkleei2"), secure=True, verify=True)
+    # G2 = Graph("bolt://neo2.develop.tapis.io:443", auth=("neo2", "MkapUiVfZeFIjZ8GY6gO4WsTYqWIR5"), secure=True, verify=True)
+    
+
     app.run()
     ## server
+    # url1 = os.getenv("db_url1")
+    # user1 = os.getenv("db_user1")
     # passw1 = os.getenv("db_password1")
+    # url2 = os.getenv("db_url2")
+    # user2 = os.getenv("db_user2")
     # passw2 = os.getenv("db_password2")
-    # G1 =  Graph("bolt://neo1.develop.tapis.io:443", auth=("neo4j", passw1), secure=True, verify=True)
-    # G2 =  Graph("bolt://neo2.develop.tapis.io:443", auth=("neo4j", passw2), secure=True, verify=True)
+    # G1 = Graph(url1, auth=(user1, passw1), secure=True, verify=True)
+    # G2 = Graph(url2, auth=(user2, passw2), secure=True, verify=True)
     # app.run(host="0.0.0.0")
     
 

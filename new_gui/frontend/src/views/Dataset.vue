@@ -11,7 +11,7 @@
                     @click="changeDB1"
                     >
                         <v-img
-                            src="https://images.squarespace-cdn.com/content/v1/59a9c2ff8dd041f31701dea3/1602745366392-62IIKPSCRXAO464UJ4HA/IC-FOODS+Logo+Better.png?format=1500w"
+                            src="https://www.abelsontaylor.com/wp-content/uploads/2018/07/static-graph.jpg"
                             height="400px"
                         ></v-img>
                         <v-card-title>
@@ -86,7 +86,7 @@ export default{
 }
 
 .v-card:not(.on-hover) {
-  opacity: 0.6;
+  opacity: ;
  }
 
 .show-btns {

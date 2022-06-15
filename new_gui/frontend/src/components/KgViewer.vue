@@ -182,6 +182,7 @@
               v-model="resilience_thre"
               :thumb-size="24"
               min="0"
+              step="0.00001"
               :max = max_resilience
               thumb-label="always"
               v-show="showResThre"
@@ -244,7 +245,7 @@ export default{
       showResThre: false, // resilience threshold bar 
       resilience_thre: 0,  // selected threshold of resilience 
       // min_resilience: 0,
-      max_resilience: 100, // maximum value of the scroll bar for resilience threshold 
+      max_resilience: 1, // maximum value of the scroll bar for resilience threshold 
     }
   },
   created () {
@@ -544,8 +545,9 @@ export default{
       var that = this
       d3.select('#div_graph').selectAll('circle').style('fill',function(d){
       // check cold chain data
-        if('betweenness' in d['properties']){
-          if(d['properties']['betweenness']>=that.resilience_thre){
+        if('resilience' in d['properties']){
+          console.log(d['properties'])
+          if(d['properties']['resilience']>=that.resilience_thre){
             if(that.selectedColor){
               return that.selectedColor.hex
             }else{
@@ -572,13 +574,14 @@ export default{
       this.graphData['results'][0]['data'][0]['graph']['nodes'].forEach(function (d) {
         d['status'] = 'unclicked'
         // check if this is cold chain data or not 
-        if("betweenness" in d['properties']){
-          all_resilience.push(d['properties']['betweenness'])
+        if("resilience" in d['properties']){
+          all_resilience.push(parseFloat(d['properties']['resilience']))
         }
         
       })
       // this.min_resilience = d3.min(all_resilience)
       this.max_resilience = d3.max(all_resilience)
+      console.log(this.max_resilience)
       //inital the selected resilience
       KGutils.graphDataParsing(this.graphData, this.currentEntities, this.currentRelations)
       this.drawNeo4jd3()

@@ -100,7 +100,7 @@ export default{
       return value != null &&
         search != null &&
         typeof value === 'string' &&
-        value.toString().indexOf(search) !== -1
+        value.toString().toLowerCase().indexOf(search.toLowerCase()) !== -1
     },
     convert(raw){
       // vuetify need the text + value, not label+value 
