@@ -325,8 +325,8 @@ if __name__ == '__main__':
     # url2 = os.getenv("db_url2")
     # user2 = os.getenv("db_user2")
     # passw2 = os.getenv("db_password2")
-    # G1 = Graph(url1, auth=(user1, passw1), secure=True, verify=True)
-    # G2 = Graph(url2, auth=(user2, passw2), secure=True, verify=True)
+    # G1 = Graph(url1, auth=(user1, passw1), secure=True, verify=False)
+    # G2 = Graph(url2, auth=(user2, passw2), secure=True, verify=False)
     # app.run(host="0.0.0.0")
     
 

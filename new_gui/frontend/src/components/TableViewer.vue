@@ -31,7 +31,7 @@
                         <template v-slot:top>
                           <v-text-field
                               v-model="search"
-                              label="Search (UPPER CASE ONLY)"
+                              label="Search"
                               class="mx-4"
                               style="margin-top: 3px"
                           ></v-text-field>
@@ -211,9 +211,9 @@ export default{
 
 </script>
 <style>
-.v-input__slot{
+/* .v-input__slot{
   width: 100px;
-}
+} */
 
 #inspire{
   height: 100%;
