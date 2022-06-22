@@ -174,6 +174,7 @@
               v-model="user_defined_thre"
               :thumb-size="24"
               @click="changeThreshold"
+              max="1000"
               thumb-label="always"
               v-show="showMaxRetrieve"
             ></v-slider>

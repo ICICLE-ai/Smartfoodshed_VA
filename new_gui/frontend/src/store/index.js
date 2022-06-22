@@ -2,8 +2,9 @@ import Vue from 'vue'
 import Vuex from 'vuex'
 import axios from 'axios'
 import * as d3 from 'd3'
+// var https = require('https');
 import menu from '@/store/modules/menu.js'
-import { base_request_url } from '@/utils/base_url'
+import { base_request_url,apiClient } from '@/utils/base_url'
 import {generationEntityRelations, 
         addItemsToSelection, 
         removeItemsToSelection,
@@ -157,7 +158,8 @@ const mutations = {
 const actions = {
   async changeDB({commit, dispatch, state}, data){
     commit('SET_DATABASE', data['database'])
-    await axios.post(base_request_url+"changeDataBase", data)
+    // https = await import('https');
+    await apiClient.post("/changeDataBase", data)
   },
   async setExpandTh ({commit, dispatch, state}, data){
     commit('SET_expandThreshold', data)

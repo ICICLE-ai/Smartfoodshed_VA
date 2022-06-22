@@ -92,6 +92,7 @@ export default {
       geojson_county: null,
       show_eco: false,
       circles: null,
+      all_circles: null,
       show_circle_marker: false,
       markerLatLng: [39.1014537, -84.5124602],
       selectedInit: 'Total',
@@ -159,6 +160,7 @@ export default {
                 if(val>0){
                     var ele = MAPPING[d['county_id']]
                     var temp = {
+                        county_id: d['county_id'],
                         key: i,
                         center: [ele['lat'],ele['long']],
                         radius:8,
@@ -173,9 +175,27 @@ export default {
                 // console.log('do not have this county lat long:',d['county_id'])
             }
         })
-        console.log(circles)
         this.circles = circles
+        this.all_circles = circles 
         this.show_circle_marker = true
+    },
+    updateCircleMarker(){
+       console.log(this.circles)
+       console.log(this.mapQueryInfo)
+       this.show_circle_marker = false
+       var valid_county_id = []
+       this.mapQueryInfo.forEach(d=>{
+          for (let [key, value] of Object.entries(d['county'])){
+            if(valid_county_id.includes(value)==false){
+              valid_county_id.push(value)
+            }
+          }
+       })
+
+       const filtered_circles = this.all_circles.filter(d => valid_county_id.includes(d.county_id));
+        this.circles = filtered_circles
+        this.show_circle_marker = true
+
     },
     updateMarker(){
           console.log('i[date',this.mapQueryInfo)
@@ -240,10 +260,12 @@ export default {
       },
       mapQueryInfo(){
         this.updateMarker() 
+        this.updateCircleMarker()
         // this.updateMapColoring()
       },
       selectedInit(){
           this.initCircleMarker()
+          this.updateCircleMarker()
       }
   }
 }

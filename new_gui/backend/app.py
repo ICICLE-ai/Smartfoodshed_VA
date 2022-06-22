@@ -310,11 +310,11 @@ def changeDataBase():
 if __name__ == '__main__':
     global G1, G2
     ## local 
-    G1 = Graph("bolt://localhost:7687", auth=("neo4j", "123"), name="ppod")
-    G2 = Graph("bolt://localhost:7687", auth=("neo4j", "123"), name="cfs")
+    # G1 = Graph("bolt://localhost:7687", auth=("neo4j", "123"), name="ppod")
+    # G2 = Graph("bolt://localhost:7687", auth=("neo4j", "123"), name="cfs")
     ## server test 
-    # G1 = Graph("bolt://neo1.develop.tapis.io:443", auth=("neo1", "1froUwrQD6qhc99qbIrreVBLkleei2"), secure=True, verify=True)
-    # G2 = Graph("bolt://neo2.develop.tapis.io:443", auth=("neo2", "MkapUiVfZeFIjZ8GY6gO4WsTYqWIR5"), secure=True, verify=True)
+    G1 = Graph("bolt+ssc://neo1.pods.tacc.develop.tapis.io:443", auth=("neo1", "jNta1VvntEuVfmDyqwCXHVBekntCCJ"), secure=True, verify=False)
+    G2 = Graph("bolt+ssc://neo2.pods.tacc.develop.tapis.io:443", auth=("neo2", "ZRGL67TXKpbkQNj7RSXA0T74zZnwet"), secure=True, verify=False)
     
 
     app.run()
