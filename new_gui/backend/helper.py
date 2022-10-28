@@ -279,14 +279,15 @@ def graph_after_expand_node(graph,node_id_list,relation_id_list,expand_node,limi
         if database == "cfs":
             cypher = "MATCH (n)-[r]-(p) WHERE id(n) = {} RETURN id(r) as id order by r.Value DESC limit {}"
             new_relation_id = [i['id'] for i in graph.run(cypher.format(expand_node,limit_number)).data()]
-        elif database == "ppod":
+        elif database == "ppod" or database == "ci":
             cypher = "MATCH (n)-[r]-(p) WHERE id(n) = {} RETURN id(r) as id limit {}"
             new_relation_id = [i['id'] for i in graph.run(cypher.format(expand_node,limit_number)).data()]
+        
     else:
         if database == "cfs":
             cypher = "MATCH (n)-[r:{}]-(p) WHERE id(n) = {} RETURN id(r) as id order by r.Value DESC limit {}"
             new_relation_id = [i['id'] for i in graph.run(cypher.format(relationship_name,expand_node,limit_number)).data()]
-        elif database == "ppod":
+        elif database == "ppod" or database == "ci":
             cypher = "MATCH (n)-[r:{}]-(p) WHERE id(n) = {} RETURN id(r) as id limit {}"
             new_relation_id = [i['id'] for i in graph.run(cypher.format(relationship_name,expand_node,limit_number)).data()]
     

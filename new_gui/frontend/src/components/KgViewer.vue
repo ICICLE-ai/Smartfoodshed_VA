@@ -445,7 +445,7 @@ export default{
       var circles_question = svg.selectAll('.outline')
       let that = this
       var lasso_start = function () {
-        console.log(111)
+        // console.log(111)
         lasso.items()
           .attr('fill', "green")
           .classed('not_possible', true)
@@ -572,6 +572,7 @@ export default{
     },
     graphData () {
       var all_resilience = []
+      console.log(this.graphData)
       this.graphData['results'][0]['data'][0]['graph']['nodes'].forEach(function (d) {
         d['status'] = 'unclicked'
         // check if this is cold chain data or not 

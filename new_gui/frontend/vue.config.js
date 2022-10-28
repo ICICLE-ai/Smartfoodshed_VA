@@ -5,7 +5,7 @@ module.exports = defineConfig({
   ],
   lintOnSave: false,
   publicPath: '/',    //local development
-  // publicPath: '/ICICLE' //deployment.
+  // publicPath: '/ICICLE', //deployment.
   configureWebpack:{
     resolve:{
       fallback:{

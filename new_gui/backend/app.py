@@ -21,7 +21,7 @@ localfile_path = "../../../local_data"
 # from config import localfile_path
 
 localfile_path = "https://raw.githubusercontent.com/yasmineTYM/PPOD_KG/main/"
-
+# localfile_path = "/Users/yameitu/Desktop/ICIRCLE/local_data/"
 # configuration
 DEBUG = True
 GRAPH_DRIVER = None
@@ -288,16 +288,26 @@ def changeDataBase():
         graph = G1
         database = "ppod"
         entity_identifier = "label"
-    else:
+    elif database=="cfs":
         graph= G2
         database = "cfs"
         entity_identifier = "county"
+    elif database=="ci":
+        graph =  G3
+        database = "ci"
+        entity_identifier = "name"
     schema = py2neo.database.Schema(graph)
     entity_type = list(schema.node_labels)
     relationship_type = list(schema.relationship_types)
     if len(entity_type) > 1:
-        entity_type.remove("Resource")
-        entity_type.remove("_GraphConfig")
+        try:
+            entity_type.remove("Resource")
+        except:
+            print('No Resource Entity type') 
+        try:
+            entity_type.remove("_GraphConfig")
+        except:
+            print("No _GraphConfig Entity Type") 
     
     graph_overview = helper.get_graph_overview(graph,entity_type,relationship_type)
    
@@ -310,11 +320,12 @@ def changeDataBase():
 if __name__ == '__main__':
     global G1, G2
     ## local 
-    # G1 = Graph("bolt://localhost:7687", auth=("neo4j", "123"), name="ppod")
-    # G2 = Graph("bolt://localhost:7687", auth=("neo4j", "123"), name="cfs")
+    G1 = Graph("bolt://localhost:7687", auth=("neo4j", "123"), name="ppod")
+    G2 = Graph("bolt://localhost:7687", auth=("neo4j", "123"), name="cfs")
+    G3 = Graph("bolt+s://catalog.pods.icicle.tapis.io:443", auth=("catalog","3hpnfBio0OJ5sHAF5ZzBUDWz0db90i"), name="neo4j")
     ## server test 
-    G1 = Graph("bolt+ssc://neo1.pods.tacc.develop.tapis.io:443", auth=("neo1", "jNta1VvntEuVfmDyqwCXHVBekntCCJ"), secure=True, verify=False)
-    G2 = Graph("bolt+ssc://neo2.pods.tacc.develop.tapis.io:443", auth=("neo2", "ZRGL67TXKpbkQNj7RSXA0T74zZnwet"), secure=True, verify=False)
+    # G1 = Graph("bolt+ssc://neo1.pods.tacc.develop.tapis.io:443", auth=("neo1", "jNta1VvntEuVfmDyqwCXHVBekntCCJ"), secure=True, verify=False)
+    # G2 = Graph("bolt+ssc://neo2.pods.tacc.develop.tapis.io:443", auth=("neo2", "ZRGL67TXKpbkQNj7RSXA0T74zZnwet"), secure=True, verify=False)
     
 
     app.run()

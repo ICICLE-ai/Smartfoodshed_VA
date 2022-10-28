@@ -96,7 +96,7 @@ export default{
   },
   methods: {
     filterOnlyCapsText (value, search, item) {
-      console.log(value, search, item)
+      // console.log(value, search, item)
       return value != null &&
         search != null &&
         typeof value === 'string' &&
