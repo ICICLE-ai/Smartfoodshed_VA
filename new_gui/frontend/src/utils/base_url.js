@@ -6,7 +6,9 @@ import axios from 'axios'
 
 // export const base_request_url = "https://vaapi.pods.tacc.develop.tapis.io/"
 // export const base_request_url = "https://vaapi.pods.icicle.develop.tapis.io/"
-export const base_request_url = "http://127.0.0.1:5000/"
+// export const base_request_url = "http://127.0.0.1:5000/"
+// This is prod pod deployment url -> "https://vaapibackend.pods.icicle.tapis.io/"
+export const base_request_url = process.env.VA_BACKEND_URL // Set VA_BACKEND_URL in environment variables
 export const apiClient = axios.create({
     baseURL: base_request_url, 
     withCredentials: false, 

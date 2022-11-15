@@ -1,3 +1,4 @@
+from re import T
 from telnetlib import ENCRYPT
 from flask import Flask, jsonify, request,Response
 from neo4j import GraphDatabase, basic_auth
@@ -88,6 +89,7 @@ def getSubGraphFromTable():
     request_obj = request.get_json()
     nodes_list = []
     relation_list = []
+    dict_res = {}
     try:
         if request_obj.get("nodes") is not None: 
             nodes_list = request_obj.get("nodes")
@@ -97,8 +99,8 @@ def getSubGraphFromTable():
         subgraph_res,error_code = helper.get_subgraph(graph, nodes_list, relation_list)
         dict_res = helper.convert_subgraph_to_json(subgraph_res, entity_identifier,database,fips)
         print(error_code)
-    except:
-        print("404")
+    except Exception as e:
+        print(f"404 - {e}")
         error_code = 404
     return Response(json.dumps(dict_res),status = error_code)
 
@@ -107,6 +109,7 @@ def getSubGraphFromTableWithR():
     request_obj = request.get_json()
     nodes_list = []
     relation_list = []
+    dict_res = {}
     try:
         if request_obj.get("nodes") is not None: 
             nodes_list = request_obj.get("nodes")
@@ -115,7 +118,8 @@ def getSubGraphFromTableWithR():
             relation_list = request_obj.get("relations")
         subgraph_res,error_code = helper.get_subgraph(graph, nodes_list, relation_list)
         dict_res = helper.convert_subgraph_to_json_withR(subgraph_res, entity_identifier,graph,database,fips)
-    except:
+    except Exception as e:
+        print(f"404 - {e}")
         error_code = 404
     return Response(json.dumps(dict_res),status = error_code)
 
@@ -125,6 +129,7 @@ def delete_node_from_graph():
     request_obj = request.get_json()
     nodes_list = []
     relation_list = []
+    dict_res = {}
     try:
         if request_obj.get("nodes") is not None:
             nodes_list = request_obj.get("nodes")
@@ -147,6 +152,7 @@ def expand_node():
     relation_list = []
     # default for limit number is 5
     limit_number = 5
+    dict_res = {}
     try:
         if request_obj.get("nodes") is not None:
             nodes_list = request_obj.get("nodes")
@@ -162,7 +168,8 @@ def expand_node():
         # print(expand_node)
         subgraph_res,error_code = helper.graph_after_expand_node(graph,nodes_list,relation_list,expand_node,limit_number,relationship_name,database)
         dict_res = helper.convert_subgraph_to_json(subgraph_res, entity_identifier,database,fips)
-    except:
+    except Exception as e:
+        print(f"404 - {e}")
         error_code = 404
     return Response(json.dumps(dict_res),status = error_code)
 
@@ -174,6 +181,7 @@ def expand_node_with_relationship_type():
     # default for limit number is 5
     limit_number = request_obj['threshold']
     print(limit_number)
+    dict_res = {}
     # limit_number = 5
     # try:
     if request_obj.get("nodes") is not None:
@@ -197,11 +205,13 @@ def expand_node_with_relationship_type():
 @app.route('/getRType', methods=['POST'])
 def get_all_relationship_types():
     request_obj = request.get_json()
+    dict_res = {}
     try:
         if request_obj.get("node") is not None:
             node = request_obj.get("node")
         dict_res,error_code = helper.get_all_relationship_type(graph,node)
-    except:
+    except Exception as e:
+        print(f"404 - {e}")
         error_code = 404
     return Response(json.dumps(dict_res),status = error_code)
 
@@ -213,6 +223,7 @@ def get_graph_overview():
 def get_graph_with_certain_entity():
     request_obj = request.get_json()
     limit_number = 3
+    dict_res = {}
     try:
         print(request_obj)
         if request_obj.get("entity_type") is not None:
@@ -220,8 +231,9 @@ def get_graph_with_certain_entity():
             print(entity_type)
         subgraph_res,error_code = helper.get_graph_with_certain_entity(graph,entity_type,limit_number)
         dict_res = helper.convert_subgraph_to_json_withR(subgraph_res,entity_identifier,graph,database,fips)
-    except:
+    except Exception as e:
         print("Error!!!!!")
+        print(f"404 - {e}")
         error_code = 404
     return Response(json.dumps(dict_res),status = error_code)
 
@@ -229,6 +241,7 @@ def get_graph_with_certain_entity():
 def get_graph_with_certain_relationship():
     request_obj = request.get_json()
     limit_number = 3
+    dict_res = {}
     try:
         print(request_obj)
         if request_obj.get("relationship_type") is not None:
@@ -242,30 +255,33 @@ def get_graph_with_certain_relationship():
 @app.route('/getCountyInfo', methods=['POST'])
 def get_county_info():
     request_obj = request.get_json()
+    dict_res = {}
     try:
         if request_obj.get("node") is not None:
             node = request_obj.get("node")
         dict_res,error_code = helper.get_county_info_for_nodes(node,database,graph)
     except Exception as e:
-        print(e)
+        print(f"404 - {e}")
         error_code = 404
     return Response(json.dumps(dict_res),status = error_code)
 
 @app.route('/getEcoregionInfo', methods=['POST'])
 def get_ecoregion_info():
     request_obj = request.get_json()
+    dict_res = {}
     try:
         if request_obj.get("node") is not None:
             node = request_obj.get("node")
         dict_res,error_code = helper.get_ecoregion_info_for_nodes(node,database,graph)
     except Exception as e:
-        print(e)
+        print(f"404 - {e}")
         error_code = 404
     return Response(json.dumps(dict_res),status = error_code)
 
 @app.route('/countyToNodes', methods=['POST'])
 def get_associated_node_from_county():
     request_obj = request.get_json()
+    dict_res = {}
     limit_number = 5
     try:
         if request_obj.get("county_id") is not None:
@@ -273,7 +289,7 @@ def get_associated_node_from_county():
         subgraph_res,error_code = helper.get_associated_nodes_for_county(county_id,database,graph,limit_number)
         dict_res = helper.convert_subgraph_to_json_withR(subgraph_res,entity_identifier,graph,database,fips)
     except Exception as e:
-        print(e)
+        print(f"404 - {e}")
         error_code = 404
     return Response(json.dumps(dict_res),status = error_code)
 
@@ -320,24 +336,25 @@ def changeDataBase():
 if __name__ == '__main__':
     global G1, G2
     ## local 
-    G1 = Graph("bolt://localhost:7687", auth=("neo4j", "123"), name="ppod")
-    G2 = Graph("bolt://localhost:7687", auth=("neo4j", "123"), name="cfs")
-    G3 = Graph("bolt+s://catalog.pods.icicle.tapis.io:443", auth=("catalog","3hpnfBio0OJ5sHAF5ZzBUDWz0db90i"), name="neo4j")
+    #G1 = Graph("bolt://localhost:7687", auth=("neo4j", "123"), name="ppod")
+    #G2 = Graph("bolt://localhost:7687", auth=("neo4j", "123"), name="cfs")
+    #G3 = Graph("bolt+s://catalog.pods.icicle.tapis.io:443", auth=("catalog","d"), name="neo4j")
     ## server test 
-    # G1 = Graph("bolt+ssc://neo1.pods.tacc.develop.tapis.io:443", auth=("neo1", "jNta1VvntEuVfmDyqwCXHVBekntCCJ"), secure=True, verify=False)
-    # G2 = Graph("bolt+ssc://neo2.pods.tacc.develop.tapis.io:443", auth=("neo2", "ZRGL67TXKpbkQNj7RSXA0T74zZnwet"), secure=True, verify=False)
-    
+    # G1 = Graph("bolt+ssc://neo1.pods.tacc.develop.tapis.io:443", auth=("neo1", "pass1"), secure=True, verify=False)
+    # G2 = Graph("bolt+ssc://neo2.pods.tacc.develop.tapis.io:443", auth=("neo2", "pass2"), secure=True, verify=False)
 
-    app.run()
     ## server
-    # url1 = os.getenv("db_url1")
-    # user1 = os.getenv("db_user1")
-    # passw1 = os.getenv("db_password1")
-    # url2 = os.getenv("db_url2")
-    # user2 = os.getenv("db_user2")
-    # passw2 = os.getenv("db_password2")
-    # G1 = Graph(url1, auth=(user1, passw1), secure=True, verify=False)
-    # G2 = Graph(url2, auth=(user2, passw2), secure=True, verify=False)
-    # app.run(host="0.0.0.0")
-    
+    url1 = os.getenv("db_url1")
+    user1 = os.getenv("db_user1")
+    passw1 = os.getenv("db_password1")
+    G1 = Graph(url1, auth=(user1, passw1), secure=True, verify=False)
+    url2 = os.getenv("db_url2")
+    user2 = os.getenv("db_user2")
+    passw2 = os.getenv("db_password2")
+    G2 = Graph(url2, auth=(user2, passw2), secure=True, verify=False)
+    url3 = os.getenv("db_url3")
+    user3 = os.getenv("db_user3")
+    passw3 = os.getenv("db_password3")
+    G3 = Graph(url3, auth=(user3, passw3), secure=True, verify=False)
 
+    app.run(host="0.0.0.0")
