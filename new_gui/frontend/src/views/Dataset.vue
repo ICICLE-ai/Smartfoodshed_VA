@@ -49,7 +49,7 @@
                     @click="changeDB3"
                     >
                         <v-img
-                            src="https://www.qualityassurancemag.com/fileuploads/publications/29/issues/103585/articles/images/AdobeStock_280800711_fmt.jpg"
+                            src="https://icicle.osu.edu/sites/default/files/styles/coe_medium_small/public/2021-07/ICICLE_stakeholders_0.png"
                             height="400px"
                         ></v-img>
                         <v-card-title>
