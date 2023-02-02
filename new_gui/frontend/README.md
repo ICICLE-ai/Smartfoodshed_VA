@@ -1,4 +1,4 @@
-# new_gui
+# Visual Analytics V1
 
 ## Project setup
 ```

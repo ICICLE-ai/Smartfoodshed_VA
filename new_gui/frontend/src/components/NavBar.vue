@@ -5,7 +5,7 @@
       dense
     >
       <v-app-bar-nav-icon></v-app-bar-nav-icon>
-      <v-toolbar-title>ICICLE Visual Analytics Prototype</v-toolbar-title>
+      <v-toolbar-title>ICICLE Visual Analytics V1</v-toolbar-title>
       <v-spacer></v-spacer>
       <v-btn
         text
