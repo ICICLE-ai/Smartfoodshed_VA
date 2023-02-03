@@ -313,8 +313,11 @@ def changeDataBase():
         database = "ci"
         entity_identifier = "name"
     schema = py2neo.database.Schema(graph)
+    app.logger.info("Testing log 1")
     entity_type = list(schema.node_labels)
+    app.logger.info(f"Testing log 2 {entity_type}")
     relationship_type = list(schema.relationship_types)
+    app.logger.info(f"Testing log 3 {relationship_type}")
     if len(entity_type) > 1:
         try:
             entity_type.remove("Resource")
@@ -327,6 +330,7 @@ def changeDataBase():
     
     graph_overview = helper.get_graph_overview(graph,entity_type,relationship_type)
    
+    app.logger.info(f"Testing log 4")
     fips = pd.read_csv(localfile_path+"county_fips.csv")
     fips = fips.astype({"fips": str})
     fips['fips'] = fips['fips'].apply(lambda x: x.zfill(5))
@@ -334,7 +338,7 @@ def changeDataBase():
     return Response(json.dumps({}), status=200)
 
 if __name__ == '__main__':
-    global G1, G2
+    global G1, G2, G3
     ## local 
     #G1 = Graph("bolt://localhost:7687", auth=("neo4j", "123"), name="ppod")
     #G2 = Graph("bolt://localhost:7687", auth=("neo4j", "123"), name="cfs")
