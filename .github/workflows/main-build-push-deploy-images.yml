@@ -14,11 +14,11 @@
 # You can update the values, but can't view.
 #
 # NOVEMBER 29th:
-#   env.DOCKERHUB_USERNAME: username for tuyami
+#   vars.DOCKERHUB_USERNAME: username for tuyami
 #   secrets.DOCKERHUB_TOKEN: token for tuyamei
 #   secrets.TAPIS_ICICLE_PROD_TOKEN: token for tuyamei
-#   env.POD_ID_BACKEND: vaapibackend
-#   env.POD_ID_FRONTEND: vaapifrontend
+#   vars.POD_ID_BACKEND: vaapibackend
+#   vars.POD_ID_FRONTEND: vaapifrontend
 
 name: Build, push, deploy images
 on:
@@ -40,7 +40,7 @@ jobs:
       - uses: docker/login-action@v2
         name: Log in to Docker
         with:
-          username: ${{ env.DOCKERHUB_USERNAME }}
+          username: ${{ vars.DOCKERHUB_USERNAME }}
           password: ${{ secrets.DOCKERHUB_TOKEN }}
 
       - name: Get current date # get the date of the build
@@ -69,13 +69,13 @@ jobs:
     - name: Restart backend pod
       uses: fjogeleit/http-request-action@v1
       with:
-        url: 'https://icicle.tapis.io/v3/pods/${{ env.POD_ID_BACKEND }}/restart'
+        url: 'https://icicle.tapis.io/v3/pods/${{ vars.POD_ID_BACKEND }}/restart'
         method: 'GET'
         customHeaders: '{"Content-Type": "application/json", "X-Tapis-Token": "${{ secrets.TAPIS_ICICLE_PROD_TOKEN }}"}'
 
     - name: Restart frontend pod
       uses: fjogeleit/http-request-action@v1
       with:
-        url: 'https://icicle.tapis.io/v3/pods/${{ env.POD_ID_FRONTEND }}/restart'
+        url: 'https://icicle.tapis.io/v3/pods/${{ vars.POD_ID_FRONTEND }}/restart'
         method: 'GET'
         customHeaders: '{"Content-Type": "application/json", "X-Tapis-Token": "${{ secrets.TAPIS_ICICLE_PROD_TOKEN }}"}'
