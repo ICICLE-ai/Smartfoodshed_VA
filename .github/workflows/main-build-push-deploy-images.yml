@@ -50,14 +50,14 @@ jobs:
       - uses: docker/build-push-action@v3
         name: Build & push tagged Docker backend image
         with:
-          context: backend
+          context: new_gui/backend
           push: true
           tags: notchristiangarcia/vaapi-v1-f:latest,notchristiangarcia/vaapi-v1-f:${{ steps.date.outputs.date }}
 
       - uses: docker/build-push-action@v3
         name: Build & push tagged Docker frontend image
         with:
-          context: frontend
+          context: new_gui/frontend
           push: true
           tags: notchristiangarcia/vaapi-v1-b:latest,notchristiangarcia/vaapi-v1-b:${{ steps.date.outputs.date }}
 
