@@ -6,6 +6,7 @@ from flask_cors import CORS
 import json
 from neo4j import GraphDatabase
 from py2neo import Graph
+import time
 from py2neo import Subgraph
 import py2neo
 import pandas as pd
@@ -347,18 +348,78 @@ if __name__ == '__main__':
     # G1 = Graph("bolt+ssc://neo1.pods.tacc.develop.tapis.io:443", auth=("neo1", "pass1"), secure=True, verify=False)
     # G2 = Graph("bolt+ssc://neo2.pods.tacc.develop.tapis.io:443", auth=("neo2", "pass2"), secure=True, verify=False)
 
-    ## server
-    url1 = os.getenv("db_url1")
-    user1 = os.getenv("db_user1")
-    passw1 = os.getenv("db_password1")
-    G1 = Graph(url1, auth=(user1, passw1), secure=True, verify=False)
-    url2 = os.getenv("db_url2")
-    user2 = os.getenv("db_user2")
-    passw2 = os.getenv("db_password2")
-    G2 = Graph(url2, auth=(user2, passw2), secure=True, verify=False)
-    url3 = os.getenv("db_url3")
-    user3 = os.getenv("db_user3")
-    passw3 = os.getenv("db_password3")
-    G3 = Graph(url3, auth=(user3, passw3), secure=True, verify=False)
+    ## Read in environment variables to instantiate global Neo4j drivers named G1, G2, ..., GX
+    ## Getting "sets" of credentials for each database.
+    # db_creds = db_url1, db_user1, db_passw1, db_url2, and so on. Can give as many credentials as wanted.
+    # credentials
+    creds = {}
+    cred_set = 1
+    while True:
+        print(f"Going through cred set {cred_set}")
+        url = os.getenv(f"db_url{cred_set}")
+        user = os.getenv(f"db_user{cred_set}")
+        passw = os.getenv(f"db_passw{cred_set}")
 
-    app.run(host="0.0.0.0")
+        # There is no values for this "cred set"
+        if not (url and user and passw):
+            break
+
+        # Ensure the credential set has url, user, and passw defined
+        if not (url or user or passw):
+            msg = (f"Environment variable cred set {cred_set} has None for one of the following required variables:\n",
+                   f"db_user{cred_set}: {url}",
+                   f"db_user{cred_set}: {user}",
+                   f"db_passw{cred_set}: {passw}")
+            print(msg)
+            raise ValueError(msg)
+
+        creds.update({f"db_url{cred_set}": url,
+                      f"db_user{cred_set}": user,
+                      f"db_passw{cred_set}": passw})
+        
+        cred_set = cred_set + 1
+
+    # This is hackery, this entire env fetching should be redone later, needed error message now for developers.
+    # Did not get any creds
+    if cred_set == 1:
+        msg = f"At least one set of db credentials are required, env variables needed: db_url1, db_user1, and db_passw1.\n"
+        print(msg)
+        raise ValueError(msg)
+    elif cred_set == 2:
+        msg = f"Only got one set of credentials, will use cred 1 for database 2 and 3."
+        print(msg)
+        creds["db_url2"] = creds["db_url1"]
+        creds["db_url3"] = creds["db_url1"]
+        creds["db_user2"] = creds["db_user1"]
+        creds["db_user3"] = creds["db_user1"]
+        creds["db_passw2"] = creds["db_passw1"]
+        creds["db_passw3"] = creds["db_passw1"]
+    elif cred_set == 3:
+        msg = f"Only got two sets of credentials, will use cred 1 for database 3."
+        print(msg)
+        creds["db_url3"] = creds["db_url1"]
+        creds["db_user3"] = creds["db_user1"]
+        creds["db_passw3"] = creds["db_passw1"]
+    else:
+        pass
+
+
+    e = None
+    attempts = 0
+    while attempts < 10:
+        try:
+            G1 = Graph(creds['db_url1'], auth=(creds['db_user1'], creds['db_passw1']), secure=False, verify=False)
+            G2 = Graph(creds['db_url2'], auth=(creds['db_user2'], creds['db_passw2']), secure=False, verify=False)
+            G3 = Graph(creds['db_url3'], auth=(creds['db_user3'], creds['db_passw3']), secure=False, verify=False)
+            print("Databases connected successfully!")
+            break
+        except Exception as e:
+            print(f"{attempts} of 10 attempts: Couldn't connect to db, might be initializing, trying again in 5 seconds")
+            time.sleep(5)
+            attempts = attempts + 1
+    else:
+        msg = f"Couldn't connect to db after 10 attempts with 5 seconds between attempts. last error e: {e}"
+        print(msg)
+        raise RuntimeError(msg)
+
+    app.run(host="0.0.0.0", debug=False)
