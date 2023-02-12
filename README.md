@@ -3,7 +3,7 @@ Visual analytics system built for smart food shed, especially for PPOD and Cold 
 ## Description 
 Our system offers a dynamic and engaging way to explore graph data. It is equipped with three main views, the **Graph View**, **Table View**, and **Map View**, providing a comprehensive and multi-perspective analysis of the data. 
 
-    ![Main View](https://github.com/ICICLE-ai/Smartfoodshed_VA_VC1/blob/main/frontend/src/assets/mainView.png?raw=true)
+![Main View](https://github.com/ICICLE-ai/Smartfoodshed_VA_VC1/blob/main/frontend/src/assets/mainView.png?raw=true)
 
 * The **Graph View** is designed to provide an intuitive understanding of the relationships and patterns within the graph data. 
 * The **Table View** and **Map View** offer alternative ways to view the data, providing different insights and perspectives. 
