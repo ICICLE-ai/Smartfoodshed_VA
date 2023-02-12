@@ -44,25 +44,35 @@ V1 and V2 Repos have github actions for CI/CD, these are defined in `repo:.githu
 * 📍 [Recommend to install Nodejs version 16]
 
 ```
-git clone the repo
+> git clone the repo
 
-cd Smartfoodshed_VA/new_gui/frontend
+> cd Smartfoodshed_VA/new_gui/frontend
 
-npm install --legacy-peer-deps
+> npm install --legacy-peer-deps
 ```
 
 ### Local Running 
 
-#### Backend 
+#### Running Backend 
+💡 Make sure you have the Neo4j Running in your local environment. And edit the app.py to your local setting 
+```python
+G1 = Graph("bolt://localhost:7687", auth=("YOUR_USERNAME", "YOUR_PASSWORD"), name="YOUR_DBNAME")
+app.run()
 ```
-cd Smartfoodshed_VA/new_gui/backend
-python app.py 
+Then running the following in your teminal: 
+```
+> cd Smartfoodshed_VA/new_gui/backend
+> python app.py 
 ```
 #### Frontend 
 ```
-cd Smartfoodshed_VA/new_gui/frontend
-npm run serve
+> cd Smartfoodshed_VA/new_gui/frontend
+> npm run serve
 # open localhost:8080 in your broswer
 ```
-## Screen
+## Usage 
+### 1. Table Exploration 
+![Sheet Selector](https://github.com/ICICLE-ai/Smartfoodshed_VA_VC1/blob/main/frontend/src/assets/sheetSelector.png?raw=true)
+### 2. Query from Table to Graph 
+![Table Query](https://github.com/ICICLE-ai/Smartfoodshed_VA_VC1/blob/main/frontend/src/assets/tableQuery_AdobeExpress.gif?raw=true)
 
