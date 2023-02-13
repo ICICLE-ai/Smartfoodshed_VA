@@ -41,7 +41,7 @@ There is a [Makefile](https://github.com/ICICLE-ai/Smartfoodshed_VA_VC1/blob/mai
 V1 and V2 Repos have github actions for CI/CD, these are defined in `repo:.github/workflows/<action name>.yml`. Currently (February 2023), when there is a new commit to to `main` branch, the action will build required images and deploy them to the Tapis Pods Service. [More words on how it works in the actual yaml files located here.](https://github.com/ICICLE-ai/Smartfoodshed_VA_VC1/blob/main/.github/workflows/main-build-push-deploy-images.yml)
    
 ### Local Deployment (without docker)
-* 📍 [Recommend to install Nodejs version 16]
+* Front-End📍 [Recommend to install Nodejs version 16]
 
 ```
 > git clone the repo
@@ -51,9 +51,12 @@ V1 and V2 Repos have github actions for CI/CD, these are defined in `repo:.githu
 > npm install --legacy-peer-deps
 ```
 
-### Local Running 
+* Back-End: 
+  * Install [Neo4j Application](https://neo4j.com/) first.
+  * Upload the graph data to Neo4j using the following link: https://drive.google.com/file/d/1ck4ZbTfhDkAyM3vekubECA5OKX7rx04x/view?usp=sharing 
+  
+### Local Running: Backend
 
-#### Running Backend 
 💡 Make sure you have the Neo4j Running in your local environment. And edit the app.py to your local setting 
 ```python
 G1 = Graph("bolt://localhost:7687", auth=("YOUR_USERNAME", "YOUR_PASSWORD"), name="YOUR_DBNAME")
@@ -64,7 +67,7 @@ Then running the following in your teminal:
 > cd Smartfoodshed_VA/new_gui/backend
 > python app.py 
 ```
-#### Frontend 
+#### Local Running: Frontend 
 ```
 > cd Smartfoodshed_VA/new_gui/frontend
 > npm run serve
