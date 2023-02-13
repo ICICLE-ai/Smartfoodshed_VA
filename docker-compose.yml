@@ -11,7 +11,7 @@ services:
             - "8080:8080"
         restart: always
         environment:
-            base_request_url: http://va1-backend:5000
+            base_request_url: http://localhost:5000/
         networks:
             - va1-network
         command: ["nginx", "-g", "daemon off;"]
@@ -21,9 +21,11 @@ services:
         ports:
             - "5000:5000"
         environment:
-            db_url1: bolt+ssc://va1-neo4j:7687
+            db_url1: bolt://va1-neo4j:7687
             db_user1: neo4j 
-            db_passw1: newPassword
+            db_password1: newPassword
+            flask_debug: "True"
+            local_run_db_init: "True"
         networks:
             - va1-network
 
@@ -31,7 +33,7 @@ services:
         image: neo4j
         environment:
             NEO4J_AUTH: "neo4j/newPassword"
-            NEO4JLABS_PLUGINS: '["apoc", "n10s"]'
+            NEO4J_PLUGINS: '["apoc", "n10s"]'
         ports:
             - "7687:7687"
         networks:

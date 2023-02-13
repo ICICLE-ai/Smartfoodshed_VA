@@ -12,13 +12,13 @@ export const base_request_url = "https://vaapibackend.pods.icicle.tapis.io/" // 
 console.log('The value of PORT is:', process.env);
 
 export const apiClient = axios.create({
-    baseURL: base_request_url, 
-    withCredentials: false, 
+    baseURL: base_request_url,
+    withCredentials: false,
     httpsAgent: new https.Agent({
-      rejectUnauthorized: false,                                                            
+      rejectUnauthorized: false,
     }),
     headers: {
-      Accept: 'application/json', 
+      'Accept': 'application/json',
       'Content-Type': 'application/json'
     }
   })
