@@ -4,19 +4,21 @@ import axios from 'axios'
 
 // const https = new Https();
 
-// export const base_request_url = "https://vaapi.pods.tacc.develop.tapis.io/"
-// export const base_request_url = "https://vaapi.pods.icicle.develop.tapis.io/"
-// export const base_request_url = "http://127.0.0.1:5000/"
-// This is prod pod deployment url -> "https://vaapibackend.pods.icicle.tapis.io/"
-export const base_request_url = "https://vaapibackend.pods.icicle.tapis.io/" // Set VA_BACKEND_URL in environment variables
+// Production backend url
+// export const base_request_url = "https://vaapibackend.pods.icicle.tapis.io/"
+// Develop backend url
+// export const base_request_url = "https://vaapibackend.pods.icicle.develop.tapis.io/"
+// Local development backend url
+// export const base_request_url = "http://localhost:5000/"
+export const base_request_url = "http://localhost:5000/"
 export const apiClient = axios.create({
-    baseURL: base_request_url, 
-    withCredentials: false, 
+    baseURL: base_request_url,
+    withCredentials: false,
     httpsAgent: new https.Agent({
-      rejectUnauthorized: false,                                                            
+      rejectUnauthorized: false,
     }),
     headers: {
-      Accept: 'application/json', 
+      'Accept': 'application/json',
       'Content-Type': 'application/json'
     }
   })

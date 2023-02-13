@@ -314,11 +314,8 @@ def changeDataBase():
         database = "ci"
         entity_identifier = "name"
     schema = py2neo.database.Schema(graph)
-    app.logger.info("Testing log 1")
     entity_type = list(schema.node_labels)
-    app.logger.info(f"Testing log 2 {entity_type}")
     relationship_type = list(schema.relationship_types)
-    app.logger.info(f"Testing log 3 {relationship_type}")
     if len(entity_type) > 1:
         try:
             entity_type.remove("Resource")
@@ -331,12 +328,28 @@ def changeDataBase():
     
     graph_overview = helper.get_graph_overview(graph,entity_type,relationship_type)
    
-    app.logger.info(f"Testing log 4")
     fips = pd.read_csv(localfile_path+"county_fips.csv")
     fips = fips.astype({"fips": str})
     fips['fips'] = fips['fips'].apply(lambda x: x.zfill(5))
     fips = fips.append({'fips':'46102', 'name':'Oglala Lakota County','state':'SD'},ignore_index=True)
     return Response(json.dumps({}), status=200)
+
+def loadPPOD(graph, deleteOld=False):
+    if deleteOld:
+        c1 = "match (a) -[r] -> () delete a, r"
+        c2 = "match (a) delete a"
+        graph.run(c1)
+        graph.run(c2)
+#     graph.run('CREATE CONSTRAINT n10s_unique_uri ON (r:Resource) ASSERT r.uri IS UNIQUE')
+    graph.run('CALL n10s.graphconfig.init();')
+    graph.run('CALL n10s.graphconfig.init({ handleVocabUris: "IGNORE" })')
+    graph.run("CALL apoc.import.graphml('https://raw.githubusercontent.com/yasmineTYM/PPOD_KG/main/PPOD_v9.graphml', {storeNodeIds:True, readLabels: True})")
+    result = graph.run("MATCH (n) RETURN count(n) as num")
+    for record in result:
+        print(f"Number of nodes in the database: {record['num']}")
+    result = graph.run("MATCH (n)-[r]->() RETURN COUNT(r) as num")
+    for record in result:
+        print(f"Number of edges in the database: {record['num']}")
 
 if __name__ == '__main__':
     global G1, G2, G3
@@ -395,7 +408,7 @@ if __name__ == '__main__':
         creds["db_password2"] = creds["db_password1"]
         creds["db_password3"] = creds["db_password1"]
     elif cred_set == 3:
-        msg = f"Only got two sets of credentials, will use cred 1 for database 3."
+        msg = f"Got two sets of credentials, will use cred 1 for database 3."
         print(msg)
         creds["db_url3"] = creds["db_url1"]
         creds["db_user3"] = creds["db_user1"]
@@ -409,17 +422,17 @@ if __name__ == '__main__':
     print(f"Attempting to connect to database.")
     while attempts < 10:
         try:
-            G1 = Graph(creds['db_url1'], auth=(creds['db_user1'], creds['db_password1']), verify=False)
+            G1 = Graph(creds['db_url1'], auth=(creds['db_user1'], creds['db_password1']))
             print("Successfully connected to G1.")
-            G2 = Graph(creds['db_url2'], auth=(creds['db_user2'], creds['db_password2']), verify=False)
+            G2 = Graph(creds['db_url2'], auth=(creds['db_user2'], creds['db_password2']))
             print("Successfully connected to G2.")
-            G3 = Graph(creds['db_url3'], auth=(creds['db_user3'], creds['db_password3']), verify=False)
+            G3 = Graph(creds['db_url3'], auth=(creds['db_user3'], creds['db_password3']))
             print("Successfully connected to G3.")
             print("Databases connected successfully!")
             break
         except Exception as e:
-            print(f"{attempts} of 10 attempts: Couldn't connect to db, might be initializing, trying again in 4 seconds")
-            time.sleep(4)
+            print(f"{attempts} of 10 attempts: Couldn't connect to db, might be initializing, trying again in 5 seconds")
+            time.sleep(5)
             attempts = attempts + 1
             error = e
     else:
@@ -427,4 +440,24 @@ if __name__ == '__main__':
         print(msg)
         raise RuntimeError(msg)
 
-    app.run(host="0.0.0.0", debug=False)
+    # For local develop, load ppod data into local db.
+    local_run_db_init = os.getenv(f"local_run_db_init", False)
+    if local_run_db_init:
+        print(f"local_run_db_init env var was set , initializing database")
+        if cred_set == 2:
+            msg = f"Only got one set of credentials, will initialize db 1 with PPOD data."
+            print(msg)
+            loadPPOD(G1, True)
+        elif cred_set == 3:
+            msg = f"Got two sets of credentials, will initialize db 1 and 2 with PPOD data."
+            print(msg)
+            loadPPOD(G1, True)
+            loadPPOD(G2, True)
+        else:
+            msg = f"Got three sets of credentials (or more), will initialize db 1, 2, and 3 with PPOD data."
+            print(msg)
+            loadPPOD(G1, True)
+            loadPPOD(G2, True)
+            loadPPOD(G3, True)
+
+    app.run(host="0.0.0.0", debug=os.getenv("flask_debug", False))
