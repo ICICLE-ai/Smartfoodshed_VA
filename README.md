@@ -72,7 +72,23 @@ Then running the following in your teminal:
 ```
 ## Usage 
 ### 1. Table Exploration 
+Easily switch between different tabs to view different sheets of the tabular data.
 ![Sheet Selector](https://github.com/ICICLE-ai/Smartfoodshed_VA_VC1/blob/main/frontend/src/assets/sheetSelector.png?raw=true)
 ### 2. Query from Table to Graph 
+The Table View allows you to filter the data using keywords. Simply select the rows of interest and hit the 'Retrieve' button at the bottom. The corresponding entities in the graph will then be highlighted and displayed in the Graph View on the right.
 ![Table Query](https://github.com/ICICLE-ai/Smartfoodshed_VA_VC1/blob/main/frontend/src/assets/tableQuery_AdobeExpress.gif?raw=true)
+### 3. Relation Expander
+Explore Relationships: By clicking on each node, the distribution of its various relation types will be displayed in a pie chart. You can click on a relation type of your choice to expand the graph for further analysis.
+![Relation Expander](https://github.com/ICICLE-ai/Smartfoodshed_VA_VC1/blob/main/frontend/src/assets/relationExpand_AdobeExpress.gif?raw=true)
 
+Our system also gives users the flexibility to specify the number of entities to be displayed, using a slider bar. The default value is set to 5 entities.
+![Relation Expander with Customized Thresholds](https://github.com/ICICLE-ai/Smartfoodshed_VA_VC1/blob/main/frontend/src/assets/relationExpandWithThreshold_AdobeExpress.gif?raw=true)
+
+
+## Code
+Project Structure: The project is divided into two main components, the front-end and the back-end. 
+![Project Structure](https://github.com/ICICLE-ai/Smartfoodshed_VA_VC1/blob/main/frontend/src/assets/code_structure.png?raw=true)
+* The front-end consists of three VUE files, each representing one of the three main views. 
+* The back-end is composed of two main modules, app.py and helper.py. 
+  * app.py is responsible for handling the incoming GET/POST requests from the front-end.
+  * helper.py includes various querying functions and auxiliary helper functions.
