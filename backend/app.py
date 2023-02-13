@@ -350,7 +350,7 @@ if __name__ == '__main__':
 
     ## Read in environment variables to instantiate global Neo4j drivers named G1, G2, ..., GX
     ## Getting "sets" of credentials for each database.
-    # db_creds = db_url1, db_user1, db_passw1, db_url2, and so on. Can give as many credentials as wanted.
+    # db_creds = db_url1, db_user1, db_password1, db_url2, and so on. Can give as many credentials as wanted.
     # credentials
     creds = {}
     cred_set = 1
@@ -358,7 +358,7 @@ if __name__ == '__main__':
         print(f"Going through cred set {cred_set}")
         url = os.getenv(f"db_url{cred_set}")
         user = os.getenv(f"db_user{cred_set}")
-        passw = os.getenv(f"db_passw{cred_set}")
+        passw = os.getenv(f"db_password{cred_set}")
 
         # There is no values for this "cred set"
         if not (url and user and passw):
@@ -369,20 +369,20 @@ if __name__ == '__main__':
             msg = (f"Environment variable cred set {cred_set} has None for one of the following required variables:\n",
                    f"db_user{cred_set}: {url}",
                    f"db_user{cred_set}: {user}",
-                   f"db_passw{cred_set}: {passw}")
+                   f"db_password{cred_set}: {passw}")
             print(msg)
             raise ValueError(msg)
 
         creds.update({f"db_url{cred_set}": url,
                       f"db_user{cred_set}": user,
-                      f"db_passw{cred_set}": passw})
+                      f"db_password{cred_set}": passw})
         
         cred_set = cred_set + 1
 
     # This is hackery, this entire env fetching should be redone later, needed error message now for developers.
     # Did not get any creds
     if cred_set == 1:
-        msg = f"At least one set of db credentials are required, env variables needed: db_url1, db_user1, and db_passw1.\n"
+        msg = f"At least one set of db credentials are required, env variables needed: db_url1, db_user1, and db_password1.\n"
         print(msg)
         raise ValueError(msg)
     elif cred_set == 2:
@@ -392,14 +392,14 @@ if __name__ == '__main__':
         creds["db_url3"] = creds["db_url1"]
         creds["db_user2"] = creds["db_user1"]
         creds["db_user3"] = creds["db_user1"]
-        creds["db_passw2"] = creds["db_passw1"]
-        creds["db_passw3"] = creds["db_passw1"]
+        creds["db_password2"] = creds["db_password1"]
+        creds["db_password3"] = creds["db_password1"]
     elif cred_set == 3:
         msg = f"Only got two sets of credentials, will use cred 1 for database 3."
         print(msg)
         creds["db_url3"] = creds["db_url1"]
         creds["db_user3"] = creds["db_user1"]
-        creds["db_passw3"] = creds["db_passw1"]
+        creds["db_password3"] = creds["db_password1"]
     else:
         pass
 
@@ -408,9 +408,9 @@ if __name__ == '__main__':
     attempts = 0
     while attempts < 10:
         try:
-            G1 = Graph(creds['db_url1'], auth=(creds['db_user1'], creds['db_passw1']), secure=False, verify=False)
-            G2 = Graph(creds['db_url2'], auth=(creds['db_user2'], creds['db_passw2']), secure=False, verify=False)
-            G3 = Graph(creds['db_url3'], auth=(creds['db_user3'], creds['db_passw3']), secure=False, verify=False)
+            G1 = Graph(creds['db_url1'], auth=(creds['db_user1'], creds['db_password1']), secure=False, verify=False)
+            G2 = Graph(creds['db_url2'], auth=(creds['db_user2'], creds['db_password2']), secure=False, verify=False)
+            G3 = Graph(creds['db_url3'], auth=(creds['db_user3'], creds['db_password3']), secure=False, verify=False)
             print("Databases connected successfully!")
             break
         except Exception as e:
