@@ -355,27 +355,27 @@ if __name__ == '__main__':
     creds = {}
     cred_set = 1
     while True:
-        print(f"Going through cred set {cred_set}")
+        print(f"Attempting to parse through cred set {cred_set}")
         url = os.getenv(f"db_url{cred_set}")
         user = os.getenv(f"db_user{cred_set}")
-        passw = os.getenv(f"db_password{cred_set}")
+        password = os.getenv(f"db_password{cred_set}")
 
         # There is no values for this "cred set"
-        if not (url and user and passw):
+        if not (url and user and password):
             break
 
-        # Ensure the credential set has url, user, and passw defined
-        if not (url or user or passw):
+        # Ensure the credential set has url, user, and password defined
+        if not (url or user or password):
             msg = (f"Environment variable cred set {cred_set} has None for one of the following required variables:\n",
                    f"db_user{cred_set}: {url}",
                    f"db_user{cred_set}: {user}",
-                   f"db_password{cred_set}: {passw}")
+                   f"db_password{cred_set}: {password}")
             print(msg)
             raise ValueError(msg)
 
         creds.update({f"db_url{cred_set}": url,
                       f"db_user{cred_set}": user,
-                      f"db_password{cred_set}": passw})
+                      f"db_password{cred_set}": password})
         
         cred_set = cred_set + 1
 
@@ -404,8 +404,9 @@ if __name__ == '__main__':
         pass
 
 
-    e = None
+    error = None
     attempts = 0
+    print(f"Attempting to connect to database.")
     while attempts < 10:
         try:
             G1 = Graph(creds['db_url1'], auth=(creds['db_user1'], creds['db_password1']), secure=False, verify=False)
@@ -414,11 +415,12 @@ if __name__ == '__main__':
             print("Databases connected successfully!")
             break
         except Exception as e:
-            print(f"{attempts} of 10 attempts: Couldn't connect to db, might be initializing, trying again in 5 seconds")
-            time.sleep(5)
+            print(f"{attempts} of 10 attempts: Couldn't connect to db, might be initializing, trying again in 4 seconds")
+            time.sleep(4)
             attempts = attempts + 1
+            error = e
     else:
-        msg = f"Couldn't connect to db after 10 attempts with 5 seconds between attempts. last error e: {e}"
+        msg = f"Couldn't connect to db after 10 attempts with 5 seconds between attempts. last error e: {error}"
         print(msg)
         raise RuntimeError(msg)
 

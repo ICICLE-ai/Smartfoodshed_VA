@@ -23,7 +23,7 @@ services:
         environment:
             db_url1: bolt+ssc://va1-neo4j:7687
             db_user1: neo4j 
-            db_passw1: newPassword
+            db_password1: newPassword
         networks:
             - va1-network
 
