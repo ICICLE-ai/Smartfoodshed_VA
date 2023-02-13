@@ -410,8 +410,11 @@ if __name__ == '__main__':
     while attempts < 10:
         try:
             G1 = Graph(creds['db_url1'], auth=(creds['db_user1'], creds['db_password1']), secure=False, verify=False)
+            print("Successfully connected to G1.")
             G2 = Graph(creds['db_url2'], auth=(creds['db_user2'], creds['db_password2']), secure=False, verify=False)
+            print("Successfully connected to G2.")
             G3 = Graph(creds['db_url3'], auth=(creds['db_user3'], creds['db_password3']), secure=False, verify=False)
+            print("Successfully connected to G3.")
             print("Databases connected successfully!")
             break
         except Exception as e:
