@@ -90,6 +90,8 @@ Our system also gives users the flexibility to specify the number of entities to
 
 ## Code
 Project Structure: The project is divided into two main components, the front-end and the back-end. 
+The structure of the front end is as follows: 
+![Front-end code structure](https://github.com/ICICLE-ai/Smartfoodshed_VA_VC1/blob/main/frontend/src/assets/codeStructure.png?raw=true)
 ![Project Structure](https://github.com/ICICLE-ai/Smartfoodshed_VA_VC1/blob/main/frontend/src/assets/code_structure.png?raw=true)
 * The front-end consists of three VUE files, each representing one of the three main views. 
 * The back-end is composed of two main modules, app.py and helper.py. 
