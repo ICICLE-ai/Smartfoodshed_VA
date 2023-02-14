@@ -30,10 +30,9 @@ services:
             - va1-network
 
     va1-neo4j:
-        image: neo4j:4.4
+        image: notchristiangarcia/neo4j:4.4
         environment:
-            NEO4J_AUTH: "neo4j/newPassword"
-            NEO4J_PLUGINS: '["apoc", "n10s"]'
+            apoc.initializer.system.1: "CREATE USER neo4j IF NOT EXISTS SET PLAINTEXT PASSWORD 'newPassword' SET PASSWORD CHANGE NOT REQUIRED"
         ports:
             - "7687:7687"
         networks:
