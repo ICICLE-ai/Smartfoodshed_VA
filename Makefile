@@ -52,7 +52,7 @@ build: vars
 	@echo ""
 	@echo "  🔨 : Building frontend image."
 	@echo ""
-	sed -i 's/export const base_request_url = "https:\/\/vaapibackend.pods.icicle.tapis.io\/"/export const base_request_url = "https:\/\/localhost:5000\/"/g' frontend/src/utils/base_url.js
+	sed -i 's/export const base_request_url = "https:\/\/vaapibackend.pods.icicle.tapis.io\/"/export const base_request_url = "http:\/\/localhost:5000\/"/g' frontend/src/utils/base_url.js
 	docker build -t va1-frontend:$$TAG frontend/.
 	@echo ""
 
