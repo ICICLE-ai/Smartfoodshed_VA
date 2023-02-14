@@ -22,12 +22,12 @@ const routes = [
         next('/')
       }
     }
-  },
-  {
-    path: '/dashboard-beta',
-    name: 'DashboardBeta',
-    component: () => import('../views/DashboardBeta.vue') 
   }
+  // {
+  //   path: '/dashboard-beta',
+  //   name: 'DashboardBeta',
+  //   component: () => import('../views/DashboardBeta.vue') 
+  // }
 ]
 
 const router = new VueRouter({
