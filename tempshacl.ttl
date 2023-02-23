@@ -3,31 +3,31 @@
 @prefix sh: <http://www.w3.org/ns/shacl#> .
 @prefix xsd: <http://www.w3.org/2001/XMLSchema#> .
 
-<https://github.com/ICICLE-ai/CI-Components-Catalog/ci-components.yaml/:Container> a sh:NodeShape ;
+<neo4j://graph.schema#/:Container> a sh:NodeShape ;
     sh:closed true ;
     sh:ignoredProperties ( rdf:type ) ;
-    sh:property [ sh:class <https://github.com/ICICLE-ai/CI-Components-Catalog/ci-components.yaml/:Component> ;
+    sh:property [ sh:class <neo4j://graph.schema#/:Component> ;
             sh:nodeKind sh:IRI ;
             sh:order 0 ;
-            sh:path <https://github.com/ICICLE-ai/CI-Components-Catalog/ci-components.yaml/:components> ] ;
-    sh:targetClass <https://github.com/ICICLE-ai/CI-Components-Catalog/ci-components.yaml/:Container> .
+            sh:path <neo4j://graph.schema#/:components> ] ;
+    sh:targetClass <neo4j://graph.schema#/:Container> .
 
-<https://github.com/ICICLE-ai/CI-Components-Catalog/ci-components.yaml/:ComponentRelationship> a sh:NodeShape ;
+<neo4j://graph.schema#/:ComponentRelationship> a sh:NodeShape ;
     sh:closed true ;
     sh:ignoredProperties ( rdf:type ) ;
     sh:property [ sh:in ( "DependsOn" ) ;
             sh:maxCount 1 ;
             sh:order 1 ;
-            sh:path <https://github.com/ICICLE-ai/CI-Components-Catalog/ci-components.yaml/:relationship_type> ],
-        [ sh:class <https://github.com/ICICLE-ai/CI-Components-Catalog/ci-components.yaml/:Component> ;
+            sh:path <neo4j://graph.schema#/:relationship_type> ],
+        [ sh:class <neo4j://graph.schema#/:Component> ;
             sh:maxCount 1 ;
             sh:minCount 1 ;
             sh:nodeKind sh:IRI ;
             sh:order 0 ;
-            sh:path <https://github.com/ICICLE-ai/CI-Components-Catalog/ci-components.yaml/:related_to> ] ;
-    sh:targetClass <https://github.com/ICICLE-ai/CI-Components-Catalog/ci-components.yaml/:ComponentRelationship> .
+            sh:path <neo4j://graph.schema#/:related_to> ] ;
+    sh:targetClass <neo4j://graph.schema#/:ComponentRelationship> .
 
-<https://github.com/ICICLE-ai/CI-Components-Catalog/ci-components.yaml/:Component> a sh:NodeShape ;
+<neo4j://graph.schema#/:Component> a sh:NodeShape ;
     sh:closed true ;
     sh:ignoredProperties ( rdf:type ) ;
     sh:property [ sh:description "Release status of the component, such as Unreleased, PrototypeRelease, etc. See enum." ;
@@ -35,151 +35,151 @@
             sh:maxCount 1 ;
             sh:minCount 1 ;
             sh:order 2 ;
-            sh:path <https://github.com/ICICLE-ai/CI-Components-Catalog/ci-components.yaml/:status> ],
+            sh:path <neo4j://graph.schema#/:status> ],
         [ sh:description "A Rust crate, installable via Cargo. Ideally, Rust crates would be published to crates.io" ;
             sh:maxCount 1 ;
             sh:order 18 ;
-            sh:path <https://github.com/ICICLE-ai/CI-Components-Catalog/ci-components.yaml/:rustCrate> ],
+            sh:path <neo4j://graph.schema#/:rustCrate> ],
         [ sh:description "A URL to the training materials." ;
             sh:maxCount 1 ;
             sh:order 30 ;
-            sh:path <https://github.com/ICICLE-ai/CI-Components-Catalog/ci-components.yaml/:trainingTutorialsUrl> ],
+            sh:path <neo4j://graph.schema#/:trainingTutorialsUrl> ],
         [ sh:description "Whether usage documentation (i.e., documentation for end users) is available." ;
             sh:maxCount 1 ;
             sh:order 25 ;
-            sh:path <https://github.com/ICICLE-ai/CI-Components-Catalog/ci-components.yaml/:usageDocumentationAvailable> ],
+            sh:path <neo4j://graph.schema#/:usageDocumentationAvailable> ],
         [ sh:description "The citation to use when referencing the component." ;
             sh:maxCount 1 ;
             sh:order 13 ;
-            sh:path <https://github.com/ICICLE-ai/CI-Components-Catalog/ci-components.yaml/:citation> ],
+            sh:path <neo4j://graph.schema#/:citation> ],
         [ sh:maxCount 1 ;
             sh:order 28 ;
-            sh:path <https://github.com/ICICLE-ai/CI-Components-Catalog/ci-components.yaml/:developerDocumentationUrl> ],
+            sh:path <neo4j://graph.schema#/:developerDocumentationUrl> ],
         [ sh:description "Whether a security review was conducted for this release of the component." ;
             sh:maxCount 1 ;
             sh:order 23 ;
-            sh:path <https://github.com/ICICLE-ai/CI-Components-Catalog/ci-components.yaml/:securityReviewConducted> ],
+            sh:path <neo4j://graph.schema#/:securityReviewConducted> ],
         [ sh:description "A Java jar package." ;
             sh:maxCount 1 ;
             sh:order 19 ;
-            sh:path <https://github.com/ICICLE-ai/CI-Components-Catalog/ci-components.yaml/:javaJar> ],
+            sh:path <neo4j://graph.schema#/:javaJar> ],
         [ sh:description "Whether developer documentation (i.e., documentation for individuals planning to develop the component further) is available." ;
             sh:maxCount 1 ;
             sh:order 27 ;
-            sh:path <https://github.com/ICICLE-ai/CI-Components-Catalog/ci-components.yaml/:developerDocumentationAvailable> ],
+            sh:path <neo4j://graph.schema#/:developerDocumentationAvailable> ],
         [ sh:description "A valid reference to a container image; e.g., \"docker://tapis/event-engine:0.2\"" ;
             sh:maxCount 1 ;
             sh:order 15 ;
-            sh:path <https://github.com/ICICLE-ai/CI-Components-Catalog/ci-components.yaml/:containerImage> ],
+            sh:path <neo4j://graph.schema#/:containerImage> ],
         [ sh:description "An HPC module, installable via a module system." ;
             sh:maxCount 1 ;
             sh:order 16 ;
-            sh:path <https://github.com/ICICLE-ai/CI-Components-Catalog/ci-components.yaml/:hpcModule> ],
+            sh:path <neo4j://graph.schema#/:hpcModule> ],
         [ sh:description "Whether usage metrics, such as number of downloads, number of API requests, number of page loads, etc., are being collected for this component." ;
             sh:maxCount 1 ;
             sh:order 31 ;
-            sh:path <https://github.com/ICICLE-ai/CI-Components-Catalog/ci-components.yaml/:usageMetricsCollected> ],
+            sh:path <neo4j://graph.schema#/:usageMetricsCollected> ],
         [ sh:description "A URL to the usage documentation." ;
             sh:maxCount 1 ;
             sh:order 26 ;
-            sh:path <https://github.com/ICICLE-ai/CI-Components-Catalog/ci-components.yaml/:usageDocumentationUrl> ],
-        [ sh:class <https://github.com/ICICLE-ai/CI-Components-Catalog/ci-components.yaml/:ComponentRelationship> ;
+            sh:path <neo4j://graph.schema#/:usageDocumentationUrl> ],
+        [ sh:class <neo4j://graph.schema#/:ComponentRelationship> ;
             sh:nodeKind sh:BlankNode ;
             sh:order 34 ;
-            sh:path <https://github.com/ICICLE-ai/CI-Components-Catalog/ci-components.yaml/:hasDependentComponents> ],
+            sh:path <neo4j://graph.schema#/:hasDependentComponents> ],
         [ sh:description "A high-level description of the component." ;
             sh:maxCount 1 ;
             sh:order 4 ;
-            sh:path <https://github.com/ICICLE-ai/CI-Components-Catalog/ci-components.yaml/:description> ],
+            sh:path <neo4j://graph.schema#/:description> ],
         [ sh:description "The thrust or project primarily responsible for the component. The valid values are delineated into \"core\" and \"useInspired\", see enum." ;
             sh:in ( "core/Software" "core/CI4AI" "core/AI4CI" "core/FoundationAI" "core/PADI" "core/VA" "useInspired/DA" "useInspired/AE" "useInspired/SF" ) ;
             sh:maxCount 1 ;
             sh:minCount 1 ;
             sh:order 6 ;
-            sh:path <https://github.com/ICICLE-ai/CI-Components-Catalog/ci-components.yaml/:primaryThrust> ],
+            sh:path <neo4j://graph.schema#/:primaryThrust> ],
         [ sh:description "A Unix package, such as an rpm or deb file, installable via a package manager, such as apt or yum." ;
             sh:maxCount 1 ;
             sh:order 17 ;
-            sh:path <https://github.com/ICICLE-ai/CI-Components-Catalog/ci-components.yaml/:unixPackage> ],
+            sh:path <neo4j://graph.schema#/:unixPackage> ],
         [ sh:description "Valid URL to a website dedicated to the component." ;
             sh:maxCount 1 ;
             sh:order 3 ;
-            sh:path <https://github.com/ICICLE-ai/CI-Components-Catalog/ci-components.yaml/:website> ],
+            sh:path <neo4j://graph.schema#/:website> ],
         [ sh:description "The ICICLE release that this component belongs to, e.g., None, VC3, etc. See enum." ;
             sh:in ( "None" "VC3" "VC4" ) ;
             sh:maxCount 1 ;
             sh:minCount 1 ;
             sh:order 8 ;
-            sh:path <https://github.com/ICICLE-ai/CI-Components-Catalog/ci-components.yaml/:targetIcicleRelease> ],
+            sh:path <neo4j://graph.schema#/:targetIcicleRelease> ],
         [ sh:description "URL to source code repository; e.g., in GitHub, Gitlab, etc." ;
             sh:maxCount 1 ;
             sh:order 7 ;
-            sh:path <https://github.com/ICICLE-ai/CI-Components-Catalog/ci-components.yaml/:sourceCodeUrl> ],
+            sh:path <neo4j://graph.schema#/:sourceCodeUrl> ],
         [ sh:description "Whether this component should be visible to the general public within the CI Components Catalog. Setting this attribute to `false` will restrict the visibility to ICICLE members when browsing the catalog." ;
             sh:maxCount 1 ;
             sh:minCount 1 ;
             sh:order 32 ;
-            sh:path <https://github.com/ICICLE-ai/CI-Components-Catalog/ci-components.yaml/:publicAccess> ],
+            sh:path <neo4j://graph.schema#/:publicAccess> ],
         [ sh:description "Whether a code review was conducted for this release of the component." ;
             sh:maxCount 1 ;
             sh:order 21 ;
-            sh:path <https://github.com/ICICLE-ai/CI-Components-Catalog/ci-components.yaml/:codeReviewConducted> ],
+            sh:path <neo4j://graph.schema#/:codeReviewConducted> ],
         [ sh:description "Whether a bias assessment was conducted for this release of the component." ;
             sh:maxCount 1 ;
             sh:order 24 ;
-            sh:path <https://github.com/ICICLE-ai/CI-Components-Catalog/ci-components.yaml/:biasAssessmentConducted> ],
+            sh:path <neo4j://graph.schema#/:biasAssessmentConducted> ],
         [ sh:description "A free-form field for describing other kinds of artifacts. Ideally, the schema would be updated to include dedicated attributes for other classes of artifacts instead of making use of this attribute." ;
             sh:maxCount 1 ;
             sh:order 20 ;
-            sh:path <https://github.com/ICICLE-ai/CI-Components-Catalog/ci-components.yaml/:artifactOther> ],
+            sh:path <neo4j://graph.schema#/:artifactOther> ],
         [ sh:description "Institute member ultimately responsible for component, including the metadata contained in the catalog." ;
             sh:maxCount 1 ;
             sh:order 5 ;
-            sh:path <https://github.com/ICICLE-ai/CI-Components-Catalog/ci-components.yaml/:owner> ],
+            sh:path <neo4j://graph.schema#/:owner> ],
         [ sh:description "Whether tests have been written covering the major functionality comprising this release of the component." ;
             sh:maxCount 1 ;
             sh:order 22 ;
-            sh:path <https://github.com/ICICLE-ai/CI-Components-Catalog/ci-components.yaml/:testsWritten> ],
+            sh:path <neo4j://graph.schema#/:testsWritten> ],
         [ sh:description "Unique identifier for the component. Alpha-numeric, URL-safe field." ;
             sh:maxCount 1 ;
             sh:minCount 1 ;
             sh:order 0 ;
-            sh:path <https://github.com/ICICLE-ai/CI-Components-Catalog/ci-components.yaml/:id> ],
+            sh:path <neo4j://graph.schema#/:id> ],
         [ sh:description "Whether training materials, including tutorials, are available for this release of the component." ;
             sh:maxCount 1 ;
             sh:order 29 ;
-            sh:path <https://github.com/ICICLE-ai/CI-Components-Catalog/ci-components.yaml/:trainingTutorialsAvailable> ],
+            sh:path <neo4j://graph.schema#/:trainingTutorialsAvailable> ],
         [ sh:description "A valid package name on PyPI.org, e.g., \"numpy:1.24.2\"" ;
             sh:maxCount 1 ;
             sh:order 14 ;
-            sh:path <https://github.com/ICICLE-ai/CI-Components-Catalog/ci-components.yaml/:pypiPackage> ],
+            sh:path <neo4j://graph.schema#/:pypiPackage> ],
         [ sh:description "A human-readable name for the component. Must be unique across the catalog." ;
             sh:maxCount 1 ;
             sh:minCount 1 ;
             sh:order 1 ;
-            sh:path <https://github.com/ICICLE-ai/CI-Components-Catalog/ci-components.yaml/:name> ],
+            sh:path <neo4j://graph.schema#/:name> ],
         [ sh:description "The name of a role to restrict visibility of this component in the catalog. When used, the value of restrictedToRole should be a string corresponding to a role name. Note that when using restrictedToRole, members of ICICLE will not have visibility of the component unless they occupy that role. The restrictedToRole and publicAccess attributes cannot both be set to `true`." ;
             sh:maxCount 1 ;
             sh:order 33 ;
-            sh:path <https://github.com/ICICLE-ai/CI-Components-Catalog/ci-components.yaml/:restrictedToRole> ],
+            sh:path <neo4j://graph.schema#/:restrictedToRole> ],
         [ sh:description "URL to a description of the release notes related to the component." ;
             sh:maxCount 1 ;
             sh:order 11 ;
-            sh:path <https://github.com/ICICLE-ai/CI-Components-Catalog/ci-components.yaml/:releaseNotesUrl> ],
+            sh:path <neo4j://graph.schema#/:releaseNotesUrl> ],
         [ sh:description "The version of the component itself; e.g., 22.04, 3.1.3.0, etc." ;
             sh:maxCount 1 ;
             sh:minCount 1 ;
             sh:order 9 ;
-            sh:path <https://github.com/ICICLE-ai/CI-Components-Catalog/ci-components.yaml/:componentVersion> ],
+            sh:path <neo4j://graph.schema#/:componentVersion> ],
         [ sh:description "URL to a description of the license governing the acceptable use of this component." ;
             sh:maxCount 1 ;
             sh:minCount 1 ;
             sh:order 10 ;
-            sh:path <https://github.com/ICICLE-ai/CI-Components-Catalog/ci-components.yaml/:licenseUrl> ],
+            sh:path <neo4j://graph.schema#/:licenseUrl> ],
         [ sh:description "Digital object identifier that can be used to uniquely reference the component." ;
             sh:maxCount 1 ;
             sh:order 12 ;
-            sh:path <https://github.com/ICICLE-ai/CI-Components-Catalog/ci-components.yaml/:doi> ] ;
-    sh:targetClass <https://github.com/ICICLE-ai/CI-Components-Catalog/ci-components.yaml/:Component> .
+            sh:path <neo4j://graph.schema#/:doi> ] ;
+    sh:targetClass <neo4j://graph.schema#/:Component> .
 
 
