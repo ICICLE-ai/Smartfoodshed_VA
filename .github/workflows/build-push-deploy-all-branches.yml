@@ -70,10 +70,34 @@ jobs:
           tags: 
             notchristiangarcia/vaapi-v1-b:${{ steps.get_tag_name.outputs.tag_name }},
             notchristiangarcia/vaapi-v1-b:${{ steps.date.outputs.date }}
-  deploy-images:
+
+  deploy-images-dev:
     runs-on: ubuntu-latest
     environment: buildenv
     needs: [build-and-push-images]
+    if:
+      contains('refs/heads/dev', github.ref)
+    steps:
+    - name: Restart backend pod
+      uses: fjogeleit/http-request-action@v1
+      with:
+        url: 'https://icicle.develop.tapis.io/v3/pods/${{ vars.POD_ID_BACKEND }}/restart'
+        method: 'GET'
+        customHeaders: '{"Content-Type": "application/json", "X-Tapis-Token": "${{ secrets.TAPIS_ICICLE_DEV_TOKEN }}"}'
+
+    - name: Restart frontend pod
+      uses: fjogeleit/http-request-action@v1
+      with:
+        url: 'https://icicle.develop.tapis.io/v3/pods/${{ vars.POD_ID_FRONTEND }}/restart'
+        method: 'GET'
+        customHeaders: '{"Content-Type": "application/json", "X-Tapis-Token": "${{ secrets.TAPIS_ICICLE_DEV_TOKEN }}"}'
+  
+  deploy-images-prod:
+    runs-on: ubuntu-latest
+    environment: buildenv
+    needs: [build-and-push-images]
+    if:
+      contains('refs/heads/main', github.ref)
     steps:
     - name: Restart backend pod
       uses: fjogeleit/http-request-action@v1
