@@ -15,6 +15,7 @@
                   :key="sheetname"
                 >
                    <v-data-table
+                      fixed-header
                         :height="windowHeight"
                         v-model="selected_rows"
                         show-select
