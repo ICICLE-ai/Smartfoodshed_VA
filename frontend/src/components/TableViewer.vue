@@ -215,7 +215,10 @@ export default{
 /* .v-input__slot{
   width: 100px;
 } */
-
+#inspire tbody tr:nth-child(odd){
+  background-color: #EBEEF5;
+  color: black;
+}
 #inspire{
   height: 100%;
 }
