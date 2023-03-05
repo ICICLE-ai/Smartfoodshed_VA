@@ -1,16 +1,13 @@
 <template>
     <div class="fullHeight" style="position:relative">
-        <v-tabs>
-          <v-tab>Graph View</v-tab>
-        </v-tabs>
-        <v-tab-item>
-          <div
+        
+        <div
           class="graph-btn-container"
         >
         <v-container>
-        <v-row no-gutters
-          justify='space-between'
-        >
+          <v-row no-gutters
+            justify='space-between'
+          >
           <v-col
             key="0"
             sm="3"
@@ -34,13 +31,6 @@
               </template>
               <span>Reset</span>
             </v-tooltip>
-            <!-- <v-btn
-              small
-              class="kg-view-btn"
-              @click="resetGraphTableHandler"
-              >
-              Reset
-            </v-btn> -->
             <v-tooltip bottom>
               <template v-slot:activator="{ on, attrs }">
                 <v-btn 
@@ -202,7 +192,7 @@
           :graphOverview="graphOverview"
         />
         <div id="div_graph" class="fullHeight" :style="{'height': HEIGHT}"></div>   
-        </v-tab-item>
+       
         
         <v-overlay :value="loading_value">
         <v-progress-circular
