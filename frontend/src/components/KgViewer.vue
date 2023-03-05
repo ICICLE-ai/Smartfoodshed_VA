@@ -9,9 +9,16 @@
             justify='space-between'
           >
           <v-col
-            key="0"
-            sm="3"
-            cols="11"
+          key="0"
+          sm="4"
+          >
+          <v-card-subtitle>Graph Control Panel</v-card-subtitle>
+          </v-col>
+          <v-col
+            key="1"
+            sm="8"
+            cols="12"
+            style="border:1px #BDBDBD solid; border-radius:3px"
             >
             <v-tooltip bottom>
               <template v-slot:activator="{ on, attrs }">
@@ -671,7 +678,6 @@ export default{
 }
 .graph-btn-container{
     position: relative; 
-    top: 30px;
 }
 .kg-view-btn{
   margin-right: 10px;
