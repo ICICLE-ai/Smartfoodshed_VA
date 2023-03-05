@@ -160,6 +160,7 @@ const actions = {
     commit('SET_DATABASE', data['database'])
     // https = await import('https');
     await apiClient.post("/changeDataBase", data)
+    //  console.log(result)
   },
   async setExpandTh ({commit, dispatch, state}, data){
     commit('SET_expandThreshold', data)
@@ -177,6 +178,7 @@ const actions = {
     })
   },
   async getTableData ({commit, dispatch, state}) {
+    commit('SET_LOADING', true)
     const path = base_request_url+'getTableData'
     var result = await axios.get(path)
     var tableSelection_temp = {}
@@ -187,6 +189,7 @@ const actions = {
     })
     commit('SET_tableSelection', tableSelection_temp)
     commit('SET_tableData', result['data'])
+    commit('SET_LOADING', false)
     console.log("check table data again!!!")
     console.log(result['data'])
     idParsingToDict(state.idDict, {sheets: sheet, data: data})
@@ -214,6 +217,7 @@ const actions = {
     axios.post(path_retrieve_graph, {nodes, relations})
       .then(result => {
         console.log(result)
+        commit('SET_LOADING', false)
         commit('SET_graphData', result['data']) 
       })
       .catch(error => {

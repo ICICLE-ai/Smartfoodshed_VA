@@ -2,20 +2,21 @@
   <div>
     <v-app-bar
       app
-      dense
     >
       <v-app-bar-nav-icon></v-app-bar-nav-icon>
       <v-toolbar-title>ICICLE Visual Analytics V1</v-toolbar-title>
-      <v-spacer></v-spacer>
-      <v-btn
-        text
-        rounded
-        color="purple"
+      <!-- <v-spacer></v-spacer> -->
+      <div style="width:14%; margin-left:50%">
+        <v-select
         
-        @click="versionSwitch"
-      >
-        Back to Dataset
-      </v-btn>
+        v-model="selected_dataset"
+        variant="solo"
+        hint="Select A Dataset"
+        persistent-hint
+        :items="['ppod', 'cfs', 'ci']"
+      ></v-select>
+      </div>
+      
     </v-app-bar>
   </div>
 </template>
@@ -25,23 +26,26 @@ import {mapState} from 'vuex'
 export default {
   data(){
     return {
-      // versionPrompt: "Try Dashboard beta", 
+      selected_dataset: "ppod"
     }
   }, 
   methods: {
-    versionSwitch() {
-      this.$router.push('/')
-      // const currentRoute = this.$route.name
-      // if (currentRoute == this.DASH_ROUTE.name) { 
-      //   // this.versionPrompt = "Try Dashboard beta"
-      //   this.$router.push(this.BETA_ROUTE.route)
-      // }else {
-      //   // this.versionPrompt == "Old Version" 
-      //   this.$router.push(this.DASH_ROUTE.route)
-      // }
-      
+    async fetchData(){
+      await this.$store.dispatch('changeDB',{'database': this.selected_dataset})
+      await this.$store.dispatch('getTableData')
+      await this.$store.dispatch('getGraphOverview')
     }
   }, 
+  created(){
+    this.fetchData()
+  },
+  watch: {
+    selected_dataset: function(){
+      // window.location.reload();
+      // d3.select('#div_graph').html('')
+      this.fetchData()
+    }
+  },
   computed: {
     ...mapState(['BETA_ROUTE', 'DASH_ROUTE']),
     versionPrompt() {
@@ -58,5 +62,7 @@ export default {
 </script>
 
 <style>
-
+.v-toolbar__content{
+  height: 58px;
+}
 </style>

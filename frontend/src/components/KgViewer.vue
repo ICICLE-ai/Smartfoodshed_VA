@@ -1,6 +1,10 @@
 <template>
     <div class="fullHeight" style="position:relative">
-        <div
+        <v-tabs>
+          <v-tab>Graph View</v-tab>
+        </v-tabs>
+        <v-tab-item>
+          <div
           class="graph-btn-container"
         >
         <v-container>
@@ -198,6 +202,8 @@
           :graphOverview="graphOverview"
         />
         <div id="div_graph" class="fullHeight" :style="{'height': HEIGHT}"></div>   
+        </v-tab-item>
+        
         <v-overlay :value="loading_value">
         <v-progress-circular
           indeterminate
@@ -571,8 +577,9 @@ export default{
       this.recolorNode()
     },
     graphData () {
+      // d3.select('#div_graph').html('')
       var all_resilience = []
-      console.log(this.graphData)
+      console.log('graphdata',this.graphData)
       this.graphData['results'][0]['data'][0]['graph']['nodes'].forEach(function (d) {
         d['status'] = 'unclicked'
         // check if this is cold chain data or not 
@@ -583,7 +590,6 @@ export default{
       })
       // this.min_resilience = d3.min(all_resilience)
       this.max_resilience = d3.max(all_resilience)
-      console.log(this.max_resilience)
       //inital the selected resilience
       KGutils.graphDataParsing(this.graphData, this.currentEntities, this.currentRelations)
       this.drawNeo4jd3()
@@ -592,24 +598,12 @@ export default{
     }, 
     selectedEntities(val) {
       if (val.length > 0) {
-        console.log("retrieving data now!!!")
-        console.log(val.length)
-        console.log(this.selectedEntities)
-        console.log(this.selectedRelations)
-        console.log("****************")
-        console.log(val)
         this.$store.dispatch("retrieveSubTable", {entities: this.selectedEntities, relations: this.selectedRelations})
         this.$store.dispatch("retrieveNodeGeo", {node: this.selectedEntities})
       }
     }, 
     selectedRelations(val){
       if (val.length > 0) {
-        console.log("****************")
-        console.log(val.length)
-        console.log(val) 
-        console.log("retrieving data now!!!")
-        console.log(this.selectedEntities)
-        console.log(this.selectedRelations)
         this.$store.dispatch("retrieveSubTable", {entities: this.selectedEntities, relations: this.selectedRelations})
       }
     }, 

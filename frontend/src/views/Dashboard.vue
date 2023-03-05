@@ -1,6 +1,6 @@
 <template>
   <v-app>
-    <v-main>
+    <v-main style="padding:0px">
       <v-row justify="center">
         <v-col cols="5" align-self="center">
           <v-tabs>
