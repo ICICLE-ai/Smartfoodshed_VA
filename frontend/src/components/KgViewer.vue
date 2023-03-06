@@ -16,7 +16,7 @@
           </v-col>
           <v-col
             key="1"
-            sm="8"
+            sm="5"
             cols="12"
             style="border:1px #BDBDBD solid; border-radius:3px"
             >
@@ -198,7 +198,7 @@
           v-show="showOverview"
           :graphOverview="graphOverview"
         />
-        <div id="div_graph" class="fullHeight" :style="{'height': HEIGHT}"></div>   
+        <div id="div_graph" class="fullHeight" :style="{'height': HEIGHT}" style="border:1px #BDBDBD solid; border-radius:3px"></div>   
        
         
         <v-overlay :value="loading_value">
@@ -630,7 +630,7 @@ export default{
   computed: {
     ...mapState(['graphData', 'relationStatusReady', 'relationTypeData','loading', 'graphOverview', 'colorMapping']),
     HEIGHT () {
-      return window.innerHeight*0.7 + 'px'
+      return window.innerHeight*0.8 + 'px'
     },
     OVERVIEW_HEIGHT(){
       return window.innerHeight*0.3 + 'px'
