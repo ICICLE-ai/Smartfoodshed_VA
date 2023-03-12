@@ -25,6 +25,7 @@ function getItemIndex(container, item){
 }
 
 function generationEntityRelations(container){
+    console.log('container:', container)
     const sheets = Object.keys(container)
     let nodes = []
     let relations = [] 
@@ -41,6 +42,7 @@ function generationEntityRelations(container){
             }
         })
     })
+    console.log('generationEntityRelations', nodes, relations)
     return {nodes, relations}
 }
 
@@ -48,6 +50,7 @@ function addItemsToSelection(container, items){
     if (items.length <= 0) {
         return -1
     } else {
+        container = {}
         const sample = items[0] 
         const indexingTerm = sample.relation_id!=null? 'relation_id': sample.id!=null? 'id': null
         items.forEach(item => {
@@ -56,6 +59,7 @@ function addItemsToSelection(container, items){
                 if(container[id] == null){
                     container[id] = item
                 }
+        
             } else {
                 console.log(item)
                 console.log(id)
@@ -64,6 +68,7 @@ function addItemsToSelection(container, items){
                 console.log("Error: item doesn't have either id or relation_id")
             }
         })
+        console.log('container is', container)
         return 1
     }
 }

@@ -1,20 +1,25 @@
 <template>
         <v-container id="inspire">
             <div class="tmp">
-              <v-tabs v-model="tab">
+              <v-tabs v-model="tab"
+                  show-arrows
+                  next-icon="mdi-arrow-right-bold-box-outline"
+                  prev-icon="mdi-arrow-left-bold-box-outline">
                 <v-tab
                   v-for="sheetname in sheetNames"
-                  :key="sheetname"
-                >
+                  :key="sheetname">
                   {{ sheetname }}
                 </v-tab>
               </v-tabs>
-             <v-tabs-items v-model="tab" ref="tabletabs">
+              <v-tabs-items v-model="tab" ref="tabletabs" style="border: solid 1px rgba(0, 0, 0, 0.54); margin-top: 20px; border-radius: 5px; padding-top:10px">
                 <v-tab-item
-                  v-for="sheetname in sheetNames"
-                  :key="sheetname"
-                >
-                   <v-data-table
+                v-for="sheetname in sheetNames"
+                :key="sheetname">
+                <VueTabulator :ref="'tabulator' + sheetname" v-model="currentData['data'][sheetname]['tableData']" :options="currentData['data'][sheetname]['tableInfo']" />
+                <!-- <VueTabulator ref="tabulator" v-model="currentData['data'][sheetname]['tableData']" :options="currentData['data'][sheetname]['tableInfo']" /> -->
+                
+                <!-- <div id="test"></div> -->
+                   <!-- <v-data-table
                       fixed-header
                         :height="windowHeight"
                         v-model="selected_rows"
@@ -59,16 +64,19 @@
                             </v-row>
                           </v-container>
                         </template>
-                    </v-data-table>
+                    </v-data-table> -->
                 </v-tab-item>
               </v-tabs-items>
-           
+              <v-btn @click="retrieve">Retrieve</v-btn>
             </div>
         </v-container> 
 </template>
 
 <script>
 import {mapState} from 'vuex'
+import TestData from '../../public/response.json'
+import * as Tabulator from 'tabulator-tables'
+
 export default{
     data () {
     return {
@@ -84,6 +92,8 @@ export default{
       sheetItemKey: null, 
       currentSheet: null, 
       currentData: null, 
+      allColumns: null,
+
     }
   },
   computed: {
@@ -93,46 +103,23 @@ export default{
     }
   },
   created(){
-    this.$store.dispatch('getTableData')
   },
   methods: {
+    itemSelectedHandler(tab_id){
+      var name = 'tabulator'+ this.sheetNames[parseInt(tab_id)]
+      var tabulatorIns = this.$refs[name][0].getInstance()
+      var selectedData = tabulatorIns.getSelectedData()
+      this.$store.dispatch('setTableSelected', {action:'add', sheetName: tab_id, value:selectedData})
+    },
+    retrieve(){
+      this.itemSelectedHandler(this.tab)
+      this.$store.dispatch("retrieveGraphFromTable")
+    },
     filterOnlyCapsText (value, search, item) {
-      // console.log(value, search, item)
       return value != null &&
         search != null &&
         typeof value === 'string' &&
         value.toString().toLowerCase().indexOf(search.toLowerCase()) !== -1
-    },
-    convert(raw){
-      // vuetify need the text + value, not label+value 
-      let newOutput = []
-      raw.forEach(d=>{
-        let temp = {
-          text: d['label'],
-          value: d['value'],
-        }
-        newOutput.push(temp)
-      })
-      return newOutput
-    }, 
-    itemSelectedHandler({item, value}){
-      
-      if (value) {
-        this.$store.dispatch('setTableSelected', {action: 'add', sheetName: this.currentSheet, value: [item]})
-      } else {
-        this.$store.dispatch('setTableSelected', {action: 'remove', sheetName: this.currentSheet, value: [item]})
-      }
-    }, 
-    retrieveGraphFromTableHandler(){ 
-      this.$store.dispatch("retrieveGraphFromTable")
-    }, 
-    selectAllHandler({items, value}){
-      console.log(items, value)
-      if (value) {
-        this.$store.dispatch('setTableSelected', {action: 'add', sheetName: this.currentSheet, value: items})
-      } else {
-        this.$store.dispatch('setTableSelected', {action: 'remove', sheetName: this.currentSheet, value: items})
-      }
     },
     updateItemKey(){
       this.currentSheet = this.currentData['sheet'][this.tab]
@@ -152,59 +139,82 @@ export default{
           this.sheetItemKey = 'id'
         }
       }
+    },
+    prepareTabulatorData(DATA){ // we transform tableData for the tabulator 
+      this.sheetNames = DATA['sheet']
+      // console.log(TestData)
+      var that = this
+      const newData = {}
+      for (const [sheetname, sheetdata] of Object.entries(DATA['data'])) {
+        // console.log(sheetname, sheetdata)
+        var columns = [
+            {formatter:"rowSelection", titleFormatter:"rowSelection", align:"center", headerSort:false, frozen:true} // adding the tickbox
+        ]
+        for(let i =0; i<sheetdata['tableInfo'].length; i++){
+          columns.push({
+            'field': sheetdata['tableInfo'][i]['value'],
+            'title': sheetdata['tableInfo'][i]['label'],
+            'headerFilter':"input",
+            'headerFilterFunc': "keywords",
+            'headerFilterFuncParams':{matchAll:true}
+          })
+        }
+        newData[sheetname] = {
+          'tableInfo': {
+            'columns': columns,
+            'height': parseInt(that.windowHeight.replace('px',''))+200,
+            'movableColumns': true,
+            'movableRows': true,
+            'selectable': true,
+          }, 
+          'tableData': sheetdata['tableData']
+        }
+      }
+      this.currentData = {
+        'sheet': DATA['sheet'],
+        'data': newData
+      }
+      console.log('finishing updateing data,', this.currentData)
+    },
+    tableUpdate(DATA){ // once the table got updated, we need to do a sequence of things
+      // check if it is in the tableInteractiveMode (which means table got updated from graph)
+      if(DATA['sheet'].length>0){
+        this.prepareTabulatorData(DATA)
+        if(this.tab==null){
+          this.tab=0
+        }
+        this.updateItemKey()
+      }else{
+        alert('Nothing retrieved from table!')
+      }
     }
   },
   watch:{
-    tableData () {
-      if (!this.tableInteractiveMode) {
-        this.sheetNames = this.tableData['sheet']
-        console.log("check here!!!")
-        console.log(this.tableData)
-        this.currentData = this.tableData
-        if(this.tab==null){
-          this.tab = 0
-        } 
-        this.updateItemKey()
-      }
-    },
-    tableInteractiveMode(){
+    tableData () { // tableData is changed, we need to call tableUpdate() to update a sequence of things 
       if(!this.tableInteractiveMode){
-        this.currentData = this.tableData
-        this.sheetNames = this.currentData['sheet'] 
-        if(this.tab==null){
-              this.tab = 0
-        } 
-        this.updateItemKey()
-        this.selected_rows = []
-      }   
-    },
-    interactiveTableData(){
-      console.log(this.interactiveTableData)
-      if(this.tableInteractiveMode){
-        if(this.interactiveTableData['sheet'].length > 0){
-          this.currentData = this.interactiveTableData
-          this.sheetNames = this.currentData['sheet']
-          // console.log("**********************")
-          // console.log(this.interactiveTableData)
-          if(this.tab==null){
-              this.tab = 0
-            } 
-          this.updateItemKey()
-          this.selected_rows = []
-        }else{
-          alert("Nothing retrieved from table!")
-          this.selected_rows = []
-        }
+        this.tableUpdate(this.tableData)
       }
     },
-    tab() {
-      // tab id
-      // const tabId = this.tab
-      console.log(this.currentData)
+    tableInteractiveMode(){ // if the tableInteractiveMode changes, 
+      if(!this.tableInteractiveMode){
+        this.tableUpdate(this.tableData)
+      }
+    },
+    interactiveTableData(){ // interactive Table Data, updated from the graph    
+      if(this.tableInteractiveMode){
+        this.tableUpdate(this.interactiveTableData)
+      }
+    },
+    tab(newVal, oldVal) { 
+      // console.log('tab changed', newVal, oldVal)
       if (this.currentData != null) {
         this.updateItemKey()
       }
-      console.log(this.sheetItemKey)
+      if(oldVal!=null){
+        this.itemSelectedHandler(oldVal) //once we change a tab, get all selected item from previous sheet 
+      }
+      
+      // console.log(this.sheetItemKey)
     }, 
   }, 
   
@@ -212,14 +222,25 @@ export default{
 
 </script>
 <style>
-/* .v-input__slot{
-  width: 100px;
-} */
-#inspire tbody tr:nth-child(odd){
-  background-color: #EBEEF5;
-  color: black;
-}
 #inspire{
   height: 100%;
+}
+.tabulator .tabulator-header .tabulator-col.tabulator-sortable .tabulator-col-title{
+  color: #1976d2;
+  font-weight: normal;
+  font-size:0.84rem
+}
+.tabulator .tabulator-header{
+  border-bottom:3px solid #1976d2 !important;
+  color: #1976d2
+}
+.tabulator-row .tabulator-cell {
+  font-size: 0.84rem;
+}
+.tabulator-row .tabulator-cell:first-child{
+  border-left: 10px solid #1976d2;
+}
+.tabulator .tabulator-header .tabulator-col .tabulator-header-filter{
+  font-size: 0.84rem
 }
 </style>

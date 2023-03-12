@@ -82,11 +82,33 @@ const mutations = {
     state.tableSelection = val
   },
   SET_TABLE_SELECTED_ADD (state, {sheetName, value}) {
-    console.log("!!!!!!!")
+    // console.log("!!!!!!!")
     if(!state.tableSelected[sheetName]){
       state.tableSelected[sheetName] = {}  
     }  
-    addItemsToSelection(state.tableSelected[sheetName], value)
+    // addItemsToSelection(state.tableSelected[sheetName], value)
+    if(value.length<=0){
+      return -1
+    }else{
+      state.tableSelected[sheetName] = {}
+      const sample = value[0]
+      const indexingTerm = sample.relation_id!=null? 'relation_id': sample.id!=null? 'id': null
+      value.forEach(item=>{
+        const id = item[indexingTerm]
+        if(id != null) {
+            if(state.tableSelected[sheetName][id] == null){
+              state.tableSelected[sheetName][id] = item
+            }
+        } else {
+            console.log(item)
+            console.log(id)
+            console.log(id != null)
+            console.log(indexingTerm)
+            console.log("Error: item doesn't have either id or relation_id")
+        }
+      })
+      // return 1
+    }
   },
   SET_TABLE_SELECTED_REMOVE(state, {sheetName, value}) {
     removeItemsToSelection(state.tableSelected[sheetName], value)

@@ -199,8 +199,6 @@
           :graphOverview="graphOverview"
         />
         <div id="div_graph" class="fullHeight" :style="{'height': HEIGHT}" style="border:1px #BDBDBD solid; border-radius:3px"></div>   
-       
-        
         <v-overlay :value="loading_value">
         <v-progress-circular
           indeterminate
