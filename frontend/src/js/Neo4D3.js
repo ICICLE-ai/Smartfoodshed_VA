@@ -17,6 +17,7 @@ function Neo4jD3 (_selector, _options) {
       images: undefined,
       infoPanel: true,
       minCollision: undefined,
+      strength:undefined, 
       neo4jData: undefined,
       neo4jDataUrl: undefined,
       nodeOutlineFillColor: undefined,
@@ -334,7 +335,7 @@ function Neo4jD3 (_selector, _options) {
         //    return options.nodeOutlineFillColor ? class2darkenColor(options.nodeOutlineFillColor) : class2darkenColor(d.labels[0]);
       })
       .append('title').text(function (d) {
-        console.log('teeeee', d)
+        // console.log('teeeee', d)
         return d.properties.label
       })
   }
@@ -664,16 +665,18 @@ function Neo4jD3 (_selector, _options) {
 
   function initSimulation () {
     var simulation = d3.forceSimulation()
-    //                           .velocityDecay(0.8)
-    //                           .force('x', d3.force().strength(0.002))
-    //                           .force('y', d3.force().strength(0.002))
+                              // .velocityDecay(0.8)
+      // .force('x', d3.force().strength(0.002))
+      // .force('y', d3.force().strength(0.002))
       .force('collide', d3.forceCollide().radius(function (d) {
-        return options.minCollision
+        return options.nodeRadius
       }).iterations(2))
-      .force('charge', d3.forceManyBody().strength(-100))
+      .force('charge', d3.forceManyBody().strength(options.strength))
       .force('link', d3.forceLink().id(function (d) {
         return d.id
-      }).distance(0).strength(.8))
+      }))
+      // .gravity(0.4)
+      // .distance(0).strength(.8))
       .force('center', d3.forceCenter(svg.node().parentElement.parentElement.clientWidth / 2, svg.node().parentElement.parentElement.clientHeight / 2))
       .on('tick', function () {
         tick()
@@ -761,7 +764,6 @@ function Neo4jD3 (_selector, _options) {
         }
       })
     })
-
     return graph
   }
 
@@ -1008,11 +1010,16 @@ function Neo4jD3 (_selector, _options) {
     updateNodesAndRelationships(d3Data.nodes, d3Data.relationships)
   }
 
-  function updateWithNeo4jData (neo4jData) {
+  function updateWithNeo4jData (neo4jData, strength) {
+    // if(strength!=null){
+    //   options.strength = strength 
+    //   console.log('updateWithNeo4jData', strength)
+    //   simulation = initSimulation()
+    // }
     var d3Data = neo4jDataToD3Data(neo4jData)
     updateWithD3Data(d3Data)
   }
-
+  
   function updateInfo (d) {
     clearInfo()
 
@@ -1136,7 +1143,8 @@ function Neo4jD3 (_selector, _options) {
     size: size,
     updateWithD3Data: updateWithD3Data,
     updateWithNeo4jData: updateWithNeo4jData,
-    version: version
+    version: version,
+    // updateSimulation: updateSimulation
   }
 }
 

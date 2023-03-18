@@ -119,7 +119,6 @@ export default{
               return 1
           }
         });
-        console.log(newColumns)
         newData[sheetname] = {
           'tableInfo': {
             'columns': [...columns, ...newColumns],

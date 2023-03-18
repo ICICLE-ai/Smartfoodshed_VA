@@ -255,7 +255,7 @@ const actions = {
         commit('SET_graphData', result['data']) 
       })
       .catch(error => {
-        console.log(error)
+        alert(error+"; Please refresh the page!")
         console.log(error.response.status)
       })
     
@@ -268,7 +268,7 @@ const actions = {
         commit('RELATION_STATUS_ON')
       })
       .catch(error => {
-        console.log(error)
+        alert(error+"; Please refresh the page!")
         console.log(error.response.status)
       })
     

@@ -171,6 +171,26 @@
               <span>Resilience Threshold #</span>
             </v-tooltip>
             
+
+            <v-tooltip bottom>
+              <template v-slot:activator="{ on, attrs }">
+                <v-btn 
+                  class="ma-2 menu-btn"
+                  icon
+                  text
+                  @click="showStrength = !showStrength"
+                >
+                  <v-icon
+                    v-bind="attrs"
+                    v-on="on"
+                  >
+                    mdi-soundbar
+                  </v-icon>
+                </v-btn>
+              </template>
+              <span>Graph Layout Strength(negative for repulsion; positive for attraction)</span>
+            </v-tooltip>
+            
             <v-slider
               v-model="user_defined_thre"
               :thumb-size="24"
@@ -189,7 +209,28 @@
               thumb-label="always"
               v-show="showResThre"
             ></v-slider>
-           
+            
+            <v-slider
+              v-model="user_defined_strength"
+              :step="1"
+              label="Strength"
+              min="-100"
+              max="500"
+              hide-details
+              class="ma-4"
+              v-show="showStrength"
+            >
+              <template v-slot:append>
+                <v-text-field
+                  v-model="user_defined_strength"
+                  type="number"
+                  style="width: 80px"
+                  density="compact"
+                  hide-details
+                  variant="outlined"
+                ></v-text-field>
+              </template>
+            </v-slider>
           </v-col>
         </v-row>
         </v-container>
@@ -198,7 +239,10 @@
           v-show="showOverview"
           :graphOverview="graphOverview"
         />
-        <div id="div_graph" class="fullHeight" :style="{'height': HEIGHT}" style="border:1px #BDBDBD solid; border-radius:3px"></div>   
+      
+        <div id="div_graph" class="fullHeight" :style="{'height': HEIGHT}" style="border:1px #BDBDBD solid; border-radius:3px"></div>  
+  
+         
         <v-overlay :value="loading_value">
         <v-progress-circular
           indeterminate
@@ -248,6 +292,9 @@ export default{
       resilience_thre: 0,  // selected threshold of resilience 
       // min_resilience: 0,
       max_resilience: 1, // maximum value of the scroll bar for resilience threshold 
+
+      showStrength: false,
+      user_defined_strength: -3
     }
   },
   created () {
@@ -277,7 +324,7 @@ export default{
           neo4jData: this.graphData,
           nodeRadius: 30,
           infoPanel: false,
-
+          strength: this.user_defined_strength,
           onNodeDoubleClick: function (node) {
             // that.dbclick(node)
           },
@@ -400,7 +447,11 @@ export default{
       })
         this.neo4jd3 = neo4jd3
       }else{
-        this.neo4jd3.updateWithNeo4jData(this.graphData)
+        console.log('neo4jd3 is not null', this.user_defined_strength)
+        // this.neo4jd3.updateSimulation(this.user_defined_strength)
+
+        this.neo4jd3.updateWithNeo4jData(this.graphData, this.user_defined_strength)
+
       }
 
       window.neo4jd3 = this.neo4jd3
