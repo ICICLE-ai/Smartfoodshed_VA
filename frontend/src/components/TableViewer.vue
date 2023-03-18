@@ -15,56 +15,7 @@
                 <v-tab-item
                 v-for="sheetname in sheetNames"
                 :key="sheetname">
-                <VueTabulator :ref="'tabulator' + sheetname" v-model="currentData['data'][sheetname]['tableData']" :options="currentData['data'][sheetname]['tableInfo']" />
-                <!-- <VueTabulator ref="tabulator" v-model="currentData['data'][sheetname]['tableData']" :options="currentData['data'][sheetname]['tableInfo']" /> -->
-                
-                <!-- <div id="test"></div> -->
-                   <!-- <v-data-table
-                      fixed-header
-                        :height="windowHeight"
-                        v-model="selected_rows"
-                        show-select
-                        :headers="convert(currentData['data'][sheetname]['tableInfo'])"
-                        :items="currentData['data'][sheetname]['tableData']"
-                        :item-key="sheetItemKey"
-                        :single-select="singleSelect"
-                        class="elevation-1"
-                        :search="search"
-                        :custom-filter="filterOnlyCapsText"
-                        @item-selected="itemSelectedHandler"
-                        @toggle-select-all="selectAllHandler"
-                    >
-                        <template v-slot:top>
-                          <v-text-field
-                              v-model="search"
-                              label="Search"
-                              class="mx-4"
-                              style="margin-top: 3px"
-                          ></v-text-field>
-                        </template>
-                        <template v-slot:footer>
-                          <v-container>
-                            <v-row
-                              justify="space-between"
-                            >
-                              <v-col cols="3">
-                                <v-text-field
-                                  v-model="calories"
-                                  type="number"
-                                  label="Less than"  
-                                  style="width: 80px"
-
-                              ></v-text-field>
-                              </v-col>
-                              <v-col cols="3" style="margin-top:20px">
-                                 <v-btn @click="retrieveGraphFromTableHandler">
-                                  Retrieve
-                                </v-btn>
-                              </v-col>
-                            </v-row>
-                          </v-container>
-                        </template>
-                    </v-data-table> -->
+                <VueTabulator :ref="'tabulator' + sheetname" v-model="currentData['data'][sheetname]['tableData']" :options="currentData['data'][sheetname]['tableInfo']" />            
                 </v-tab-item>
               </v-tabs-items>
               <v-btn @click="retrieve">Retrieve</v-btn>
@@ -74,8 +25,6 @@
 
 <script>
 import {mapState} from 'vuex'
-import TestData from '../../public/response.json'
-import * as Tabulator from 'tabulator-tables'
 
 export default{
     data () {
@@ -159,6 +108,7 @@ export default{
             'headerFilterFuncParams':{matchAll:true}
           })
         }
+        console.log(columns)
         newData[sheetname] = {
           'tableInfo': {
             'columns': columns,

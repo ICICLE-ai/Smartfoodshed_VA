@@ -9,6 +9,7 @@ import {generationEntityRelations,
         addItemsToSelection, 
         removeItemsToSelection,
         idParsingToDict,
+        checkStatus,
         retrieveInteractiveTable} from '@/utils/storehelp'
 import {graphNodeLinkRemoval, 
         graphNodeLinkExpand, 
@@ -181,8 +182,9 @@ const actions = {
   async changeDB({commit, dispatch, state}, data){
     commit('SET_DATABASE', data['database'])
     // https = await import('https');
-    await apiClient.post("/changeDataBase", data)
-    //  console.log(result)
+    var result = await apiClient.post("/changeDataBase", data)
+    // console.log(result)
+    checkStatus(result)
   },
   async setExpandTh ({commit, dispatch, state}, data){
     commit('SET_expandThreshold', data)
@@ -203,6 +205,7 @@ const actions = {
     commit('SET_LOADING', true)
     const path = base_request_url+'getTableData'
     var result = await axios.get(path)
+    checkStatus(result)
     var tableSelection_temp = {}
     var sheet = result['data']['sheet'] // list of sheet name
     var data = result['data']['data'] // list of data obj

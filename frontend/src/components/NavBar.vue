@@ -26,7 +26,8 @@ import {mapState} from 'vuex'
 export default {
   data(){
     return {
-      selected_dataset: "ppod"
+      selected_dataset: "ppod",
+      load: false
     }
   }, 
   methods: {
@@ -37,9 +38,13 @@ export default {
     }
   }, 
   created(){
-    this.fetchData()
+    this.load = true
+    // this.fetchData()
   },
   watch: {
+    load: function(){
+      this.fetchData()
+    },
     selected_dataset: function(){
       // window.location.reload();
       // d3.select('#div_graph').html('')
