@@ -32,9 +32,9 @@ export default {
   }, 
   methods: {
     async fetchData(){
-      await this.$store.dispatch('changeDB',{'database': this.selected_dataset})
-      await this.$store.dispatch('getTableData')
-      await this.$store.dispatch('getGraphOverview')
+      this.$store.dispatch('changeDB',{'database': this.selected_dataset})
+      this.$store.dispatch('getTableData')
+      this.$store.dispatch('getGraphOverview')
     }
   }, 
   created(){

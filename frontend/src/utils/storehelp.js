@@ -1,12 +1,6 @@
 import { active } from "d3"
 
-function checkStatus(result){
-    if(result['status']==500){
-      alert('error code:500 Internal Server Error. Please refresh the page')
-    }else if(result['status']==200){
-      alert('success!')
-    }
-}
+
 function getItemIndex(container, item){
     if (!container || container.length == 0){
         return -1
@@ -188,4 +182,4 @@ function retrieveInteractiveTable(tableData, dictionary, {entities, relations}){
     return {data:filtered_data, sheet: activeSheets}
 }
 
-export {checkStatus,getItemIndex, generationEntityRelations, addItemsToSelection, removeItemsToSelection, idParsingToDict, retrieveInteractiveTable}
+export {getItemIndex, generationEntityRelations, addItemsToSelection, removeItemsToSelection, idParsingToDict, retrieveInteractiveTable}

@@ -179,12 +179,17 @@ const mutations = {
   }
 }
 const actions = {
-  async changeDB({commit, dispatch, state}, data){
+  changeDB({commit, dispatch, state}, data){
     commit('SET_DATABASE', data['database'])
-    // https = await import('https');
-    var result = await apiClient.post("/changeDataBase", data)
-    // console.log(result)
-    checkStatus(result)
+    // var result = await apiClient.post("/changeDataBase", data)
+    const path = base_request_url+'/changeDataBase' 
+    axios.post(path, data)
+      .then(result => {
+        console.log('yes, loaded')
+      })
+      .catch(error => {
+        alert(error+',Internal Server Error. Please refresh the page')
+      })
   },
   async setExpandTh ({commit, dispatch, state}, data){
     commit('SET_expandThreshold', data)
@@ -201,23 +206,27 @@ const actions = {
       commit('SET_graphOverview', result)
     })
   },
-  async getTableData ({commit, dispatch, state}) {
+  getTableData ({commit, dispatch, state}) {
     commit('SET_LOADING', true)
     const path = base_request_url+'getTableData'
-    var result = await axios.get(path)
-    checkStatus(result)
-    var tableSelection_temp = {}
-    var sheet = result['data']['sheet'] // list of sheet name
-    var data = result['data']['data'] // list of data obj
-    sheet.forEach(s => {
-      tableSelection_temp[s] = []
+    axios.get(path)
+    .then(result=>{
+      var tableSelection_temp = {}
+      var sheet = result['data']['sheet'] // list of sheet name
+      var data = result['data']['data'] // list of data obj
+      sheet.forEach(s => {
+        tableSelection_temp[s] = []
+      })
+      commit('SET_tableSelection', tableSelection_temp)
+      commit('SET_tableData', result['data'])
+      commit('SET_LOADING', false)
+      console.log("check table data again!!!")
+      console.log(result['data'])
+      idParsingToDict(state.idDict, {sheets: sheet, data: data})
     })
-    commit('SET_tableSelection', tableSelection_temp)
-    commit('SET_tableData', result['data'])
-    commit('SET_LOADING', false)
-    console.log("check table data again!!!")
-    console.log(result['data'])
-    idParsingToDict(state.idDict, {sheets: sheet, data: data})
+    .catch(error=>{
+      alert(error+',Internal Server Error. Please refresh the page')
+    })
   },
   setTableSelected ({commit, displatch, state}, {action, sheetName, value}) {
     console.log(action)

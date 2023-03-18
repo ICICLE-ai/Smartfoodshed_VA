@@ -97,10 +97,12 @@ export default{
       for (const [sheetname, sheetdata] of Object.entries(DATA['data'])) {
         // console.log(sheetname, sheetdata)
         var columns = [
-            {formatter:"rowSelection", titleFormatter:"rowSelection", align:"center", headerSort:false, frozen:true} // adding the tickbox
+            {
+              field: 'checkbox',formatter:"rowSelection", titleFormatter:"rowSelection", align:"center", headerSort:false, frozen:true} // adding the tickbox
         ]
+        var newColumns = []
         for(let i =0; i<sheetdata['tableInfo'].length; i++){
-          columns.push({
+          newColumns.push({
             'field': sheetdata['tableInfo'][i]['value'],
             'title': sheetdata['tableInfo'][i]['label'],
             'headerFilter':"input",
@@ -108,10 +110,19 @@ export default{
             'headerFilterFuncParams':{matchAll:true}
           })
         }
-        console.log(columns)
+        // console.log(columns)
+        // sorting the columns name/label at the most left, and id at the right most 
+        newColumns = newColumns.sort(function(first, second) {
+          if(first['field'].toLowerCase().includes('checkbox') || first['field'].toLowerCase().includes('name') ||first['field'].toLowerCase().includes('label') || (second['field'].toLowerCase().includes('id')) || (second['field'].toLowerCase().includes('uri'))){
+              return -1
+          }else{
+              return 1
+          }
+        });
+        console.log(newColumns)
         newData[sheetname] = {
           'tableInfo': {
-            'columns': columns,
+            'columns': [...columns, ...newColumns],
             'height': parseInt(that.windowHeight.replace('px',''))+200,
             'movableColumns': true,
             'movableRows': true,
