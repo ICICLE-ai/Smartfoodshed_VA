@@ -138,11 +138,13 @@ export default{
     },
     tableUpdate(DATA){ // once the table got updated, we need to do a sequence of things
       // check if it is in the tableInteractiveMode (which means table got updated from graph)
+      console.log('updating.. data... table...based on the data', DATA)
       if(DATA['sheet'].length>0){
         this.prepareTabulatorData(DATA)
         if(this.tab==null){
           this.tab=0
         }
+        console.log()
         this.updateItemKey()
       }else{
         alert('Nothing retrieved from table!')

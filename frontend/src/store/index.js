@@ -185,7 +185,8 @@ const actions = {
     const path = base_request_url+'/changeDataBase' 
     axios.post(path, data)
       .then(result => {
-        console.log('yes, loaded')
+        dispatch('getTableData')
+        dispatch('getGraphOverview')
       })
       .catch(error => {
         alert(error+',Internal Server Error. Please refresh the page')
