@@ -298,7 +298,7 @@ export default{
     }
   },
   created () {
-    this.$store.dispatch('getGraphOverview')
+    // this.$store.dispatch('getGraphOverview')
     window['d3'] = d3
     this.tip = d3tip()
             .attr('class', 'd3-tip')
@@ -306,7 +306,7 @@ export default{
             .html(function(d) {
               return "<strong>Relation: </strong>" + d + "<br></span>";
     })
-    console.log(document.querySelector("#div_graph"));
+    // console.log(document.querySelector("#div_graph"));
     
   },
   methods: {
@@ -317,7 +317,7 @@ export default{
     drawNeo4jd3 () {
       var that = this
       d3.selectAll(".d3-tip").remove()
-
+      
 
       if(this.neo4jd3 == null){
         var neo4jd3 = Neo4jd3.default('#div_graph', {

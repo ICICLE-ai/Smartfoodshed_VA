@@ -102,13 +102,16 @@ export default{
         ]
         var newColumns = []
         for(let i =0; i<sheetdata['tableInfo'].length; i++){
-          newColumns.push({
+          // console.log(sheetdata['tableInfo'][i]['value'])
+          if (sheetdata['tableInfo'][i]['value'].startsWith('use_case')==false){
+            newColumns.push({
             'field': sheetdata['tableInfo'][i]['value'],
             'title': sheetdata['tableInfo'][i]['label'],
             'headerFilter':"input",
             'headerFilterFunc': "keywords",
             'headerFilterFuncParams':{matchAll:true}
-          })
+            })
+          }
         }
         // console.log(columns)
         // sorting the columns name/label at the most left, and id at the right most 
@@ -138,7 +141,7 @@ export default{
     },
     tableUpdate(DATA){ // once the table got updated, we need to do a sequence of things
       // check if it is in the tableInteractiveMode (which means table got updated from graph)
-      console.log('updating.. data... table...based on the data', DATA)
+      // console.log('updating.. data... table...based on the data', DATA)
       if(DATA['sheet'].length>0){
         this.prepareTabulatorData(DATA)
         if(this.tab==null){
