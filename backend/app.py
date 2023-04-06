@@ -338,7 +338,9 @@ def changeDataBase():
     fips = pd.read_csv(localfile_path+"county_fips.csv")
     fips = fips.astype({"fips": str})
     fips['fips'] = fips['fips'].apply(lambda x: x.zfill(5))
-    fips = fips.append({'fips':'46102', 'name':'Oglala Lakota County','state':'SD'},ignore_index=True)
+    # fips = fips.append({'fips':'46102', 'name':'Oglala Lakota County','state':'SD'},ignore_index=True)
+    fips.loc[len(fips)] = ['46102','Oglala Lakota County','SD']
+    # fips = pd.concat(fips, to_add, axis=1)
     return Response(json.dumps({}), status=200)
 
 def loadPPOD(graph, deleteOld=False):
