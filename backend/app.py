@@ -313,6 +313,7 @@ def changeDataBase():
         graph =  G3
         database = "ci"
         entity_identifier = "name"
+    
     schema = py2neo.database.Schema(graph)
     attempts = 0
     while attempts<3:
