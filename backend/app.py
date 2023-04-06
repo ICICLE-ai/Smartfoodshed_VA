@@ -314,8 +314,14 @@ def changeDataBase():
         database = "ci"
         entity_identifier = "name"
     schema = py2neo.database.Schema(graph)
-    entity_type = list(schema.node_labels)
-    relationship_type = list(schema.relationship_types)
+    attempts = 0
+    while attempts<3:
+        try:
+            entity_type = list(schema.node_labels)
+            relationship_type = list(schema.relationship_types)
+            break 
+        except:
+            attempts+=1
     if len(entity_type) > 1:
         try:
             entity_type.remove("Resource")
@@ -327,7 +333,7 @@ def changeDataBase():
             print("No _GraphConfig Entity Type") 
     
     graph_overview = helper.get_graph_overview(graph,entity_type,relationship_type)
-   
+
     fips = pd.read_csv(localfile_path+"county_fips.csv")
     fips = fips.astype({"fips": str})
     fips['fips'] = fips['fips'].apply(lambda x: x.zfill(5))
