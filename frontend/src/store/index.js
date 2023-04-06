@@ -182,7 +182,7 @@ const actions = {
   changeDB({commit, dispatch, state}, data){
     commit('SET_DATABASE', data['database'])
     // var result = await apiClient.post("/changeDataBase", data)
-    const path = base_request_url+'/changeDataBase' 
+    const path = base_request_url+'changeDataBase' 
     axios.post(path, data)
       .then(result => {
         dispatch('getTableData')
