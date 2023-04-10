@@ -152,7 +152,7 @@
               </v-card>
             </v-menu>
             
-            <v-tooltip bottom>
+            <!-- <v-tooltip bottom>
               <template v-slot:activator="{ on, attrs }">
                 <v-btn 
                   class="ma-2 menu-btn"
@@ -169,7 +169,7 @@
                 </v-btn>
               </template>
               <span>Resilience Threshold #</span>
-            </v-tooltip>
+            </v-tooltip> -->
             
 
             <v-tooltip bottom>
@@ -616,8 +616,8 @@ export default{
   },
   watch: {
     selectedColor() {
-      this.recolorNode()
-      // d3.selectAll('circle').style('fill', this.selectedColor.hex)
+      // this.recolorNode()
+      d3.selectAll('circle').style('fill', this.selectedColor.hex)
     },
     resilience_thre(){
       this.recolorNode()
