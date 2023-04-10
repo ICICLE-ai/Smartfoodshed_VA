@@ -200,7 +200,7 @@
               v-show="showMaxRetrieve"
             ></v-slider>
 
-            <v-slider
+            <!-- <v-slider
               v-model="resilience_thre"
               :thumb-size="24"
               min="0"
@@ -208,7 +208,7 @@
               :max = max_resilience
               thumb-label="always"
               v-show="showResThre"
-            ></v-slider>
+            ></v-slider> -->
             
             <v-slider
               v-model="user_defined_strength"

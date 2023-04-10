@@ -1,6 +1,6 @@
 <template>
     <v-container id="noderel">
-        <v-row :style="{'height': 'OVERVIEW_HEIGHT', 'margin-top':'20px'}">
+        <v-row :style="{'height': 'OVERVIEW_HEIGHT'}">
             <v-col cols="6">
                 <div id="div_node_overview"></div>
             </v-col>
@@ -106,21 +106,22 @@ export default {
 
           var svg = d3.select(div).append("svg").attr('class', `container_${title.split(' ').join('_')}`);
           
-          const margin = 80;
-          const width = 500 - 2 * margin;
-          const height = 400 - 2 * margin;
-
+          const margin_width = 160;
+          const margin_height = 20;
+          const width = 500 - margin_width;
+          const height = 420 - margin_height*3;
+          
           var selected_bar = []
           const chart = svg.append('g')
-            .attr('transform', `translate(${margin}, ${margin})`);
-
-          const xScale = d3.scaleBand()
-            .range([0, width])
+            .attr('transform', `translate(${margin_width}, ${margin_height})`);
+          // .attr('transform', 'translate(100,0)')
+          const yScale = d3.scaleBand() /// xxxxx axis 
+            .range([margin_height, height])
             .domain(data.map((s) => s.key))
             .padding(0.1)
           
-          const yScale = d3.scaleLinear()
-            .range([height, 0])
+          const xScale = d3.scaleLinear()
+            .range([width, 0])
             .domain([0, d3.max(data, function(d) { return d.value; })]);
 
           const makeYLines = () => d3.axisLeft()
@@ -134,9 +135,6 @@ export default {
           .call(xAxis)
           .selectAll("text")  
           .style("text-anchor", "start")
-          .attr("dx", "-7em")
-          .attr("dy", "+.1em")
-          .attr("transform", "rotate(-80)" )
           .style("font-size", "10px");
 
           chart.append('g')
@@ -157,10 +155,13 @@ export default {
           barGroups
             .append('rect')
             .attr('class', d=>`bar nodetype_${d.key?d.key:'undefined'}`)
-            .attr('x', (g) => xScale(g.key))
-            .attr('y', (g) => yScale(g.value))
-            .attr('height', (g) => height - yScale(g.value))
-            .attr('width', xScale.bandwidth())
+            // .attr('x', (g) => yScale(g.key))
+            // .attr('y', (g) => xScale(g.value))
+            .attr('x', 0)
+            .attr('y', (g)=>yScale(g.key))
+            .attr('height', yScale.bandwidth())
+            .attr('width', (g) => width - xScale(g.value))
+            // .attr('width', yScale.bandwidth())
             .on('contextmenu', function(d, i) {
               const coordinates = d3.mouse(this)
               that.pickerX = that.getContainerX(title) + coordinates[0]
@@ -199,18 +200,12 @@ export default {
               .transition()
               .duration(300)
               .attr('opacity', 0.6)
-              .attr('x', (a) => xScale(a.key) - 5)
-              .attr('width', xScale.bandwidth() + 10)
+              .attr('x', 0)
+              // .attr('y')
+              .attr('y', (a) => yScale(a.key) - 5)
+              .attr('height', yScale.bandwidth() + 10)
 
-            const y = yScale(actual.value);
-
-            let line = chart.append('line')
-                .attr('id', 'limit')
-                .attr('x1', 0)
-                .attr('y1', y)
-                .attr('x2', width)
-                .attr('y2', y)
-
+            const x = xScale(actual.value);
             })
             .on('mouseleave', function () {
               d3.selectAll('.value')
@@ -220,8 +215,8 @@ export default {
                 .transition()
                 .duration(300)
                 .attr('opacity', 1)
-                .attr('x', (a) => xScale(a.key))
-                .attr('width', xScale.bandwidth())
+                .attr('y', (a) => yScale(a.key))
+                .attr('height', yScale.bandwidth())
 
               chart.selectAll('#limit').remove()
               chart.selectAll('.divergence').remove()
@@ -236,17 +231,17 @@ export default {
           //   .attr('text-anchor', 'middle')
           //   .text((a) => `${a.value}`)
           
-          svg.append('text')
-            .attr('class', 'label')
-            .attr('x', -(height / 2) - margin)
-            .attr('y', margin / 2.4)
-            .attr('transform', 'rotate(-90)')
-            .attr('text-anchor', 'middle')
-            .text('Frequency')
+          // svg.append('text')
+          //   .attr('class', 'label')
+          //   .attr('x', -(height / 2) - margin)
+          //   .attr('y', margin / 2.4)
+          //   .attr('transform', 'rotate(-90)')
+          //   .attr('text-anchor', 'middle')
+          //   .text('Frequency')
 
           svg.append('text')
             .attr('class', 'title')
-            .attr('x', width / 2 + margin)
+            .attr('x', width / 2 + margin_width)
             .attr('y', 40)
             .attr('text-anchor', 'middle')
             .text(title)
