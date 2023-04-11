@@ -94,7 +94,7 @@
                   </v-icon>
                 </v-btn>
               </template>
-              <span>Node Link Overview</span>
+              <span>Dataset Overview</span>
             </v-tooltip>
 
             <v-tooltip bottom>
