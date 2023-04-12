@@ -130,7 +130,8 @@ export default{
         });
         newData[sheetname] = {
           'tableInfo': {
-            'columns': [...columns, ...newColumns],
+            // 'columns': [...columns, ...newColumns],
+            'columns': newColumns,
             'height': parseInt(that.windowHeight.replace('px',''))+200,
             'movableColumns': true,
             'movableRows': true,
