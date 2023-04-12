@@ -468,6 +468,11 @@ export default{
     },
     resetGraphTableHandler(){
       this.$store.dispatch("resetTableGraph")
+      // d3.select('#div_graph').html('')
+      // d3.selectAll(".d3-tip").remove()
+      // this.graphData = []
+      // this.drawNeo4jd3()
+      // this.brushed = {"entity_type": [], "relationship_type": []}
     },
     toggleZoomPanLasso(){
       this.zoomPanStatus = !this.zoomPanStatus 
