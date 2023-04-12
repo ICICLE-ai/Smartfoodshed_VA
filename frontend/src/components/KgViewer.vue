@@ -294,7 +294,7 @@ export default{
       max_resilience: 1, // maximum value of the scroll bar for resilience threshold 
 
       showStrength: false,
-      user_defined_strength: -3
+      user_defined_strength: 100
     }
   },
   created () {
