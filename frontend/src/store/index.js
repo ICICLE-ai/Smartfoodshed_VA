@@ -88,9 +88,12 @@ const mutations = {
       state.tableSelected[sheetName] = {}  
     }  
     // addItemsToSelection(state.tableSelected[sheetName], value)
-    if(value.length<=0){
+    if(value.length<0){
       return -1
-    }else{
+    }else if(value.length==0){
+      state.tableSelected[sheetName] = []
+    }
+    else{
       state.tableSelected[sheetName] = {}
       const sample = value[0]
       const indexingTerm = sample.relation_id!=null? 'relation_id': sample.id!=null? 'id': null
@@ -187,6 +190,21 @@ const actions = {
       .then(result => {
         dispatch('getTableData')
         dispatch('getGraphOverview')
+        //once change the database, the graph data should be updated to empty
+        var empty = {
+          "results": [{
+              "columns":[],
+              "data":[{
+                  "graph":{
+                      "nodes": [],
+                      "relationships":[]
+                  }
+              }]
+          }],
+          "errors":[]
+        }
+        commit('SET_graphData', empty)
+        commit('SET_graphDataBackUp', empty)
       })
       .catch(error => {
         alert(error+',Internal Server Error. Please refresh the page')
@@ -195,13 +213,14 @@ const actions = {
   async setExpandTh ({commit, dispatch, state}, data){
     commit('SET_expandThreshold', data)
   },
-  async getGraphData ({commit, dispatch, state}) {
-    const path = base_request_url+'getGraphData'
-    var result = await axios.get(path)
-    commit('SET_graphData', result['data'])
-    commit('SET_graphDataBackUp', result['data'])
+  // async getGraphData ({commit, dispatch, state}) {
+  //   const path = base_request_url+'getGraphData'
+  //   var result = await axios.get(path)
+  //   commit('SET_graphData', result['data'])
+  //   commit('SET_graphDataBackUp', result['data'])
+  //   console.log(state.originalGraph)
    
-  },
+  // },
   async getGraphOverview({commit, dispatch, state}){
     axios.get(base_request_url+"getGraphOverview").then(result=>{
       commit('SET_graphOverview', result)
@@ -253,7 +272,27 @@ const actions = {
       .then(result => {
         console.log(result)
         commit('SET_LOADING', false)
-        commit('SET_graphData', result['data']) 
+        if(result['data']==""){
+          var empty = {
+            "results": [{
+                "columns":[],
+                "data":[{
+                    "graph":{
+                        "nodes": [],
+                        "relationships":[]
+                    }
+                }]
+            }],
+            "errors":[]
+          }
+          commit('SET_graphData', empty)
+          commit('SET_graphDataBackup', empty)
+        }else{
+          commit('SET_graphData', result['data']) 
+          commit('SET_graphDataBackUp', result['data'])
+        }
+        
+        
       })
       .catch(error => {
         alert(error+"; Please refresh the page!")

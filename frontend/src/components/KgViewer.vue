@@ -94,7 +94,7 @@
                   </v-icon>
                 </v-btn>
               </template>
-              <span>Node Link Overview</span>
+              <span>Dataset Overview</span>
             </v-tooltip>
 
             <v-tooltip bottom>
@@ -294,7 +294,7 @@ export default{
       max_resilience: 1, // maximum value of the scroll bar for resilience threshold 
 
       showStrength: false,
-      user_defined_strength: -3
+      user_defined_strength: 100
     }
   },
   created () {
@@ -468,6 +468,11 @@ export default{
     },
     resetGraphTableHandler(){
       this.$store.dispatch("resetTableGraph")
+      // d3.select('#div_graph').html('')
+      // d3.selectAll(".d3-tip").remove()
+      // this.graphData = []
+      // this.drawNeo4jd3()
+      // this.brushed = {"entity_type": [], "relationship_type": []}
     },
     toggleZoomPanLasso(){
       this.zoomPanStatus = !this.zoomPanStatus 

@@ -58,6 +58,7 @@ export default{
       var name = 'tabulator'+ this.sheetNames[parseInt(tab_id)]
       var tabulatorIns = this.$refs[name][0].getInstance()
       var selectedData = tabulatorIns.getSelectedData()
+      console.log(selectedData);
       this.$store.dispatch('setTableSelected', {action:'add', sheetName: tab_id, value:selectedData})
     },
     retrieve(){
@@ -98,7 +99,11 @@ export default{
         // console.log(sheetname, sheetdata)
         var columns = [
             {
-              field: 'checkbox',formatter:"rowSelection", titleFormatter:"rowSelection", align:"center", headerSort:false, frozen:true} // adding the tickbox
+              field: 'checkbox',formatter:"rowSelection", titleFormatter:"rowSelection", align:"center", headerSort:false, frozen:true,
+              'titleFormatterParams':{
+                "rowRange":"active" //only toggle the values of the active filtered rows
+            },
+            } // adding the tickbox
         ]
         var newColumns = []
         for(let i =0; i<sheetdata['tableInfo'].length; i++){
@@ -109,6 +114,7 @@ export default{
             'title': sheetdata['tableInfo'][i]['label'],
             'headerFilter':"input",
             'headerFilterFunc': "keywords",
+            
             'headerFilterFuncParams':{matchAll:true}
             })
           }
@@ -124,7 +130,8 @@ export default{
         });
         newData[sheetname] = {
           'tableInfo': {
-            'columns': [...columns, ...newColumns],
+            // 'columns': [...columns, ...newColumns],
+            'columns': newColumns,
             'height': parseInt(that.windowHeight.replace('px',''))+200,
             'movableColumns': true,
             'movableRows': true,
