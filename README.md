@@ -98,3 +98,5 @@ Project Structure: The project is divided into two main components, the front-en
   * app.py is responsible for handling the incoming GET/POST requests from the front-end.
   * helper.py includes various querying functions and auxiliary helper functions.
 
+# Acknowledgements
+*This work has been funded by grants from the National Science Foundation, including the ICICLE AI Institute (OAC 2112606)*
