@@ -1,7 +1,5 @@
 <template>
-  <v-app style="height:100%">
-    <v-main style="padding:0px; height:100%">
-      
+  <v-main style="padding:0px; height:100%">
       <v-row justify="center" style="height:100%">
         <v-col cols="5" align-self="center" style="height:100%">
           <v-card style="height:100%">
@@ -26,12 +24,9 @@
             <v-card-title>Graph View</v-card-title>
             <kg-viewer/>
           </v-card>
-          
-          
         </v-col>
       </v-row>
     </v-main>
-  </v-app>
 </template>
 
 <script>

@@ -1,29 +1,108 @@
 <template>
-  <div>
     <v-app>
-      <NavBar />
-      <v-main>
-        <dataset/>
-        <!-- <transition name="slide-fade" mode="out-in">
-          <keep-alive>
-            <router-view />
-          </keep-alive>
-        </transition> -->
-      </v-main>
+      <v-app-bar app>
+        <v-app-bar-nav-icon variant="text" @click.stop="drawer = !drawer"></v-app-bar-nav-icon>
+        <v-toolbar-title>ICICLE Visual Analytics V1</v-toolbar-title>
+        <!-- <v-spacer></v-spacer> -->
+        <div style="width:14%; margin-left:50%">
+          <v-select
+          v-model="selected_dataset"
+          variant="solo"
+          hint="Select A Dataset"
+          persistent-hint
+          :items="['ppod', 'cfs']"
+        ></v-select>
+        </div>
+      </v-app-bar>
+    
+    <v-navigation-drawer
+      v-model="drawer"
+      temporary app
+      left
+      >
+      <v-list>
+        <template v-for="item in items">
+          <v-list-item :key="item.value" @click="ClickEvent(item.value)">
+            <v-list-item-title><v-icon>{{item.icon}}</v-icon>{{item.label}}</v-list-item-title>
+          </v-list-item>
+        </template>
+      </v-list>
+    </v-navigation-drawer>
+      <dataset/>
     </v-app>
-  </div>
 </template>
 
 <script>
-import NavBar from "@/components/NavBar";
+import {mapState} from 'vuex'
 import Dataset from '@/views/Dashboard.vue'
 export default {
   data() {
-    return {};
+    return {
+      selected_dataset: "ppod",
+      load: false,
+      drawer: false,
+      items: [
+        {
+          'value': 'LogIn',
+          'label': ' Log In',
+          'icon': 'mdi-login'
+        },{
+          'value': 'SaveData',
+          'label': ' Save Data',
+          'icon': 'mdi-cloud-upload'
+        },{
+          'value': 'LoadData',
+          'label': ' Load Data',
+          'icon': 'mdi-cloud-download'
+        }
+      ]
+    }
+  
   },
   components: {
-    NavBar,Dataset
+    Dataset
   },
+  methods: {
+    async fetchData(){
+      this.$store.dispatch('changeDB',{'database': this.selected_dataset})
+    },
+    ClickEvent(clickedItem){
+      if(clickedItem=="LogIn"){
+        // login event
+        window.open('https://dev.develop.tapis.io/v3/oauth2/idp')
+        // For David: TBA: get user token? and load data?
+      }else if(clickedItem=="SaveData"){
+        
+      }else if(clickedItem=="LoadData"){
+
+      }
+    }
+  }, 
+  created(){
+    this.load = true
+    // this.fetchData()
+  },
+  watch: {
+    load: function(){
+      this.fetchData()
+    },
+    selected_dataset: function(){
+      // window.location.reload();
+      // d3.select('#div_graph').html('')
+      this.fetchData()
+    }
+  },
+  computed: {
+    ...mapState(['BETA_ROUTE', 'DASH_ROUTE']),
+    versionPrompt() {
+      const currentRoute = this.$route.name
+      if (currentRoute == this.DASH_ROUTE.name) {
+        return "Try Dashboard Beta"
+      }else {
+        return "Old Version"
+      }
+    }
+  }
 };
 </script>
 
