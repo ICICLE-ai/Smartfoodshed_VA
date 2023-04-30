@@ -23,18 +23,19 @@
       <v-list>
         <template v-for="item in items">
           <v-list-item :key="item.value" @click="ClickEvent(item.value)">
-            <v-list-item-title><v-icon>{{item.icon}}</v-icon>{{item.label}}</v-list-item-title>
+            <v-list-item-icon><v-icon>{{item.icon}}</v-icon></v-list-item-icon>
+            <v-list-item-title>{{item.label}}</v-list-item-title>
           </v-list-item>
         </template>
       </v-list>
     </v-navigation-drawer>
-      <dataset/>
+      <dashboard ref="dashboard"/>
     </v-app>
 </template>
 
 <script>
 import {mapState} from 'vuex'
-import Dataset from '@/views/Dashboard.vue'
+import Dashboard from '@/views/Dashboard.vue'
 export default {
   data() {
     return {
@@ -44,15 +45,15 @@ export default {
       items: [
         {
           'value': 'LogIn',
-          'label': ' Log In',
+          'label': 'Log In',
           'icon': 'mdi-login'
         },{
           'value': 'SaveData',
-          'label': ' Save Data',
+          'label': 'Save Data',
           'icon': 'mdi-cloud-upload'
         },{
           'value': 'LoadData',
-          'label': ' Load Data',
+          'label': 'Load Data',
           'icon': 'mdi-cloud-download'
         }
       ]
@@ -60,7 +61,7 @@ export default {
   
   },
   components: {
-    Dataset
+    Dashboard
   },
   methods: {
     async fetchData(){
@@ -72,8 +73,15 @@ export default {
         window.open('https://dev.develop.tapis.io/v3/oauth2/idp')
         // For David: TBA: get user token? and load data?
       }else if(clickedItem=="SaveData"){
-        
+        // get the state data
+        const savedState = this.$store.state
+        //save this data to cloud 
+        console.log(savedState)
       }else if(clickedItem=="LoadData"){
+        // TODO: get the data object from logged in user: data
+        // update the state 
+        var data = {} //to be replaced from cloud data
+        this.$store.state.replaceState(data)
 
       }
     }

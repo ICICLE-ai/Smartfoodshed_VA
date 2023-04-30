@@ -314,6 +314,15 @@ export default{
       // change user define threshold for how many nodes we want to expand 
       this.$store.dispatch('setExpandTh', this.user_defined_thre)
     },
+    saveGraphDrawing(){
+      var circle_data = d3.select('#div_graph').selectAll("circle").data()
+      var path_data = d3.select('#div_graph').selectAll("path").data()
+      var originalData = {
+        'circle': circle_data, 
+        'path': path_data
+      }
+      this.$store.dispatch('updateNeo4jDrawData', originalData)
+    },
     drawNeo4jd3 () {
       var that = this
       d3.selectAll(".d3-tip").remove()
@@ -463,16 +472,12 @@ export default{
         that.disableLasso() 
         that.enableZoomPan()
       }
+      that.saveGraphDrawing()
       // that.enableLasso()
       
     },
     resetGraphTableHandler(){
       this.$store.dispatch("resetTableGraph")
-      // d3.select('#div_graph').html('')
-      // d3.selectAll(".d3-tip").remove()
-      // this.graphData = []
-      // this.drawNeo4jd3()
-      // this.brushed = {"entity_type": [], "relationship_type": []}
     },
     toggleZoomPanLasso(){
       this.zoomPanStatus = !this.zoomPanStatus 

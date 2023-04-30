@@ -52,9 +52,13 @@ function initialState () {
     // base_request_url: "http://127.0.0.1:5000/"
     // base_request_url: 'https://vaapi.develop.tapis.io/'
     database: "", //ppod or cfs 
+    neo4jDrawData: ""
   }
 }
 const mutations = {
+  SET_neo4jDrawData(state, val){
+    state.neo4jDrawData = val 
+  },
   SET_DATABASE(state, val){
     state.database = val 
   },
@@ -182,6 +186,9 @@ const mutations = {
   }
 }
 const actions = {
+  updateNeo4jDrawData({commit}, data){
+    commit('SET_neo4jDrawData', data)
+  },
   changeDB({commit, dispatch, state}, data){
     commit('SET_DATABASE', data['database'])
     // var result = await apiClient.post("/changeDataBase", data)
