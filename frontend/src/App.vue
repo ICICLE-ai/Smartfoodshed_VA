@@ -29,19 +29,42 @@
         </template>
       </v-list>
     </v-navigation-drawer>
-      <dashboard ref="dashboard"/>
+    <v-dialog
+      v-model="dialog"
+      max-width="600px"
+      scrollable
+    >
+      <v-card>
+        <v-card-title class="text-h5">
+          Select one Cloud data to load 
+        </v-card-title>
+        <v-card-text>
+          <v-data-table
+            :headers="tableHeaders"
+            :loading="tableLoading"
+            :items="tableData"
+            :items-per-page="5"
+            scrollable
+            class="elevation-1"
+          ></v-data-table>
+        </v-card-text>
+      </v-card>
+    </v-dialog>
+    <dashboard ref="dashboard"/>
     </v-app>
 </template>
 
 <script>
 import {mapState} from 'vuex'
 import Dashboard from '@/views/Dashboard.vue'
+import axios from 'axios'
 export default {
   data() {
     return {
       selected_dataset: "ppod",
       load: false,
       drawer: false,
+      dialog: false,
       items: [
         {
           'value': 'LogIn',
@@ -56,7 +79,10 @@ export default {
           'label': 'Load Data',
           'icon': 'mdi-cloud-download'
         }
-      ]
+      ],
+      tableHeaders: [],
+      tableData: [],
+      tableLoading: false
     }
   
   },
@@ -80,9 +106,34 @@ export default {
       }else if(clickedItem=="LoadData"){
         // TODO: get the data object from logged in user: data
         // update the state 
-        var data = {} //to be replaced from cloud data
-        this.$store.state.replaceState(data)
-
+        // var data = {} //to be replaced from cloud data
+        // this.$store.state.replaceState(data)
+        this.dialog = true
+        this.tableLoading = true
+        axios.get("https://icfoods.o18s.com/api/storage/json-objects/").then(result=>{
+          // this.tableData = result['data']
+          this.tableData = result['data'].map(obj => {
+            return {
+              ...obj,  // Copy all key-value pairs from the original object
+              json_data: JSON.stringify(obj['json_data']).slice(0,20)+"..." // Transform the key value to a string
+            };
+          });
+          console.log(this.tableData)
+          this.tableHeaders = [{
+            text: 'UUID',
+            value: 'uuid'
+          },{
+            text: 'Title',
+            value: 'title'
+          },{
+            text: 'Owner',
+            value: 'owner'
+          },{
+            text: 'Data',
+            value: 'json_data'
+          }]
+        })
+        this.tableLoading = false 
       }
     }
   }, 
