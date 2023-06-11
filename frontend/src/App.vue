@@ -40,6 +40,9 @@
         </v-card-title>
         <v-card-text>
           <v-data-table
+            show-select
+            single-select
+            item-key="uuid"
             :headers="tableHeaders"
             :loading="tableLoading"
             :items="tableData"
@@ -118,7 +121,6 @@ export default {
               json_data: JSON.stringify(obj['json_data']).slice(0,20)+"..." // Transform the key value to a string
             };
           });
-          console.log(this.tableData)
           this.tableHeaders = [{
             text: 'UUID',
             value: 'uuid'
