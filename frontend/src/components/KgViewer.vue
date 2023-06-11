@@ -265,8 +265,10 @@ import {mapState} from 'vuex'
 import * as d3tip from '@/utils/d3-tip'
 import NodeRelOverview from '@/components/NodeRelOverview'
 import { saveAs } from 'file-saver'
-import SAVEDDATA from '../../public/export.json'
+// import SAVEDDATA from '../../public/export.json'
 import { schemeDark2 } from 'd3-scale-chromatic'
+import axios from 'axios'
+
 export default{
   components: {
     NodeRelOverview
@@ -318,46 +320,63 @@ export default{
   },
   methods: {
     loadTest(){
-      d3.select('#div_graph').html(' ')
-      var svg = d3.select('#div_graph').append('svg')
-      .attr('width', '100%')
-      .attr('height', '100%')
-      .append('g')
-      .attr('width', '100%')
-      .attr('height', '100%')
+      var uuid = "8098aab6-4763-4b2c-b407-21c6d5843134"
+      
+      axios.get("https://icfoods.o18s.com/api/storage/json-object/"+uuid+"/").then(result=>{
+        var SAVEDDATA = result['data']['json_data']
+        d3.select('#div_graph').html(' ')
+        var svg = d3.select('#div_graph').append('svg')
+        .attr('width', '100%')
+        .attr('height', '100%')
+        .append('g')
+        .attr('width', '100%')
+        .attr('height', '100%')
 
-      console.log(SAVEDDATA)
-      var circles_ = svg.selectAll('circle')
-      .data(SAVEDDATA['circle'])
-      .enter()
-      .append('circle')
-      .attr("cx", d=>d.x)
-      .attr("cy", d=>d.y)
-      .attr("r", function(d) { return 10; })
-      .style('fill', 'black')
+        console.log(SAVEDDATA)
+        var circles_ = svg.selectAll('circle')
+        .data(SAVEDDATA['circle'])
+        .enter()
+        .append('circle')
+        .attr("cx", d=>d.x)
+        .attr("cy", d=>d.y)
+        .attr("r", function(d) { return 10; })
+        .style('fill', 'black')
 
-      var paths_ = svg.selectAll('path')
-      .data(SAVEDDATA['path'])
-      .enter()
-      .append('line')
-      .style("stroke", "black")
-      .style("stroke-width", 2)
-      .attr("x1", d=>d['source']['x'])
-      .attr("y1", d=>d['source']['y'])
-      .attr("x2", d=>d['target']['x'])
-      .attr("y2", d=>d['target']['y']); 
+        var paths_ = svg.selectAll('path')
+        .data(SAVEDDATA['path'])
+        .enter()
+        .append('line')
+        .style("stroke", "black")
+        .style("stroke-width", 2)
+        .attr("x1", d=>d['source']['x'])
+        .attr("y1", d=>d['source']['y'])
+        .attr("x2", d=>d['target']['x'])
+        .attr("y2", d=>d['target']['y']); 
+      })      
     },
-    saveTest(){
+    async saveTest(){
       var circle_data = d3.select('#div_graph').selectAll("circle").data()
       var path_data = d3.select('#div_graph').selectAll("path").data()
       var originalData = {
         'circle': circle_data, 
         'path': path_data
       }
-
-      let blob = new Blob([JSON.stringify(originalData)], { type: 'application/json' })
-          
-      saveAs(blob, 'export.json')
+      var data2save = {
+        "title": "KGdata",
+        "owner": "Yamei Tu",
+        "json_data": originalData
+      }
+      var path = "https://icfoods.o18s.com/api/storage/json-object/create/"
+      axios.post(path, data2save)
+      .then(response => {
+        console.log(response)
+      })
+      .catch(error => {
+        alert(error+',Internal Server Error. Please refresh the page')
+      })
+      // let blob = new Blob([JSON.stringify(originalData)], { type: 'application/json' })
+       
+      // saveAs(blob, 'export.json')
     },
     changeThreshold(){
       // change user define threshold for how many nodes we want to expand 
