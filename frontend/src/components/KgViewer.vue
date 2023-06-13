@@ -298,7 +298,6 @@ export default{
     }
   },
   created () {
-    // this.$store.dispatch('getGraphOverview')
     window['d3'] = d3
     this.tip = d3tip()
             .attr('class', 'd3-tip')
@@ -306,8 +305,6 @@ export default{
             .html(function(d) {
               return "<strong>Relation: </strong>" + d + "<br></span>";
     })
-    // console.log(document.querySelector("#div_graph"));
-    
   },
   methods: {
     changeThreshold(){
@@ -315,9 +312,7 @@ export default{
       this.$store.dispatch('setExpandTh', this.user_defined_thre)
     },
     saveGraphDrawing(){
-      // console.log('save graph drawing data')
       this.$store.dispatch('updateNeo4jDrawData', this.neo4jd3.saveData())
-      // console.log(this.$store.state)
     },
     drawNeo4jd3 () {
       var that = this
@@ -329,16 +324,12 @@ export default{
           infoPanel: true,
           strength: this.user_defined_strength,
           onNodeDoubleClick: function (node) {
-            // that.dbclick(node)
           },
           onNodeMouseEnter: function (node) {
             that.hover_node = node
           },
           zoomFit: true,
           onNodeClick: function (node,idx) {
-            // console.log(node,id)
-            // Create dummy data
-            // console.log(node)
             if (node.showBtnPanel == true) {
               d3.select(`#node-${node.id}`).selectAll('.circle-button').remove()
               node.showBtnPanel = false
@@ -346,7 +337,6 @@ export default{
             }
             node.showBtnPanel = true 
             var data = { b: {action: "remove", value: 10, pos:0} } // only two operations 
-
             if(that.relationStatusReady==false){
               // render the loading panel 
               console.log('nononono')
@@ -356,8 +346,6 @@ export default{
               var relation_data = node['relationship_types']
             }
             else{
-              // console.log(that.relationTypeData['results'][0]['data'][0]['graph']['nodes'])
-              // console.log(idx)
               var filtered_relation_type_data = that.relationTypeData['results'][0]['data'][0]['graph']['nodes'].filter(d => d.id == node.id)
               var relation_data = filtered_relation_type_data[0]['relationship_types']
               // get the sum of all rel counts 
@@ -368,10 +356,7 @@ export default{
               for (const [key, value] of Object.entries(relation_data)) {
                 data[key] = {action: key, value: (value/total_c)*30}
               }
-              // console.log("check data")
-              // console.log(data)
             } 
-            
             // sorting 
             
             let this_g = d3.select(`#node-${node.id}`)
@@ -384,9 +369,6 @@ export default{
               .sort(null) //avoiding to sort the pie, make sure the remove button in the same position 
               .value(function(d) {return d.value.value; })
             var data_ready = pie(d3.entries(data))
-            
-
-      
               // removal / expand operations 
             var operation_buttons_g = append_g.selectAll('whatever')
               .data(data_ready)
