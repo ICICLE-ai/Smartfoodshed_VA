@@ -48,7 +48,7 @@ export default{
   computed: {
     ...mapState(['tableData', 'tableSelection', 'tableSelected', 'tableInteractiveMode', 'interactiveTableData']),
     windowHeight() {
-      return (window.innerHeight-350) + "px"
+      return (window.innerHeight*0.8) + "px"
     }
   },
   created(){
@@ -132,7 +132,7 @@ export default{
           'tableInfo': {
             // 'columns': [...columns, ...newColumns],
             'columns': newColumns,
-            'height': parseInt(that.windowHeight.replace('px',''))+200,
+            'height': parseInt(that.windowHeight.replace('px','')),
             'movableColumns': true,
             'movableRows': true,
             'selectable': true,
