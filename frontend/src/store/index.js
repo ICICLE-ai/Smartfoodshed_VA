@@ -56,6 +56,12 @@ function initialState () {
   }
 }
 const mutations = {
+  reset(state, val){
+    Object.keys(val).forEach(key => {
+      state[key] = val[key]
+    })
+    console.log('check state', state)
+  },
   SET_neo4jDrawData(state, val){
     state.neo4jDrawData = val 
   },
@@ -186,6 +192,9 @@ const mutations = {
   }
 }
 const actions = {
+  resetState({commit}, data){
+    commit('reset', data)
+  },
   updateNeo4jDrawData({commit}, data){
     commit('SET_neo4jDrawData', data)
   },

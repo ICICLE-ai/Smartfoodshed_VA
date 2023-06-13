@@ -80,9 +80,9 @@ export default{
 
       if(sampleData){
         const keys = Object.keys(sampleData)
-        console.log("check =================== here!!!")
-        console.log(sampleData)
-        console.log(this.currentSheet)
+        // console.log("check =================== here!!!")
+        // console.log(sampleData)
+        // console.log(this.currentSheet)
         if(keys.includes('relation_id')){
           this.sheetItemKey = 'relation_id'
         }else if(keys.includes('id')){

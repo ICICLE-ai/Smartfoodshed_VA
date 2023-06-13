@@ -36,14 +36,12 @@
     >
       <v-card>
         <v-card-title class="text-h5">
-          Select one Cloud data to load 
+          Select a Cloud Data Source to Load 
+          <v-btn @click="loadData" :loading = "dialog_load_loading">Load</v-btn>
         </v-card-title>
         <v-card-text>
           <v-data-table
-          @click:row="selectCloudData"
-
-            show-select
-            persistent
+          @click:row="rowClick"
             single-select
             item-key="uuid"
             :headers="tableHeaders"
@@ -53,7 +51,8 @@
             :items-per-page="5"
             scrollable
             class="elevation-1"
-          ></v-data-table>
+          >
+        </v-data-table>
         </v-card-text>
       </v-card>
     </v-dialog>
@@ -126,6 +125,7 @@ import {mapState} from 'vuex'
 import Dashboard from '@/views/Dashboard.vue'
 import axios from 'axios'
 import { getItemIndex } from './utils/storehelp';
+import TEST from '../public/test.json'
 export default {
   data() {
     return {
@@ -161,7 +161,10 @@ export default {
         alert_title: 'Successfully saved!',
         alert_text: 'The uuid for saved data is:'
       },
-      show_alert : false
+      show_alert : false,
+
+      selectedRow: undefined,
+      dialog_load_loading: false
     }
   
   },
@@ -169,6 +172,11 @@ export default {
     Dashboard
   },
   methods: {
+    rowClick: function (item, row) {      
+      row.select(true);
+      this.selectedRow = item
+    },
+    // click save to save data to cloud 
     saveCloudData(){
       const savedState = this.$store.state
       var data2save = {
@@ -176,20 +184,20 @@ export default {
         "owner": this.input_data_owner, // TODO : to be dynamic 
         "json_data": savedState
       }
+      // console.log(data2save)
       this.dialog_save_loading = true 
       var path = "https://icfoods.o18s.com/api/storage/json-object/create/"
       axios.post(path, data2save)
       .then(response => {
-        console.log(response)
         this.alertInfo = {
           alert_color: "success",
           alert_title: "Successfully saved!",
           alert_text: "The uuid for saved data is: "+ response.data.uuid
         }
         // console.log(this.alertInfo)
-        this.dialog_save_loading = false
-        this.dialog_save = false
-        this.show_alert = true
+        this.dialog_save_loading = false // end spinning
+        this.dialog_save = false // hide the dialog 
+        this.show_alert = true // show notification 
       })
       .catch(error => {
         this.alertInfo = {
@@ -202,17 +210,22 @@ export default {
         this.show_alert = true
       })
     },
-    selectCloudData(item, slot){
-      slot.select(!slot.isSelected)// click anywhere in the row will automatically select the checkbox 
-      // console.log('test', item, item['uuid'])
+    // click load to load data from cloud 
+    loadData(){
+      // slot.select(!slot.isSelected)// click anywhere in the row will automatically select the checkbox 
       // fetch the data 
-      axios.get("https://icfoods.o18s.com/api/storage/json-object/"+item['uuid']+"/").then(result=>{
-        this.$store.state.replaceState(result['data'])
+      this.dialog_load_loading = true
+      axios.get("https://icfoods.o18s.com/api/storage/json-object/"+this.selectedRow['uuid']+"/").then(result=>{
+        this.$store.dispatch('resetState',result['data']['json_data'])
+        this.dialog_load_loading = false
+        this.dialog_load = false
       })
     },
+    //change database 
     async fetchData(){
       this.$store.dispatch('changeDB',{'database': this.selected_dataset})
     },
+    // click the left navigation panel 
     ClickEvent(clickedItem){
       if(clickedItem=="LogIn"){
         // login event
@@ -221,15 +234,11 @@ export default {
       }else if(clickedItem=="SaveData"){
         // get the state data
         this.dialog_save = true
-      }else if(clickedItem=="LoadData"){
-        // TODO: get the data object from logged in user: data
-        // update the state 
-        // var data = {} //to be replaced from cloud data
-        // this.$store.state.replaceState(data)
+      }
+      else if(clickedItem=="LoadData"){
         this.dialog_load = true
         this.tableLoading = true
         axios.get("https://icfoods.o18s.com/api/storage/json-objects/").then(result=>{
-          // this.tableData = result['data']
           this.tableData = result['data'].map(obj => {
             return {
               ...obj,  // Copy all key-value pairs from the original object
@@ -251,7 +260,6 @@ export default {
           }]
           this.tableLoading = false 
         })
-        
       }
     }
   }, 
@@ -260,6 +268,10 @@ export default {
     // this.fetchData()
   },
   watch: {
+    
+    selectedRow: function(){
+      console.log('select changes')
+    },
     load: function(){
       this.fetchData()
     },
@@ -284,6 +296,9 @@ export default {
 </script>
 
 <style>
+tr.v-data-table__selected {
+  background: #7d92f5 !important;
+}
 /* .svg-canvas{
     position: absolute; 
     width: 100%; 

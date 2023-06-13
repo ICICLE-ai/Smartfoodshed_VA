@@ -253,7 +253,7 @@
 </template>
 
 <script>
-import * as Neo4jd3 from '../js/Neo4D3'
+import * as Neo4jd3 from '../js/Neo4D3_v2'
 import * as d3Lasso from 'd3-lasso'
 import * as d3 from 'd3'
 import * as KGutils from '@/utils/KGutils.js'
@@ -315,32 +315,26 @@ export default{
       this.$store.dispatch('setExpandTh', this.user_defined_thre)
     },
     saveGraphDrawing(){
-      var circle_data = d3.select('#div_graph').selectAll("circle").data()
-      var path_data = d3.select('#div_graph').selectAll("path").data()
-      var originalData = {
-        'circle': circle_data, 
-        'path': path_data
-      }
-      this.$store.dispatch('updateNeo4jDrawData', originalData)
+      // console.log('save graph drawing data')
+      this.$store.dispatch('updateNeo4jDrawData', this.neo4jd3.saveData())
+      // console.log(this.$store.state)
     },
     drawNeo4jd3 () {
       var that = this
-      d3.selectAll(".d3-tip").remove()
-      
-
+      d3.selectAll(".d3-tip").remove()      
       if(this.neo4jd3 == null){
         var neo4jd3 = Neo4jd3.default('#div_graph', {
           neo4jData: this.graphData,
           nodeRadius: 30,
-          infoPanel: false,
+          infoPanel: true,
           strength: this.user_defined_strength,
           onNodeDoubleClick: function (node) {
             // that.dbclick(node)
           },
           onNodeMouseEnter: function (node) {
             that.hover_node = node
-            console.log('hovering', node)
           },
+          zoomFit: true,
           onNodeClick: function (node,idx) {
             // console.log(node,id)
             // Create dummy data
@@ -447,7 +441,6 @@ export default{
                   // tip.hide(d.data.value.action)
                   that.$store.dispatch("node_remove", {node_id: clicked_node_id})
                 }else {
-                  
                   // console.log(d.data.value.action)
                   that.$store.dispatch("node_expand", {node_id: clicked_node_id, relation: d.data.key})
                 }
@@ -458,9 +451,7 @@ export default{
       }else{
         console.log('neo4jd3 is not null', this.user_defined_strength)
         // this.neo4jd3.updateSimulation(this.user_defined_strength)
-
         this.neo4jd3.updateWithNeo4jData(this.graphData, this.user_defined_strength)
-
       }
 
       window.neo4jd3 = this.neo4jd3
