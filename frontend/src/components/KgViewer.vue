@@ -55,7 +55,8 @@
                   </v-icon>
                 </v-btn>
               </template>
-              <span>ZOOM</span>
+              <span>The zoom function enables users to magnify or reduce the scale of the graph interface by using the mouse.<br/>
+              This is enabled by default.</span>
             </v-tooltip>
 
             
@@ -76,7 +77,8 @@
                   </v-icon>
                 </v-btn>
               </template>
-              <span>LASSO</span>
+              <span>The lasso function allows users to select multiple nodes in a graph by drawing a closed shape around them,<br/> 
+                retrieving their corresponding information and displaying in the table.</span>
             </v-tooltip>
             <v-tooltip bottom>
               <template v-slot:activator="{ on, attrs }">
@@ -94,7 +96,7 @@
                   </v-icon>
                 </v-btn>
               </template>
-              <span>Dataset Overview</span>
+              <span>The Dataset Overview provides an overview of the distribution of nodes and edges within the dataset.<br/> Once click a bar and the retrive button, several samples will be displayed.</span>
             </v-tooltip>
 
             <v-tooltip bottom>
@@ -113,10 +115,10 @@
                   </v-icon>
                 </v-btn>
               </template>
-              <span>Maximum Retrieval #</span>
+              <span>Specify the desired number of nodes to be retrieved when expanding the graph. </span>
             </v-tooltip>
             
-            <v-menu
+            <!-- <v-menu
               v-model="menu"
               :close-on-content-click="false"
               :nudge-width="200"
@@ -150,7 +152,7 @@
                   v-model = "selectedColor"
                 ></v-color-picker>
               </v-card>
-            </v-menu>
+            </v-menu> -->
             
             <!-- <v-tooltip bottom>
               <template v-slot:activator="{ on, attrs }">
@@ -172,7 +174,7 @@
             </v-tooltip> -->
             
 
-            <v-tooltip bottom>
+            <!-- <v-tooltip bottom>
               <template v-slot:activator="{ on, attrs }">
                 <v-btn 
                   class="ma-2 menu-btn"
@@ -189,7 +191,7 @@
                 </v-btn>
               </template>
               <span>Graph Layout Strength(negative for repulsion; positive for attraction)</span>
-            </v-tooltip>
+            </v-tooltip> -->
             
             <v-slider
               v-model="user_defined_thre"
@@ -210,7 +212,7 @@
               v-show="showResThre"
             ></v-slider> -->
             
-            <v-slider
+            <!-- <v-slider
               v-model="user_defined_strength"
               :step="1"
               label="Strength"
@@ -230,7 +232,7 @@
                   variant="outlined"
                 ></v-text-field>
               </template>
-            </v-slider>
+            </v-slider> -->
           </v-col>
         </v-row>
         </v-container>
