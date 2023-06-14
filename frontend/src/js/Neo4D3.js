@@ -1091,13 +1091,19 @@ function Neo4jD3 (_selector, _options) {
   function updateNodes (n) {
     // Array.prototype.push.apply(nodes, n)
     arrayPush(nodes, n)
+    console.log(nodes, n)
     node = svgNodes.selectAll('.node')
       .data(nodes, function(d){return d.id})
       // .data(nodeIds)
     var nodeEnter = appendNodeToGraph()
     node = nodeEnter.merge(node)
   }
-
+  function saveData(){
+    return {
+        'nodes':nodes, 
+        'relationships':relationships
+    }
+}
   function updateNodesAndRelationships (n, r) {
     updateRelationships(r)
     updateNodes(n)
@@ -1159,6 +1165,7 @@ function Neo4jD3 (_selector, _options) {
     updateWithD3Data: updateWithD3Data,
     updateWithNeo4jData: updateWithNeo4jData,
     version: version,
+    saveData: saveData,
     // updateSimulation: updateSimulation
   }
 }

@@ -117,7 +117,7 @@ function Neo4jD3(_selector, _options) {
     }
 
     function appendNode() {
-        // node.exit().remove()
+        node.exit().remove()
         return node.enter()
                    .append('g')
                    .attr('class', function(d) {
@@ -385,7 +385,7 @@ function Neo4jD3(_selector, _options) {
     }
 
     function appendRelationship() {
-        // relationship.exit().remove()
+        relationship.exit().remove()
         return relationship.enter()
                            .append('g')
                            .attr('class', 'relationship')
@@ -1037,7 +1037,7 @@ function Neo4jD3(_selector, _options) {
     function updateNodes(n) {
         // Array.prototype.push.apply(nodes, n);
         arrayPush(nodes, n)
-    
+        console.log(nodes, n)
         node = svgNodes.selectAll('.node')
                        .data(nodes, function(d) { return d.id; });
         var nodeEnter = appendNodeToGraph();
@@ -1051,7 +1051,7 @@ function Neo4jD3(_selector, _options) {
         }
     }
     function updateNodesAndRelationships(n, r) {
-        
+        // console.log('updateNodesAndRelationships')
         updateRelationships(r);
         updateNodes(n);
         simulation.nodes(nodes);
@@ -1064,6 +1064,7 @@ function Neo4jD3(_selector, _options) {
     function updateRelationships(r) {
         // Array.prototype.push.apply(relationships, r);
         arrayPush(relationships, r)
+        // console.log(relationships,r)
         relationship = svgRelationships.selectAll('.relationship')
                                        .data(relationships, function(d) { return d.id; });
 
@@ -1111,18 +1112,17 @@ function Neo4jD3(_selector, _options) {
    * @param {*} arr2 
    */
   function arrayPush(arr1, arr2){
+    console.log('arry push')
     let visited = {}
     let ids = arr1.map(d => {
       visited[d.id] = false  
       return d.id
     })
     
-    let not_duplicate = []
     for(let i = 0; i < arr2.length;i++){
       const tmpId = arr2[i].id
       if(!ids.includes(tmpId)){ //not existed before 
         arr1.push(arr2[i])
-        not_duplicate.push(arr2[i])
         ids.push(tmpId)
       }else{
         visited[tmpId] = true //now visited 

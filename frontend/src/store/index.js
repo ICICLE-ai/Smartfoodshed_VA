@@ -60,7 +60,6 @@ const mutations = {
     Object.keys(val).forEach(key => {
       state[key] = val[key]
     })
-    console.log('check state', state)
   },
   SET_neo4jDrawData(state, val){
     state.neo4jDrawData = val 
@@ -114,10 +113,6 @@ const mutations = {
               state.tableSelected[sheetName][id] = item
             }
         } else {
-            console.log(item)
-            console.log(id)
-            console.log(id != null)
-            console.log(indexingTerm)
             console.log("Error: item doesn't have either id or relation_id")
         }
       })
@@ -256,8 +251,6 @@ const actions = {
       commit('SET_tableSelection', tableSelection_temp)
       commit('SET_tableData', result['data'])
       commit('SET_LOADING', false)
-      console.log("check table data again!!!")
-      console.log(result['data'])
       idParsingToDict(state.idDict, {sheets: sheet, data: data})
     })
     .catch(error=>{
@@ -265,7 +258,6 @@ const actions = {
     })
   },
   setTableSelected ({commit, displatch, state}, {action, sheetName, value}) {
-    console.log(action)
     if (action == "add") {
       commit('SET_TABLE_SELECTED_ADD', {sheetName, value})
     } else if (action == 'remove') {
@@ -275,7 +267,6 @@ const actions = {
     }
   },
   retrieveGraphFromTable({commit, state}) {
-    console.log("retrieve graph data from table") 
     commit('SET_LOADING', true)
     // data preparation
     let {nodes, relations} = generationEntityRelations(state.tableSelected)
@@ -286,7 +277,6 @@ const actions = {
     // retrieve data
     axios.post(path_retrieve_graph, {nodes, relations})
       .then(result => {
-        console.log(result)
         commit('SET_LOADING', false)
         if(result['data']==""){
           var empty = {
@@ -312,25 +302,20 @@ const actions = {
       })
       .catch(error => {
         alert(error+"; Please refresh the page!")
-        console.log(error.response.status)
       })
     
     axios.post(path_retrieve_graph_relation, {nodes, relations})
       .then(result => {
-        console.log("!!!!!!1---------!!!!!!!!!!!! relation data back ")
-        console.log(result)
         commit('SET_LOADING', false)
         commit('SET_GRAPHDATA_RELATION_TYPE_DATA', result['data'])  
         commit('RELATION_STATUS_ON')
       })
       .catch(error => {
         alert(error+"; Please refresh the page!")
-        console.log(error.response.status)
       })
     
   },
   retrieveSubTable({commit, state}, {entities, relations}) { 
-    console.log("retrieve sub table!!!")
     commit('TABLE_INTERACTIVE_ON')
     commit('UPDATE_INTERACTIVE_TABLE', {entities, relations})
     commit('RESET_TABLE_SELECTED')
@@ -385,12 +370,9 @@ const actions = {
     }
   }, 
   async retrieveNodeGeo({commit}, {node}){
-    console.log("Check node info")
     commit("MAP_IN_QUERY") 
     if (node != null) {
-      console.log(node)
       const mapInfo = await queryMapInfoWithNode(node)
-      console.log(mapInfo)
       if (mapInfo != null) {
         commit ("LOAD_QUERY_MAP_INFO", mapInfo)
       }
@@ -407,7 +389,6 @@ const actions = {
   },
   async county2node({commit}, nodeid){
     var result = await getNode(nodeid)
-    console.log(result)
     // commit('RELATION_STATUS_OFF')
     commit('SET_graphData', result['data']) 
     commit('RELATION_STATUS_COUNTY')

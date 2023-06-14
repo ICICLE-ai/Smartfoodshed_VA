@@ -36,7 +36,7 @@
                   </v-icon>
                 </v-btn>
               </template>
-              <span>Reset</span>
+              <span>Revert Graph to the Original State: <br/> This action will remove all expansion  operations performed on the graph, <br />restoring it to its original state as retrieved from the table.</span>
             </v-tooltip>
             <v-tooltip bottom>
               <template v-slot:activator="{ on, attrs }">
