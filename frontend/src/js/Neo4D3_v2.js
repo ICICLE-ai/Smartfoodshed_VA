@@ -36,7 +36,6 @@ function Neo4jD3(_selector, _options) {
                        .call(d3.zoom().on('zoom', function() {
                            var scale = d3.event.transform.k,
                                translate = [d3.event.transform.x, d3.event.transform.y];
-
                            if (svgTranslate) {
                                translate[0] += svgTranslate[0];
                                translate[1] += svgTranslate[1];
@@ -45,7 +44,6 @@ function Neo4jD3(_selector, _options) {
                            if (svgScale) {
                                scale *= svgScale;
                            }
-
                            svg.attr('transform', 'translate(' + translate[0] + ', ' + translate[1] + ') scale(' + scale + ')');
                        }))
                        .on('dblclick.zoom', null)
@@ -676,7 +674,7 @@ function Neo4jD3(_selector, _options) {
 //                           .force('x', d3.force().strength(0.002))
 //                           .force('y', d3.force().strength(0.002))
             .force('collide', d3.forceCollide().radius(function(d) {
-                return options.minCollision;
+                return options.minCollision*2;
             }).iterations(2))
             .force('charge', d3.forceManyBody())
             .force('link', d3.forceLink().id(function(d) {
@@ -721,6 +719,7 @@ function Neo4jD3(_selector, _options) {
             target[property] = source[property];
         });
     }
+
 
     function neo4jDataToD3Data(data) {
         var graph = {
@@ -1009,15 +1008,11 @@ function Neo4jD3(_selector, _options) {
         };
     }
 
-    function updateWithD3Data(d3Data) {
-        updateNodesAndRelationships(d3Data.nodes, d3Data.relationships);
-    }
+    // function updateWithD3Data(d3Data) {
+        
+    // }
 
-    function updateWithNeo4jData(neo4jData) {
-        var d3Data = neo4jDataToD3Data(neo4jData);
-        updateWithD3Data(d3Data);
-    }
-
+   
     function updateInfo(d) {
         clearInfo();
 
@@ -1037,7 +1032,7 @@ function Neo4jD3(_selector, _options) {
     function updateNodes(n) {
         // Array.prototype.push.apply(nodes, n);
         arrayPush(nodes, n)
-        console.log(nodes, n)
+        // console.log(nodes, n)
         node = svgNodes.selectAll('.node')
                        .data(nodes, function(d) { return d.id; });
         var nodeEnter = appendNodeToGraph();
@@ -1050,13 +1045,30 @@ function Neo4jD3(_selector, _options) {
             'relationships':relationships
         }
     }
+
+    function reload(n, r){
+        // relationships = r 
+        // nodes = n 
+        updateRelationships(r);
+        updateNodes(n);
+        tick();
+    }
+    function updateWithNeo4jData(neo4jData) {
+        var d3Data = neo4jDataToD3Data(neo4jData);
+        // updateWithD3Data(d3Data);
+        console.log('updateWithNeo4jData', relationships, nodes)
+        updateNodesAndRelationships(d3Data.nodes, d3Data.relationships);
+    }
+
     function updateNodesAndRelationships(n, r) {
         // console.log('updateNodesAndRelationships')
         updateRelationships(r);
         updateNodes(n);
+        console.log('updateNodesAndRelationships', relationships, nodes)
         simulation.nodes(nodes);
         simulation.force('link').links(relationships);
-        simulation.tick(500);
+        console.log('yes tick 500')
+        simulation.tick(900);
         tick();
        
     }
@@ -1112,7 +1124,7 @@ function Neo4jD3(_selector, _options) {
    * @param {*} arr2 
    */
   function arrayPush(arr1, arr2){
-    console.log('arry push')
+    // console.log('arry push')
     let visited = {}
     let ids = arr1.map(d => {
       visited[d.id] = false  
@@ -1150,10 +1162,11 @@ function Neo4jD3(_selector, _options) {
         neo4jDataToD3Data: neo4jDataToD3Data,
         randomD3Data: randomD3Data,
         size: size,
-        updateWithD3Data: updateWithD3Data,
+        // updateWithD3Data: updateWithD3Data,
         updateWithNeo4jData: updateWithNeo4jData,
         version: version,
         saveData: saveData,
+        reload: reload, 
     };
 }
 

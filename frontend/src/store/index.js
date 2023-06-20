@@ -23,6 +23,7 @@ function initialState () {
     BETA_ROUTE: {'name': 'DashboardBeta', 'route': '/dashboard-beta'}, 
     DASH_ROUTE: {'name': 'Dashboard', 'route': '/'}, 
     graphData: null,
+    resetMode: false, 
     DATABASE_NAME: null, // ppod or cfs 
     tableData: null, // raw data
     originalGraph: null, 
@@ -52,10 +53,13 @@ function initialState () {
     // base_request_url: "http://127.0.0.1:5000/"
     // base_request_url: 'https://vaapi.develop.tapis.io/'
     database: "", //ppod or cfs 
-    neo4jDrawData: ""
+    neo4jDrawData: {}
   }
 }
 const mutations = {
+  SET_resetMode(state, val){
+    state.resetMode = val 
+  },
   reset(state, val){
     Object.keys(val).forEach(key => {
       state[key] = val[key]
@@ -187,6 +191,9 @@ const mutations = {
   }
 }
 const actions = {
+  updateResetMode({commit}, data){
+    commit('SET_resetMode', data)
+  },
   resetState({commit}, data){
     commit('reset', data)
   },

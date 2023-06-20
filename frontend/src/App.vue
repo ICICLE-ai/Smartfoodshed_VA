@@ -125,7 +125,7 @@ import {mapState} from 'vuex'
 import Dashboard from '@/views/Dashboard.vue'
 import axios from 'axios'
 import { getItemIndex } from './utils/storehelp';
-// import TEST from '../public/test.json'
+import TEST from '../public/testing.json'
 export default {
   data() {
     return {
@@ -184,7 +184,7 @@ export default {
         "owner": this.input_data_owner, // TODO : to be dynamic 
         "json_data": savedState
       }
-      // console.log(data2save)
+      // console.log('tosave', data2save)
       this.dialog_save_loading = true 
       var path = "https://icfoods.o18s.com/api/storage/json-object/create/"
       axios.post(path, data2save)
@@ -216,11 +216,21 @@ export default {
       // fetch the data 
       this.dialog_load_loading = true
       axios.get("https://icfoods.o18s.com/api/storage/json-object/"+this.selectedRow['uuid']+"/").then(result=>{
-        this.$store.dispatch('resetState',result['data']['json_data'])
+        var temp = result['data']['json_data']
+        temp['resetMode'] = true
+        this.$store.dispatch('resetState',temp)
         this.dialog_load_loading = false
         this.dialog_load = false
       })
     },
+    // loadDataTesting(){
+    //   // console.log(TEST)
+    //   TEST['json_data']['resetMode'] = true 
+    //   console.log(TEST)
+    //   this.$store.dispatch('resetState',TEST['json_data'])
+    //   this.dialog_load_loading = false
+    //   this.dialog_load = false
+    // },
     //change database 
     async fetchData(){
       this.$store.dispatch('changeDB',{'database': this.selected_dataset})
@@ -238,6 +248,8 @@ export default {
       else if(clickedItem=="LoadData"){
         this.dialog_load = true
         this.tableLoading = true
+        // this.loadDataTesting()
+        
         axios.get("https://icfoods.o18s.com/api/storage/json-objects/").then(result=>{
           this.tableData = result['data'].map(obj => {
             return {

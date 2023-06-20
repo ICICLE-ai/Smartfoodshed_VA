@@ -330,7 +330,7 @@ export default{
           onNodeMouseEnter: function (node) {
             that.hover_node = node
           },
-          zoomFit: true,
+          zoomFit: false,
           onNodeClick: function (node,idx) {
             if (node.showBtnPanel == true) {
               d3.select(`#node-${node.id}`).selectAll('.circle-button').remove()
@@ -341,7 +341,7 @@ export default{
             var data = { b: {action: "remove", value: 10, pos:0} } // only two operations 
             if(that.relationStatusReady==false){
               // render the loading panel 
-              console.log('nononono')
+              // console.log('nononono')
               //
             }else{
               if(that.relationStatusReady=="fromMap"){
@@ -408,7 +408,7 @@ export default{
             operation_buttons.on('mouseover', function(p){
                 d3.select(this).style('opacity',1)
                 let rel = p['data']['value']['action']
-                console.log(rel)
+                // console.log(rel)
                 that.tip.show(rel);
               })
               .on('mouseout',function(p){
@@ -546,7 +546,7 @@ export default{
       svg.call(d3.zoom().on('zoom', function () {
         var scale = d3.event.transform.k,
           translate = [d3.event.transform.x, d3.event.transform.y]
-        console.log(1)
+        // console.log(1)
         const g = svg.select("g")
         g.attr('transform', 'translate(' + translate[0] + ', ' + translate[1] + ') scale(' + scale + ')')
       }))
@@ -608,24 +608,29 @@ export default{
       this.recolorNode()
     },
     graphData () {
-      // d3.select('#div_graph').html('')
+      console.log('check', this.resetMode)
       var all_resilience = []
-      console.log('graphdata',this.graphData)
-      this.graphData['results'][0]['data'][0]['graph']['nodes'].forEach(function (d) {
-        d['status'] = 'unclicked'
-        // check if this is cold chain data or not 
-        if("resilience" in d['properties']){
-          all_resilience.push(parseFloat(d['properties']['resilience']))
-        }
-        
-      })
-      // this.min_resilience = d3.min(all_resilience)
-      this.max_resilience = d3.max(all_resilience)
-      //inital the selected resilience
-      KGutils.graphDataParsing(this.graphData, this.currentEntities, this.currentRelations)
-      this.drawNeo4jd3()
-      this.circleUpdateMatchColor()
-
+        this.graphData['results'][0]['data'][0]['graph']['nodes'].forEach(function (d) {
+          d['status'] = 'unclicked'
+          // check if this is cold chain data or not 
+          if("resilience" in d['properties']){
+            all_resilience.push(parseFloat(d['properties']['resilience']))
+          }
+        })
+        // this.min_resilience = d3.min(all_resilience)
+        this.max_resilience = d3.max(all_resilience)
+        //inital the selected resilience
+        KGutils.graphDataParsing(this.graphData, this.currentEntities, this.currentRelations)
+      if(this.resetMode==false){
+        this.drawNeo4jd3()
+        this.circleUpdateMatchColor()
+      }else{
+        console.log(this.neo4jDrawData)
+        window.neo4jd3.reload(this.neo4jDrawData['nodes'], this.neo4jDrawData['relationships'])
+        // this.resetMode = false // setting back to false; only true in the loading functions. 
+        this.$store.dispatch('updateResetMode', false)
+        this.neo4jd3 = null
+      }
     }, 
     selectedEntities(val) {
       if (val.length > 0) {
@@ -640,18 +645,17 @@ export default{
     }, 
     brushed:{
       handler(val){
-          console.log(val);
+          // console.log(val);
       },
       deep:true 
     },
     relationStatusReady(val){
-      console.log("relation status: " + val) 
+      // console.log("relation status: " + val) 
 
     },
     relationTypeData(val) {
       if(this.relationStatusReady) {
         console.log("relation type data is ready")
-
       }else{
         console.log("relation type data is not ready yet!")
       }
@@ -662,7 +666,7 @@ export default{
     
   },
   computed: {
-    ...mapState(['graphData', 'relationStatusReady', 'relationTypeData','loading', 'graphOverview', 'colorMapping']),
+    ...mapState(['neo4jDrawData','resetMode','graphData', 'relationStatusReady', 'relationTypeData','loading', 'graphOverview', 'colorMapping']),
     HEIGHT () {
       return window.innerHeight*0.8 + 'px'
     },

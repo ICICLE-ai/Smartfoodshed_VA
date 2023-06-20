@@ -102,7 +102,7 @@ export default {
 
             data.sort((a, b) => a.value - b.value);
             data.reverse();
-            console.log("data",data)
+            // console.log("data",data)
 
           var svg = d3.select(div).append("svg").attr('class', `container_${title.split(' ').join('_')}`);
           
@@ -277,9 +277,9 @@ export default {
             return newVal
           })
           that.$store.dispatch('updateColorMapping', {label: this.currentNodeForColorPicker, color:newVal})
-          console.log(d3.selectAll('.'+this.currentNodeForColorPicker))
-          console.log('.'+this.currentNodeForColorPicker)
-          console.log(newVal)
+          // console.log(d3.selectAll('.'+this.currentNodeForColorPicker))
+          // console.log('.'+this.currentNodeForColorPicker)
+          // console.log(newVal)
         }
     }
 }
