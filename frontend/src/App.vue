@@ -125,7 +125,7 @@ import {mapState} from 'vuex'
 import Dashboard from '@/views/Dashboard.vue'
 import axios from 'axios'
 import { getItemIndex } from './utils/storehelp';
-import TEST from '../public/testing.json'
+// import TEST from '../public/testing.json'
 export default {
   data() {
     return {

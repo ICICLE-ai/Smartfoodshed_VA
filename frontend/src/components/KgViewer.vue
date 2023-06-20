@@ -200,7 +200,18 @@
               max="1000"
               thumb-label="always"
               v-show="showMaxRetrieve"
-            ></v-slider>
+            >
+              <template v-slot:append>
+                <v-text-field
+                  v-model="user_defined_thre"
+                  class="mt-0 pt-0"
+                  hide-details
+                  single-line
+                  type="number"
+                  style="width: 60px"
+                ></v-text-field>
+              </template>
+            </v-slider>
 
             <!-- <v-slider
               v-model="resilience_thre"
