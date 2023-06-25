@@ -164,11 +164,14 @@ def expand_node():
         if request_obj.get("limit_number") is not None:
             limit_number = request_obj.get("limit_number")
         relationship_name = request_obj.get("relationship_name")
-        # print(nodes_list)
-        # print(relation_list)
-        # print(expand_node)
-        subgraph_res,error_code = helper.graph_after_expand_node(graph,nodes_list,relation_list,expand_node,limit_number,relationship_name,database)
-        dict_res = helper.convert_subgraph_to_json(subgraph_res, entity_identifier,database,fips)
+        attempts = 0
+        while attempts<3:
+            try:
+                subgraph_res,error_code = helper.graph_after_expand_node(graph,nodes_list,relation_list,expand_node,limit_number,relationship_name,database)
+                dict_res = helper.convert_subgraph_to_json(subgraph_res, entity_identifier,database,fips)
+                break
+            except:
+                attempts+=1
     except Exception as e:
         print(f"404 - {e}")
         error_code = 404
@@ -194,11 +197,14 @@ def expand_node_with_relationship_type():
     if request_obj.get("limit_number") is not None:
         limit_number = request_obj.get("limit_number")
     relationship_name = request_obj.get("relationship_name")
-    # print(nodes_list)
-    # print(relation_list)
-    # print(expand_node)
-    subgraph_res,error_code = helper.graph_after_expand_node(graph,nodes_list,relation_list,expand_node,limit_number,relationship_name,database)
-    dict_res = helper.convert_subgraph_to_json_withR(subgraph_res, entity_identifier,graph,database,fips)
+    attempts = 0
+    while attempts<3:
+        try:
+            subgraph_res,error_code = helper.graph_after_expand_node(graph,nodes_list,relation_list,expand_node,limit_number,relationship_name,database)
+            dict_res = helper.convert_subgraph_to_json_withR(subgraph_res, entity_identifier,graph,database,fips)
+            break
+        except:
+            attempts+=1
     # except:
     #     error_code = 404
     return Response(json.dumps(dict_res),status = error_code)
