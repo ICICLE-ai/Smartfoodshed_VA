@@ -674,7 +674,7 @@ function Neo4jD3(_selector, _options) {
 //                           .force('x', d3.force().strength(0.002))
 //                           .force('y', d3.force().strength(0.002))
             .force('collide', d3.forceCollide().radius(function(d) {
-                return options.minCollision*2;
+                return options.minCollision;
             }).iterations(2))
             .force('charge', d3.forceManyBody())
             .force('link', d3.forceLink().id(function(d) {
@@ -1068,7 +1068,7 @@ function Neo4jD3(_selector, _options) {
         simulation.nodes(nodes);
         simulation.force('link').links(relationships);
         console.log('yes tick 500')
-        simulation.tick(900);
+        simulation.tick(500);
         tick();
        
     }
