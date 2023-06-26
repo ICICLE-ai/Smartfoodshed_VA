@@ -97,9 +97,15 @@ def getSubGraphFromTable():
         
         if request_obj.get("relations") is not None:
             relation_list = request_obj.get("relations")
-        subgraph_res,error_code = helper.get_subgraph(graph, nodes_list, relation_list)
-        dict_res = helper.convert_subgraph_to_json(subgraph_res, entity_identifier,database,fips)
-        print(error_code)
+        attempts  = 0
+        while attempts<3:
+            try:
+                subgraph_res,error_code = helper.get_subgraph(graph, nodes_list, relation_list)
+                dict_res = helper.convert_subgraph_to_json(subgraph_res, entity_identifier,database,fips)
+                break
+            except:
+                attempts+=1
+        # print(error_code)
     except Exception as e:
         print(f"404 - {e}")
         error_code = 404
@@ -117,8 +123,14 @@ def getSubGraphFromTableWithR():
         
         if request_obj.get("relations") is not None:
             relation_list = request_obj.get("relations")
-        subgraph_res,error_code = helper.get_subgraph(graph, nodes_list, relation_list)
-        dict_res = helper.convert_subgraph_to_json_withR(subgraph_res, entity_identifier,graph,database,fips)
+        attempts = 0
+        while attempts<3:
+            try:
+                subgraph_res,error_code = helper.get_subgraph(graph, nodes_list, relation_list)
+                dict_res = helper.convert_subgraph_to_json_withR(subgraph_res, entity_identifier,graph,database,fips)
+                break
+            except:
+                attempts+=1
     except Exception as e:
         print(f"404 - {e}")
         error_code = 404
