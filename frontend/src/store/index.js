@@ -22,7 +22,8 @@ function initialState () {
   return {
     BETA_ROUTE: {'name': 'DashboardBeta', 'route': '/dashboard-beta'}, 
     DASH_ROUTE: {'name': 'Dashboard', 'route': '/'}, 
-    graphData: null,
+    graphData: null, // graph data to be visualized
+    graphDataStack: [], // graph data history, used for "Undo" function 
     resetMode: false, 
     DATABASE_NAME: null, // ppod or cfs 
     tableData: null, // raw data
@@ -83,6 +84,20 @@ const mutations = {
   SET_graphData (state, val) {
     state.graphData = val
   },
+  NODE_EXPAND(state, {updatedGraphData}){ // updateGraphData
+    state.graphData = updatedGraphData 
+  }, 
+  NODE_REMOVE(state, {updatedGraphData}){ //updateGraphData
+    state.graphData = updatedGraphData
+  },
+  // RESET_GRAPHDATA(state, ){ //updateGraphData
+  //   state.graphData = state.originalGraph
+  // },
+  PUSH_graphData(state, val){
+    console.log('push')
+    state.graphDataStack.push(val)
+  },
+ 
   SET_GRAPHDATA_RELATION_TYPE_DATA(state, val){
     state.relationTypeData = val
   },
@@ -144,15 +159,7 @@ const mutations = {
       alert("retrieve nothing")
     }
   },
-  RESET_GRAPHDATA(state, ){
-    state.graphData = state.originalGraph
-  },
-  NODE_EXPAND(state, {updatedGraphData}){
-    state.graphData = updatedGraphData 
-  }, 
-  NODE_REMOVE(state, {updatedGraphData}){
-    state.graphData = updatedGraphData
-  },
+  
   RELATION_STATUS_COUNTY(state,){
     state.relationStatusReady = 'fromMap'
   },
@@ -222,6 +229,7 @@ const actions = {
           "errors":[]
         }
         commit('SET_graphData', empty)
+        commit('PUSH_graphData', empty)
         commit('SET_graphDataBackUp', empty)
       })
       .catch(error => {
@@ -231,14 +239,6 @@ const actions = {
   async setExpandTh ({commit, dispatch, state}, data){
     commit('SET_expandThreshold', data)
   },
-  // async getGraphData ({commit, dispatch, state}) {
-  //   const path = base_request_url+'getGraphData'
-  //   var result = await axios.get(path)
-  //   commit('SET_graphData', result['data'])
-  //   commit('SET_graphDataBackUp', result['data'])
-  //   console.log(state.originalGraph)
-   
-  // },
   async getGraphOverview({commit, dispatch, state}){
     axios.get(base_request_url+"getGraphOverview").then(result=>{
       commit('SET_graphOverview', result)
@@ -299,9 +299,11 @@ const actions = {
             "errors":[]
           }
           commit('SET_graphData', empty)
+          commit('PUSH_graphData', empty)
           commit('SET_graphDataBackup', empty)
         }else{
           commit('SET_graphData', result['data']) 
+          commit('PUSH_graphData', result['data'])
           commit('SET_graphDataBackUp', result['data'])
         }
         
@@ -327,9 +329,17 @@ const actions = {
     commit('UPDATE_INTERACTIVE_TABLE', {entities, relations})
     commit('RESET_TABLE_SELECTED')
   },
-  resetTableGraph({commit, state}, ){
-    commit('TABLE_INTERACTIVE_OFF') 
-    commit('RESET_GRAPHDATA')
+  // resetTableGraph({commit, state}, ){
+  //   commit('TABLE_INTERACTIVE_OFF') 
+  //   commit('RESET_GRAPHDATA')
+  // },
+  unDoGraph({commit, state}){
+    var temp = state.graphDataStack.pop() // get the last element from stack
+    if (temp==undefined){
+      alert('No previous status!')
+    }else{
+      commit('SET_graphData', temp) // set the graph data
+    }
   },
   async node_expand({commit, state}, {node_id, relation}){
     
@@ -338,6 +348,7 @@ const actions = {
     commit('SET_LOADING', false)
     if (updatedGraphData.status == 200){
       commit('NODE_EXPAND', {updatedGraphData: updatedGraphData['data']})
+      commit('PUSH_graphData', updatedGraphData['data'])
       commit('SET_GRAPHDATA_RELATION_TYPE_DATA', updatedGraphData['data']) 
     } else {
       alert("Expansion not successful")
@@ -347,6 +358,7 @@ const actions = {
   node_remove({state, commit}, {node_id}){
     const updatedGraphData = graphNodeLinkRemoval(state.graphData, node_id)
     commit('NODE_REMOVE', {updatedGraphData: updatedGraphData})
+    commit('PUSH_graphData', updatedGraphData)
   },
   async load_map({state, commit}) {
    
@@ -370,6 +382,7 @@ const actions = {
     commit('SET_LOADING', false)
     if (updatedGraphData.status == 200){
       commit('NODE_EXPAND', {updatedGraphData: updatedGraphData['data']})
+      commit('PUSH_graphData', updatedGraphData['data']) // push to graphdata stack 
       commit('SET_GRAPHDATA_RELATION_TYPE_DATA', updatedGraphData['data']) 
       commit('RELATION_STATUS_ON')
     } else {
@@ -398,6 +411,7 @@ const actions = {
     var result = await getNode(nodeid)
     // commit('RELATION_STATUS_OFF')
     commit('SET_graphData', result['data']) 
+    commit('PUSH_graphData', result['data'])
     commit('RELATION_STATUS_COUNTY')
   }, 
   updateColorMapping({commit}, {label, color}){

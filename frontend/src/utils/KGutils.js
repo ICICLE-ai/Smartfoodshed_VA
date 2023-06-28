@@ -6,7 +6,6 @@ function graphDataParsing(neo4jD3DataObj, entitiesContainer, relationsContainer)
 
     const nodes = neo4jD3DataObj.results[0].data[0].graph.nodes 
     const relations = neo4jD3DataObj.results[0].data[0].graph.relationships 
-    console.log("getting nodes and links before parsing")
     // initialize entitiesContainer and relationsContainer
    entitiesContainer.splice(0, entitiesContainer.length)
    relationsContainer.splice(0, relationsContainer.length)
@@ -64,7 +63,6 @@ async function graphNodeLinkExpand(graphData, nodeId, relation, threshold) {
     const passingData = {nodes: nodeList, relations: relationList, expand_node: nodeId, relationship_name:relation, threshold: threshold}
     const path = base_request_url+"expandNodeWithR"
     const updatedGraphData = await axios.post(path, passingData)
-    console.log(updatedGraphData)
     return updatedGraphData
 }
 

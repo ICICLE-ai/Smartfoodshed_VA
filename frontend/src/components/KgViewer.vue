@@ -442,7 +442,6 @@ export default{
       })
         this.neo4jd3 = neo4jd3
       }else{
-        console.log('neo4jd3 is not null', this.user_defined_strength)
         // this.neo4jd3.updateSimulation(this.user_defined_strength)
         this.neo4jd3.updateWithNeo4jData(this.graphData, this.user_defined_strength)
       }
@@ -461,7 +460,8 @@ export default{
       
     },
     resetGraphTableHandler(){
-      this.$store.dispatch("resetTableGraph")
+      // this.$store.dispatch("resetTableGraph")
+      this.$store.dispatch("unDoGraph")
     },
     toggleZoomPanLasso(){
       this.zoomPanStatus = !this.zoomPanStatus 
@@ -521,10 +521,8 @@ export default{
           const label = this.nodeName 
           
           if (label == "circle") {
-            console.log("adding entity" + d.id)
             that.selectedEntities.push(d.id)
           }else {
-            console.log("adding Relations" + d.id)
             that.selectedRelations.push(d.id)
           }
           
@@ -593,7 +591,6 @@ export default{
       d3.select('#div_graph').selectAll('circle').style('fill',function(d){
       // check cold chain data
         if('resilience' in d['properties']){
-          console.log(d['properties'])
           if(d['properties']['resilience']>=that.resilience_thre){
             if(that.selectedColor){
               return that.selectedColor.hex
@@ -633,7 +630,6 @@ export default{
         this.drawNeo4jd3()
         this.circleUpdateMatchColor()
       }else{
-        console.log(this.neo4jDrawData)
         window.neo4jd3.reload(this.neo4jDrawData['nodes'], this.neo4jDrawData['relationships'])
         // this.resetMode = false // setting back to false; only true in the loading functions. 
         this.$store.dispatch('updateResetMode', false)
@@ -663,9 +659,7 @@ export default{
     },
     relationTypeData(val) {
       if(this.relationStatusReady) {
-        console.log("relation type data is ready")
       }else{
-        console.log("relation type data is not ready yet!")
       }
     },
     loading(val){
@@ -674,7 +668,7 @@ export default{
     
   },
   computed: {
-    ...mapState(['neo4jDrawData','resetMode','graphData', 'relationStatusReady', 'relationTypeData','loading', 'graphOverview', 'colorMapping']),
+    ...mapState(['graphDataStack','neo4jDrawData','resetMode','graphData', 'relationStatusReady', 'relationTypeData','loading', 'graphOverview', 'colorMapping']),
     HEIGHT () {
       return window.innerHeight*0.8 + 'px'
     },

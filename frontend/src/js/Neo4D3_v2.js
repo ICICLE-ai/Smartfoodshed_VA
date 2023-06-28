@@ -1056,7 +1056,6 @@ function Neo4jD3(_selector, _options) {
     function updateWithNeo4jData(neo4jData) {
         var d3Data = neo4jDataToD3Data(neo4jData);
         // updateWithD3Data(d3Data);
-        console.log('updateWithNeo4jData', relationships, nodes)
         updateNodesAndRelationships(d3Data.nodes, d3Data.relationships);
     }
 
@@ -1064,10 +1063,10 @@ function Neo4jD3(_selector, _options) {
         // console.log('updateNodesAndRelationships')
         updateRelationships(r);
         updateNodes(n);
-        console.log('updateNodesAndRelationships', relationships, nodes)
+
         simulation.nodes(nodes);
         simulation.force('link').links(relationships);
-        console.log('yes tick 500')
+
         simulation.tick(500);
         tick();
        
