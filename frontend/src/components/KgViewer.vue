@@ -116,7 +116,7 @@
               <span>Specify the desired number of nodes to be retrieved when expanding the graph. </span>
             </v-tooltip>
             
-            <!-- <v-menu
+            <v-menu
               v-model="menu"
               :close-on-content-click="false"
               :nudge-width="200"
@@ -139,7 +139,7 @@
                     </v-icon>
                   </v-btn>
                 </template>
-                <span>Color Picker</span>
+                <span>Color picker: Pick one color for all nodes; </br>Coloring by class is supported in Dataset Overview function (Right click each bar to recolor each class).</span>
               </v-tooltip>
               </template>
               <v-card>
@@ -150,7 +150,7 @@
                   v-model = "selectedColor"
                 ></v-color-picker>
               </v-card>
-            </v-menu> -->
+            </v-menu>
             
             <!-- <v-tooltip bottom>
               <template v-slot:activator="{ on, attrs }">
@@ -617,7 +617,6 @@ export default{
       this.recolorNode()
     },
     graphData () {
-      console.log('check', this.resetMode)
       var all_resilience = []
         this.graphData['results'][0]['data'][0]['graph']['nodes'].forEach(function (d) {
           d['status'] = 'unclicked'
