@@ -1,5 +1,12 @@
 # Smartfoodshed Visual Analytics VC1 (Version 1)
 Visual analytics system built for smart food shed, especially for PPOD and Cold Chain data
+## ChangeLog
+### version from 0.0 to 0.1
+* Default graph animation is set to static, providing better placement of the graph within the panel.
+* Added save/load functionalities, allowing users to bring their own data and share data in the future.
+* Implemented automatic coloring scheme to differentiate between different node types.
+* Replaced the reset graph function with an undo function, providing a more intuitive experience for users.
+* Fixed various minor UI issues.
 ## Description 
 Our system offers a dynamic and engaging way to explore graph data. It is equipped with three main views, the **Graph View**, **Table View**, and **Map View**, providing a comprehensive and multi-perspective analysis of the data. 
 
@@ -83,6 +90,13 @@ The Table View allows you to filter the data using keywords. Simply select the r
 ### 3. Relation Expander
 Explore Relationships: By clicking on each node, the distribution of its various relation types will be displayed in a pie chart. You can click on a relation type of your choice to expand the graph for further analysis.
 ![Relation Expander](https://github.com/ICICLE-ai/Smartfoodshed_VA_VC1/blob/main/frontend/src/assets/relationExpand_AdobeExpress.gif?raw=true)
+### 4. Save/Load Data
+We allow users to save/load data to cloud. 
+![image](https://github.com/ICICLE-ai/Smartfoodshed_VA_VC1/assets/18289816/27368442-1d0b-4bbe-8d42-90504a9e0369)
+Users can save load by adding their names and the dataset name.
+![image](https://github.com/ICICLE-ai/Smartfoodshed_VA_VC1/assets/18289816/c674571d-a3c7-4f5a-9df6-f4477919d1d8)
+To load data, a table pops up displaying all available data saved on cloud. Users can click one row and click "load" button. 
+![image](https://github.com/ICICLE-ai/Smartfoodshed_VA_VC1/assets/18289816/f09e015a-b746-4c9c-ae4d-1887e75aa6f7)
 
 Our system also gives users the flexibility to specify the number of entities to be displayed, using a slider bar. The default value is set to 5 entities.
 ![Relation Expander with Customized Thresholds](https://github.com/ICICLE-ai/Smartfoodshed_VA_VC1/blob/main/frontend/src/assets/relationExpandWithThreshold_AdobeExpress.gif?raw=true)
