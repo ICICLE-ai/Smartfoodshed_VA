@@ -5,19 +5,17 @@
           class="graph-btn-container"
         >
         <v-container>
-          <v-row no-gutters
+          <v-row 
+            no-gutters
             justify='space-between'
           >
           <v-col
-          key="0"
-          sm="4"
+            key="0"
           >
           <v-card-subtitle>Graph Control Panel</v-card-subtitle>
           </v-col>
           <v-col
             key="1"
-            sm="5"
-            cols="12"
             style="border:1px #BDBDBD solid; border-radius:3px"
             >
             <v-tooltip bottom>
