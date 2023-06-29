@@ -1,7 +1,7 @@
 # Smartfoodshed Visual Analytics VC1 (Version 1)
 Visual analytics system built for smart food shed, especially for PPOD and Cold Chain data
 ## ChangeLog
-### version from 0.0 to 0.1
+### version from 0.1 to 0.2
 * Default graph animation is set to static, providing better placement of the graph within the panel.
 * Added save/load functionalities, allowing users to bring their own data and share data in the future.
 * Implemented automatic coloring scheme to differentiate between different node types.
