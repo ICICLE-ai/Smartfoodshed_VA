@@ -10,7 +10,7 @@
           variant="solo"
           hint="Select A Dataset"
           persistent-hint
-          :items="['ppod', 'cfs','ci']"
+          :items="['ppod', 'cfs']"
         ></v-select>
         </div>
       </v-app-bar>
