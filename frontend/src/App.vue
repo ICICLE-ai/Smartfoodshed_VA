@@ -236,10 +236,11 @@ export default {
       this.$store.dispatch('changeDB',{'database': this.selected_dataset})
     },
     // click the left navigation panel 
-    ClickEvent(clickedItem){
+    async ClickEvent(clickedItem){
       if(clickedItem=="LogIn"){
         // login event
-        window.open('https://dev.develop.tapis.io/v3/oauth2/idp')
+        // window.open('https://dev.develop.tapis.io/v3/oauth2/idp')
+        this.$store.dispatch('logIn')
         // For David: TBA: get user token? and load data?
       }else if(clickedItem=="SaveData"){
         // get the state data
@@ -290,10 +291,16 @@ export default {
       // window.location.reload();
       // d3.select('#div_graph').html('')
       this.fetchData()
+    },
+    loginRedirect: function(){
+      // alert(this.loginRedirect)
+      if(this.loginRedirect!="/"){
+        window.open(this.loginRedirect)
+      }
     }
   },
   computed: {
-    ...mapState(['BETA_ROUTE', 'DASH_ROUTE']),
+    ...mapState(['BETA_ROUTE', 'DASH_ROUTE', 'loginRedirect']),
     versionPrompt() {
       const currentRoute = this.$route.name
       if (currentRoute == this.DASH_ROUTE.name) {
