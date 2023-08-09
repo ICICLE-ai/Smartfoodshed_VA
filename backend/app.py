@@ -406,8 +406,8 @@ def loadPPOD(graph, deleteOld=False):
 if __name__ == '__main__':
     global G1, G2, G3
     ## local 
-    G1 = Graph("bolt://localhost:7687", auth=("neo4j", "123"), name="ppod")
-    G2 = Graph("bolt://localhost:7687", auth=("neo4j", "123"), name="cfs")
+    G1 = Graph("bolt://va1-neo4j:7687", auth=("neo4j", "newPassword"), name="ppod")
+    G2 = Graph("bolt://va1-neo4j:7687", auth=("neo4j", "newPassword"), name="cfs")
     # G3 = Graph("bolt+s://catalog.pods.icicle.tapis.io:443", auth=("catalog","d"), name="neo4j")
     ## server test 
     # G1 = Graph("bolt+ssc://neo1.pods.tacc.develop.tapis.io:443", auth=("neo1", "pass1"), secure=True, verify=False)

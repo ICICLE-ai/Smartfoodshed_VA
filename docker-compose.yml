@@ -26,6 +26,7 @@ services:
             db_password1: newPassword
             flask_debug: "True"
             local_run_db_init: "True"
+        restart: on-failure
         networks:
             - va1-network
 
