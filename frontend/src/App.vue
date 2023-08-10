@@ -201,16 +201,17 @@ export default {
 
       const config = {
         headers:{
-          HTTP_AUTHORIZATION: "Token "+this.getCookieByName('token'),
+          AUTHORIZATION: `Token ${this.getCookieByName('token')}`,
+
         }
       };
       console.log(this.getCookieByName('token'))
       // axios.post(path,data2save,config)
       // this.dialog_save_loading = true 
-      // var path = "https://icfoods.o18s.com/api/storage/json-object/create/"
-      var path = "https://icfoods.o18s.com/api/tapis/protected/"
-      // axios.post(path, data2save, config)
-      axios.post(path, config)
+      var path = "https://icfoods.o18s.com/api/storage/json-object/create/"
+      // var path = "https://icfoods.o18s.com/api/tapis/protected/"
+      axios.post(path, data2save, config)
+      // axios.get(path, config)
       .then(response => {
         this.alertInfo = {
           alert_color: "success",
