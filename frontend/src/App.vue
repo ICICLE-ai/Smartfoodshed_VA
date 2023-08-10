@@ -24,7 +24,7 @@
         <template v-for="item in items">
           <v-list-item :key="item.value" @click="ClickEvent(item.value)">
             <v-list-item-icon><v-icon>{{item.icon}}</v-icon></v-list-item-icon>
-            <v-list-item-title>{{item.label}}</v-list-item-title>
+            <v-list-item-title>{{check(item.label)}}</v-list-item-title>
           </v-list-item>
         </template>
       </v-list>
@@ -172,6 +172,17 @@ export default {
     Dashboard
   },
   methods: {
+    check(ele){
+      if(ele=="Log In"){
+        if(this.getCookieByName('token')==null){
+          return "Log In"
+        }else{
+          return this.getCookieByName('username')
+        }
+      }else{
+        return ele
+      }
+    },
     rowClick: function (item, row) {      
       row.select(true);
       this.selectedRow = item
@@ -205,7 +216,6 @@ export default {
 
         }
       };
-      console.log(this.getCookieByName('token'))
       // axios.post(path,data2save,config)
       // this.dialog_save_loading = true 
       var path = "https://icfoods.o18s.com/api/storage/json-object/create/"
@@ -274,8 +284,13 @@ export default {
         this.dialog_load = true
         this.tableLoading = true
         // this.loadDataTesting()
-        
-        axios.get("https://icfoods.o18s.com/api/storage/json-objects/").then(result=>{
+        const config = {
+        headers:{
+          AUTHORIZATION: `Token ${this.getCookieByName('token')}`,
+
+        }
+      };
+        axios.get("https://icfoods.o18s.com/api/storage/json-objects/", config).then(result=>{
           this.tableData = result['data'].map(obj => {
             return {
               ...obj,  // Copy all key-value pairs from the original object

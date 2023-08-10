@@ -104,6 +104,9 @@ def callback():
     #return redirect("/", code=302)
     response = make_response(redirect("http://localhost:8080/", code=302))
     response.set_cookie("token", token)
+    # print(username, roles)
+    # response.set_cookie("roles", roles)
+    response.set_cookie("username", username)
     return response
 
 @app.route('/getGraphData', methods=['GET'])
@@ -378,7 +381,6 @@ def get_associated_node_from_county():
 
 @app.route('/changeDataBase', methods=['POST'])
 def changeDataBase():
-
     request_obj = request.get_json()
     global graph, entity_identifier,graph_overview,database,fips
     database = request_obj['database']
