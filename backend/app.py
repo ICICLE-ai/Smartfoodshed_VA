@@ -1,6 +1,6 @@
 from re import T
 from telnetlib import ENCRYPT
-from flask import Flask, jsonify, request,Response,redirect
+from flask import Flask, jsonify, request,Response,redirect, make_response
 from neo4j import GraphDatabase, basic_auth
 from flask_cors import CORS
 import json
@@ -102,8 +102,9 @@ def callback():
     roles = auth.add_user_to_session(username, token)
     #current_app.logger.info(f"Username added to session; found these roles: {roles}")
     #return redirect("/", code=302)
-    return jsonify({"username": username, "roles": roles, "token": token})
-
+    response = make_response(redirect("http://localhost:8080/", code=302))
+    response.set_cookie("token", token)
+    return response
 
 @app.route('/getGraphData', methods=['GET'])
 def getGraphData():
