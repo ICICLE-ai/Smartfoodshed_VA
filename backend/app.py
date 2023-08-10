@@ -406,8 +406,8 @@ def loadPPOD(graph, deleteOld=False):
 if __name__ == '__main__':
     global G1, G2, G3
     ## local 
-    G1 = Graph("bolt://va1-neo4j:7687", auth=("neo4j", "newPassword"), name="ppod")
-    G2 = Graph("bolt://va1-neo4j:7687", auth=("neo4j", "newPassword"), name="cfs")
+    # G1 = Graph("bolt://va1-neo4j:7687", auth=("neo4j", "newPassword"), name="ppod")
+    # G2 = Graph("bolt://va1-neo4j:7687", auth=("neo4j", "newPassword"), name="cfs")
     # G3 = Graph("bolt+s://catalog.pods.icicle.tapis.io:443", auth=("catalog","d"), name="neo4j")
     ## server test 
     # G1 = Graph("bolt+ssc://neo1.pods.tacc.develop.tapis.io:443", auth=("neo1", "pass1"), secure=True, verify=False)
@@ -417,100 +417,100 @@ if __name__ == '__main__':
     ## Getting "sets" of credentials for each database.
     # db_creds = db_url1, db_user1, db_password1, db_url2, and so on. Can give as many credentials as wanted.
     # credentials
-    # creds = {}
-    # cred_set = 1
-    # while True:
-    #     print(f"Attempting to parse through cred set {cred_set}")
-    #     url = os.getenv(f"db_url{cred_set}")
-    #     user = os.getenv(f"db_user{cred_set}")
-    #     password = os.getenv(f"db_password{cred_set}")
+    creds = {}
+    cred_set = 1
+    while True:
+        print(f"Attempting to parse through cred set {cred_set}")
+        url = os.getenv(f"db_url{cred_set}")
+        user = os.getenv(f"db_user{cred_set}")
+        password = os.getenv(f"db_password{cred_set}")
 
-    #     # There is no values for this "cred set"
-    #     if not (url and user and password):
-    #         break
+        # There is no values for this "cred set"
+        if not (url and user and password):
+            break
 
-    #     # Ensure the credential set has url, user, and password defined
-    #     if not (url or user or password):
-    #         msg = (f"Environment variable cred set {cred_set} has None for one of the following required variables:\n",
-    #                f"db_user{cred_set}: {url}",
-    #                f"db_user{cred_set}: {user}",
-    #                f"db_password{cred_set}: {password}")
-    #         print(msg)
-    #         raise ValueError(msg)
+        # Ensure the credential set has url, user, and password defined
+        if not (url or user or password):
+            msg = (f"Environment variable cred set {cred_set} has None for one of the following required variables:\n",
+                   f"db_user{cred_set}: {url}",
+                   f"db_user{cred_set}: {user}",
+                   f"db_password{cred_set}: {password}")
+            print(msg)
+            raise ValueError(msg)
 
-    #     creds.update({f"db_url{cred_set}": url,
-    #                   f"db_user{cred_set}": user,
-    #                   f"db_password{cred_set}": password})
+        creds.update({f"db_url{cred_set}": url,
+                      f"db_user{cred_set}": user,
+                      f"db_password{cred_set}": password})
         
-    #     cred_set = cred_set + 1
+        cred_set = cred_set + 1
 
-    # # This is hackery, this entire env fetching should be redone later, needed error message now for developers.
-    # # Did not get any creds
-    # if cred_set == 1:
-    #     msg = f"At least one set of db credentials are required, env variables needed: db_url1, db_user1, and db_password1.\n"
-    #     print(msg)
-    #     raise ValueError(msg)
-    # elif cred_set == 2:
-    #     msg = f"Only got one set of credentials, will use cred 1 for database 2 and 3."
-    #     print(msg)
-    #     creds["db_url2"] = creds["db_url1"]
-    #     creds["db_url3"] = creds["db_url1"]
-    #     creds["db_user2"] = creds["db_user1"]
-    #     creds["db_user3"] = creds["db_user1"]
-    #     creds["db_password2"] = creds["db_password1"]
-    #     creds["db_password3"] = creds["db_password1"]
-    # elif cred_set == 3:
-    #     msg = f"Got two sets of credentials, will use cred 1 for database 3."
-    #     print(msg)
-    #     creds["db_url3"] = creds["db_url1"]
-    #     creds["db_user3"] = creds["db_user1"]
-    #     creds["db_password3"] = creds["db_password1"]
-    # else:
-    #     pass
+    # This is hackery, this entire env fetching should be redone later, needed error message now for developers.
+    # Did not get any creds
+    if cred_set == 1:
+        msg = f"At least one set of db credentials are required, env variables needed: db_url1, db_user1, and db_password1.\n"
+        print(msg)
+        raise ValueError(msg)
+    elif cred_set == 2:
+        msg = f"Only got one set of credentials, will use cred 1 for database 2 and 3."
+        print(msg)
+        creds["db_url2"] = creds["db_url1"]
+        creds["db_url3"] = creds["db_url1"]
+        creds["db_user2"] = creds["db_user1"]
+        creds["db_user3"] = creds["db_user1"]
+        creds["db_password2"] = creds["db_password1"]
+        creds["db_password3"] = creds["db_password1"]
+    elif cred_set == 3:
+        msg = f"Got two sets of credentials, will use cred 1 for database 3."
+        print(msg)
+        creds["db_url3"] = creds["db_url1"]
+        creds["db_user3"] = creds["db_user1"]
+        creds["db_password3"] = creds["db_password1"]
+    else:
+        pass
 
 
-    # error = None
-    # attempts = 0
-    # print(f"Attempting to connect to database.")
-    # while attempts < 10:
-    #     try:
-    #         G1 = Graph(creds['db_url1'], auth=(creds['db_user1'], creds['db_password1']))
-    #         print("Successfully connected to G1.")
-    #         G2 = Graph(creds['db_url2'], auth=(creds['db_user2'], creds['db_password2']))
-    #         print("Successfully connected to G2.")
-    #         G3 = Graph(creds['db_url3'], auth=(creds['db_user3'], creds['db_password3']))
-    #         print("Successfully connected to G3.")
-    #         print("Databases connected successfully!")
-    #         break
-    #     except Exception as e:
-    #         print(f"{attempts} of 10 attempts: Couldn't connect to db, might be initializing, trying again in 5 seconds")
-    #         time.sleep(5)
-    #         attempts = attempts + 1
-    #         error = e
-    # else:
-    #     msg = f"Couldn't connect to db after 10 attempts with 5 seconds between attempts. last error e: {error}"
-    #     print(msg)
-    #     raise RuntimeError(msg)
+    error = None
+    attempts = 0
+    print(f"Attempting to connect to database.")
+    while attempts < 10:
+        try:
+            G1 = Graph(creds['db_url1'], auth=(creds['db_user1'], creds['db_password1']))
+            print("Successfully connected to G1.")
+            G2 = Graph(creds['db_url2'], auth=(creds['db_user2'], creds['db_password2']))
+            print("Successfully connected to G2.")
+            G3 = Graph(creds['db_url3'], auth=(creds['db_user3'], creds['db_password3']))
+            print("Successfully connected to G3.")
+            print("Databases connected successfully!")
+            break
+        except Exception as e:
+            print(f"{attempts} of 10 attempts: Couldn't connect to db, might be initializing, trying again in 5 seconds")
+            time.sleep(5)
+            attempts = attempts + 1
+            error = e
+    else:
+        msg = f"Couldn't connect to db after 10 attempts with 5 seconds between attempts. last error e: {error}"
+        print(msg)
+        raise RuntimeError(msg)
 
     # For local develop, load ppod data into local db.
-    # local_run_db_init = os.getenv(f"local_run_db_init", False)
-    # if local_run_db_init:
-    #     print(f"local_run_db_init env var was set , initializing database")
-    #     if cred_set == 2:
-    #         msg = f"Only got one set of credentials, will initialize db 1 with PPOD data."
-    #         print(msg)
-    #         loadPPOD(G1, True)
-    #     elif cred_set == 3:
-    #         msg = f"Got two sets of credentials, will initialize db 1 and 2 with PPOD data."
-    #         print(msg)
-    #         loadPPOD(G1, True)
-    #         loadPPOD(G2, True)
-    #     else:
-    #         msg = f"Got three sets of credentials (or more), will initialize db 1, 2, and 3 with PPOD data."
-    #         print(msg)
-    #         loadPPOD(G1, True)
-    #         loadPPOD(G2, True)
-    #         loadPPOD(G3, True)
+    local_run_db_init = os.getenv(f"local_run_db_init", False)
+    if local_run_db_init:
+        print(f"local_run_db_init env var was set , initializing database")
+        if cred_set == 2:
+            msg = f"Only got one set of credentials, will initialize db 1 with PPOD data."
+            print(msg)
+            loadPPOD(G1, True)
+        elif cred_set == 3:
+            msg = f"Got two sets of credentials, will initialize db 1 and 2 with PPOD data."
+            print(msg)
+            loadPPOD(G1, True)
+            loadPPOD(G2, True)
+        else:
+            msg = f"Got three sets of credentials (or more), will initialize db 1, 2, and 3 with PPOD data."
+            print(msg)
+            loadPPOD(G1, True)
+            loadPPOD(G2, True)
+            loadPPOD(G3, True)
 
     app.run(host="0.0.0.0", debug=os.getenv("flask_debug", False))
     app.register_blueprint(icicle_flaskn)
