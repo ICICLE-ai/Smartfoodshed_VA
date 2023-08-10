@@ -177,17 +177,40 @@ export default {
       this.selectedRow = item
     },
     // click save to save data to cloud 
+    getCookieByName(name) {
+      const cookies = document.cookie.split(';'); // Split cookies by semicolon
+      for (const cookie of cookies) {
+        const [cookieName, cookieValue] = cookie.trim().split('=');
+        if (cookieName === name) {
+          return decodeURIComponent(cookieValue); // Return decoded value
+        }
+      }
+      return null; // Return null if cookie not found
+    },
     saveCloudData(){
       const savedState = this.$store.state
+     
+      // console.log('tosave', data2save)
+      // alert(document.cookie);
       var data2save = {
         "title": this.input_data_title,
         "owner": this.input_data_owner, // TODO : to be dynamic 
-        "json_data": savedState
+        // "json_data": savedState,
+        "json_data": "test",
       }
-      // console.log('tosave', data2save)
-      this.dialog_save_loading = true 
-      var path = "https://icfoods.o18s.com/api/storage/json-object/create/"
-      axios.post(path, data2save)
+
+      const config = {
+        headers:{
+          HTTP_AUTHORIZATION: "Token "+this.getCookieByName('token'),
+        }
+      };
+      console.log(this.getCookieByName('token'))
+      // axios.post(path,data2save,config)
+      // this.dialog_save_loading = true 
+      // var path = "https://icfoods.o18s.com/api/storage/json-object/create/"
+      var path = "https://icfoods.o18s.com/api/tapis/protected/"
+      // axios.post(path, data2save, config)
+      axios.post(path, config)
       .then(response => {
         this.alertInfo = {
           alert_color: "success",
@@ -239,9 +262,9 @@ export default {
     async ClickEvent(clickedItem){
       if(clickedItem=="LogIn"){
         // login event
-        // window.open('https://dev.develop.tapis.io/v3/oauth2/idp')
-        this.$store.dispatch('logIn')
-        // For David: TBA: get user token? and load data?
+        if(this.getCookieByName('token')==null){
+          this.$store.dispatch('logIn')
+        }
       }else if(clickedItem=="SaveData"){
         // get the state data
         this.dialog_save = true
