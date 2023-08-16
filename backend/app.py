@@ -66,8 +66,6 @@ def login():
     tapis_url = f"{config['tapis_base_url']}/v3/oauth2/authorize?client_id={config['client_id']}&redirect_uri={callback_url}&response_type=code"
     # print('no, not auth, redirect to:',tapis_url)
     result = {'path': tapis_url, 'code':302}
-    # return redirect(tapis_url, code=302)
-    print(result)
     return jsonify(result)
 
 

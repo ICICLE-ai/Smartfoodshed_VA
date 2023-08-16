@@ -73,13 +73,6 @@
                   v-model="input_data_title"
                 ></v-text-field>
               </v-col>
-              <v-col cols="12">
-                <v-text-field
-                  label="Owner Name"
-                  v-model="input_data_owner"
-                  required
-                ></v-text-field>
-              </v-col>
             </v-row>
           </v-container>
         </v-card-text>
@@ -154,7 +147,6 @@ export default {
 
       dialog_save: false,  // save data dialog
       input_data_title: "", // save data form 
-      input_data_owner: "", // save data form 
       dialog_save_loading: false, 
       alertInfo:{
         alert_color: 'success',
@@ -205,7 +197,7 @@ export default {
       // alert(document.cookie);
       var data2save = {
         "title": this.input_data_title,
-        "owner": this.input_data_owner, // TODO : to be dynamic 
+        "owner": this.getCookieByName('username'), // TODO : to be dynamic 
         // "json_data": savedState,
         "json_data": "test",
       }
@@ -334,7 +326,7 @@ export default {
     loginRedirect: function(){
       // alert(this.loginRedirect)
       if(this.loginRedirect!="/"){
-        window.open(this.loginRedirect)
+        window.location.replace(this.loginRedirect);
       }
     }
   },
