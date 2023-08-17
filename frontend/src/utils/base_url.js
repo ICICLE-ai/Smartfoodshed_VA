@@ -7,7 +7,7 @@ import axios from 'axios'
 // Production backend url: "https://vaapibackend.pods.icicle.tapis.io/"
 // Develop backend url: "https://vaapibackend.pods.icicle.develop.tapis.io/"
 // Local development 
-export const  base_request_url= "http://localhost:5000/"
+export const  base_request_url= "https://vaapibackend.pods.icicle.tapis.io/"
 // export const base_request_url = "http://localhost:5000/"
 export const apiClient = axios.create({
     baseURL: base_request_url,
