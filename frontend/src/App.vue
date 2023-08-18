@@ -198,8 +198,7 @@ export default {
       var data2save = {
         "title": this.input_data_title,
         "owner": this.getCookieByName('username'), // TODO : to be dynamic 
-        // "json_data": savedState,
-        "json_data": "test",
+        "json_data": savedState,
       }
 
       const config = {
