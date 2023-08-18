@@ -1,4 +1,5 @@
 FROM node:latest as build-stage
+RUN NODE_ENV=development npm i
 WORKDIR /app
 COPY package*.json ./
 RUN npm --force install
