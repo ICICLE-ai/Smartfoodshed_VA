@@ -4,8 +4,9 @@ import axios from 'axios'
 
 // const https = new Https();
 
-// Production backend url: "https://vaapibackend.pods.icicle.tapis.io/"
-// Develop backend url: "https://vaapibackend.pods.icicle.develop.tapis.io/"
+// Production backend url: "https://vaapibackend.pods.icicle.tapis.io/" ## 
+// Develop backend url: "https://vaapibackend.pods.icicle.develop.tapis.io/" ## not in use, always use the first one 
+
 // Local development 
 export const  base_request_url= "https://vaapibackend.pods.icicle.tapis.io/"
 // export const base_request_url = "http://localhost:5000/"
