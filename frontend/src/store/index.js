@@ -54,10 +54,14 @@ function initialState () {
     // base_request_url: "http://127.0.0.1:5000/"
     // base_request_url: 'https://vaapi.develop.tapis.io/'
     database: "", //ppod or cfs 
-    neo4jDrawData: {}
+    neo4jDrawData: {},
+    loginRedirect: "",
   }
 }
 const mutations = {
+  SET_loginRedirect(state, val){
+    state.loginRedirect = val
+  },
   SET_resetMode(state, val){
     state.resetMode = val 
   },
@@ -242,6 +246,15 @@ const actions = {
   async getGraphOverview({commit, dispatch, state}){
     axios.get(base_request_url+"getGraphOverview").then(result=>{
       commit('SET_graphOverview', result)
+    })
+  },
+  async logIn({commit, dispatch, state}){
+    commit('SET_loginRedirect', '/')
+    axios.get(base_request_url+"login").then(result=>{
+      commit('SET_loginRedirect', result['data']['path'])
+    })
+    .catch(error=>{
+      alert(error)
     })
   },
   getTableData ({commit, dispatch, state}) {

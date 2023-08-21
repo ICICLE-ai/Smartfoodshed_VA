@@ -1,7 +1,6 @@
-FROM node:latest as build-stage
+FROM node:lts as build-stage
 WORKDIR /app
 COPY package*.json ./
-RUN npm --force install
 COPY ./ .
 RUN npm run build
 

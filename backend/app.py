@@ -1,6 +1,6 @@
 from re import T
 from telnetlib import ENCRYPT
-from flask import Flask, jsonify, request,Response
+from flask import Flask, jsonify, request,Response,redirect, make_response
 from neo4j import GraphDatabase, basic_auth
 from flask_cors import CORS
 import json
@@ -12,7 +12,13 @@ import py2neo
 import pandas as pd
 import requests
 import os 
+os.environ["APP_CONFIG_PATH"] = "./config.yaml"
+
 import helper
+from iciflaskn import icicle_flaskn
+from iciflaskn import auth
+from iciflaskn.config import config
+
 
 """ config.py
 // Adding config file to config your local data folder please !!!!!!!!!!!
@@ -42,6 +48,64 @@ CORS(app, resources={r'/*': {'origins': '*'}})
 def ping_pong():
     return jsonify('pong!')
 
+
+#app.register_blueprint(icicle_flaskn)
+
+@app.route('/login', methods=['GET'])
+def login():
+    """
+    Check for the existence of a login session, and if none exists, start the OAuth2 flow.
+    """
+    authenticated, _, _ = auth.is_logged_in()
+    # if already authenticated, redirect to the root URL
+    if authenticated:
+        result = {'path':'/', 'code': 302}
+        return result
+    # otherwise, start the OAuth flow
+    callback_url = f"{config['app_base_url']}/oauth2/callback"
+    tapis_url = f"{config['tapis_base_url']}/v3/oauth2/authorize?client_id={config['client_id']}&redirect_uri={callback_url}&response_type=code"
+    # print('no, not auth, redirect to:',tapis_url)
+    result = {'path': tapis_url, 'code':302}
+    return jsonify(result)
+
+
+@app.route('/oauth2/callback', methods=['GET'])
+def callback():
+    """                                                                                                                                                                               
+    Process a callback from a Tapis authorization server:
+      1) Get the authorization code from the query parameters.
+      2) Exchange the code for a token
+      3) Add the user and token to the session
+      4) Redirect to the /data endpoint.
+    """
+    code = request.args.get('code')
+    if not code:
+        raise Exception(f"Error: No code in request; debug: {request.args}")
+    url = f"{config['tapis_base_url']}/v3/oauth2/tokens"
+    data = {
+        "code": code,
+        "redirect_uri": f"{config['app_base_url']}/oauth2/callback",
+        "grant_type": "authorization_code",
+    }
+    try:
+        response = requests.post(url, data=data, auth=(config['client_id'], config['client_key']))
+        response.raise_for_status()
+        json_resp = json.loads(response.text)
+        token = json_resp['result']['access_token']['access_token']
+    except Exception as e:
+        raise Exception(f"Error generating Tapis token; debug: {e}")
+
+    username = auth.get_username(token)
+    #current_app.logger.info(f"Got username for token; username: {username}")
+    roles = auth.add_user_to_session(username, token)
+    #current_app.logger.info(f"Username added to session; found these roles: {roles}")
+    #return redirect("/", code=302)
+    response = make_response(redirect("http://localhost:8080/", code=302))
+    response.set_cookie("token", token)
+    # print(username, roles)
+    # response.set_cookie("roles", roles)
+    response.set_cookie("username", username)
+    return response
 
 @app.route('/getGraphData', methods=['GET'])
 def getGraphData():
@@ -315,7 +379,6 @@ def get_associated_node_from_county():
 
 @app.route('/changeDataBase', methods=['POST'])
 def changeDataBase():
-
     request_obj = request.get_json()
     global graph, entity_identifier,graph_overview,database,fips
     database = request_obj['database']
@@ -381,9 +444,11 @@ def loadPPOD(graph, deleteOld=False):
 if __name__ == '__main__':
     global G1, G2, G3
     ## local 
-    #G1 = Graph("bolt://localhost:7687", auth=("neo4j", "123"), name="ppod")
-    #G2 = Graph("bolt://localhost:7687", auth=("neo4j", "123"), name="cfs")
-    #G3 = Graph("bolt+s://catalog.pods.icicle.tapis.io:443", auth=("catalog","d"), name="neo4j")
+    # G1 = Graph("bolt://localhost:7687", auth=("neo4j", "123"), name="ppod")
+    # G2 = Graph("bolt://localhost:7687", auth=("neo4j", "123"), name="cfs")
+    # G1 = Graph("bolt://va1-neo4j:7687", auth=("neo4j", "newPassword"), name="ppod")
+    # G2 = Graph("bolt://va1-neo4j:7687", auth=("neo4j", "newPassword"), name="cfs")
+    # G3 = Graph("bolt+s://catalog.pods.icicle.tapis.io:443", auth=("catalog","d"), name="neo4j")
     ## server test 
     # G1 = Graph("bolt+ssc://neo1.pods.tacc.develop.tapis.io:443", auth=("neo1", "pass1"), secure=True, verify=False)
     # G2 = Graph("bolt+ssc://neo2.pods.tacc.develop.tapis.io:443", auth=("neo2", "pass2"), secure=True, verify=False)
@@ -487,4 +552,5 @@ if __name__ == '__main__':
             loadPPOD(G2, True)
             loadPPOD(G3, True)
 
+    app.secret_key = 'super secret key'
     app.run(host="0.0.0.0", debug=os.getenv("flask_debug", False))

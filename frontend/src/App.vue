@@ -10,7 +10,7 @@
           variant="solo"
           hint="Select A Dataset"
           persistent-hint
-          :items="['ppod', 'cfs','ci']"
+          :items="['ppod', 'cfs']"
         ></v-select>
         </div>
       </v-app-bar>
@@ -24,7 +24,7 @@
         <template v-for="item in items">
           <v-list-item :key="item.value" @click="ClickEvent(item.value)">
             <v-list-item-icon><v-icon>{{item.icon}}</v-icon></v-list-item-icon>
-            <v-list-item-title>{{item.label}}</v-list-item-title>
+            <v-list-item-title>{{check(item.label)}}</v-list-item-title>
           </v-list-item>
         </template>
       </v-list>
@@ -71,13 +71,6 @@
                   label="Dataset Title"
                   required
                   v-model="input_data_title"
-                ></v-text-field>
-              </v-col>
-              <v-col cols="12">
-                <v-text-field
-                  label="Owner Name"
-                  v-model="input_data_owner"
-                  required
                 ></v-text-field>
               </v-col>
             </v-row>
@@ -154,7 +147,6 @@ export default {
 
       dialog_save: false,  // save data dialog
       input_data_title: "", // save data form 
-      input_data_owner: "", // save data form 
       dialog_save_loading: false, 
       alertInfo:{
         alert_color: 'success',
@@ -172,22 +164,56 @@ export default {
     Dashboard
   },
   methods: {
+    check(ele){
+      if(ele=="Log In"){
+        if(this.getCookieByName('token')==null){
+          return "Log In"
+        }else{
+          return this.getCookieByName('username')
+        }
+      }else{
+        return ele
+      }
+    },
     rowClick: function (item, row) {      
       row.select(true);
       this.selectedRow = item
     },
     // click save to save data to cloud 
+    getCookieByName(name) {
+      const cookies = document.cookie.split(';'); // Split cookies by semicolon
+      for (const cookie of cookies) {
+        const [cookieName, cookieValue] = cookie.trim().split('=');
+        if (cookieName === name) {
+          return decodeURIComponent(cookieValue); // Return decoded value
+        }
+      }
+      return null; // Return null if cookie not found
+    },
     saveCloudData(){
       const savedState = this.$store.state
+     
+      // console.log('tosave', data2save)
+      // alert(document.cookie);
       var data2save = {
         "title": this.input_data_title,
-        "owner": this.input_data_owner, // TODO : to be dynamic 
-        "json_data": savedState
+        "owner": this.getCookieByName('username'), // TODO : to be dynamic 
+        // "json_data": savedState,
+        "json_data": {'data':'test'}
       }
-      // console.log('tosave', data2save)
-      this.dialog_save_loading = true 
+
+      const config = {
+        headers:{
+          AUTHORIZATION: `Token ${this.getCookieByName('token')}`,
+
+        }
+      };
+      // axios.post(path,data2save,config)
+      // this.dialog_save_loading = true 
       var path = "https://icfoods.o18s.com/api/storage/json-object/create/"
-      axios.post(path, data2save)
+      // var path = "https://icfoods.o18s.com/api/tapis/protected/"
+      axios.post(path, data2save, config)
+      // axios.get(path, config)
       .then(response => {
         this.alertInfo = {
           alert_color: "success",
@@ -236,11 +262,12 @@ export default {
       this.$store.dispatch('changeDB',{'database': this.selected_dataset})
     },
     // click the left navigation panel 
-    ClickEvent(clickedItem){
+    async ClickEvent(clickedItem){
       if(clickedItem=="LogIn"){
         // login event
-        window.open('https://dev.develop.tapis.io/v3/oauth2/idp')
-        // For David: TBA: get user token? and load data?
+        if(this.getCookieByName('token')==null){
+          this.$store.dispatch('logIn')
+        }
       }else if(clickedItem=="SaveData"){
         // get the state data
         this.dialog_save = true
@@ -249,8 +276,13 @@ export default {
         this.dialog_load = true
         this.tableLoading = true
         // this.loadDataTesting()
-        
-        axios.get("https://icfoods.o18s.com/api/storage/json-objects/").then(result=>{
+        const config = {
+        headers:{
+          AUTHORIZATION: `Token ${this.getCookieByName('token')}`,
+
+        }
+      };
+        axios.get("https://icfoods.o18s.com/api/storage/json-objects/", config).then(result=>{
           this.tableData = result['data'].map(obj => {
             return {
               ...obj,  // Copy all key-value pairs from the original object
@@ -290,10 +322,16 @@ export default {
       // window.location.reload();
       // d3.select('#div_graph').html('')
       this.fetchData()
+    },
+    loginRedirect: function(){
+      // alert(this.loginRedirect)
+      if(this.loginRedirect!="/"){
+        window.location.replace(this.loginRedirect);
+      }
     }
   },
   computed: {
-    ...mapState(['BETA_ROUTE', 'DASH_ROUTE']),
+    ...mapState(['BETA_ROUTE', 'DASH_ROUTE', 'loginRedirect']),
     versionPrompt() {
       const currentRoute = this.$route.name
       if (currentRoute == this.DASH_ROUTE.name) {
