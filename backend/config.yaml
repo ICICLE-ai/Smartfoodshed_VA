@@ -8,4 +8,4 @@ tenant: icicleai
 
 # The base URL that you app isserved on; this needs to match what was registered with the  OAuth client
 #the catalog to a public URL. 
-app_base_url: http://localhost:5000
+app_base_url: https://vaapibackend.pods.icicle.tapis.io

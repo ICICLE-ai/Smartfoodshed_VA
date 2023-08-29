@@ -286,7 +286,6 @@ export default {
           this.tableData = result['data'].map(obj => {
             return {
               ...obj,  // Copy all key-value pairs from the original object
-              json_data: JSON.stringify(obj['json_data']).slice(0,20)+"..." // Transform the key value to a string
             };
           });
           this.tableHeaders = [{
@@ -298,9 +297,6 @@ export default {
           },{
             text: 'Owner',
             value: 'owner'
-          },{
-            text: 'Data',
-            value: 'json_data'
           }]
           this.tableLoading = false 
         })
