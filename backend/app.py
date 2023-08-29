@@ -100,7 +100,7 @@ def callback():
     roles = auth.add_user_to_session(username, token)
     #current_app.logger.info(f"Username added to session; found these roles: {roles}")
     #return redirect("/", code=302)
-    response = make_response(redirect("http://localhost:8080/", code=302))
+    response = make_response(redirect(config['app_base_url'], code=302))
     response.set_cookie("token", token)
     # print(username, roles)
     # response.set_cookie("roles", roles)
