@@ -1,6 +1,6 @@
 # Your client credentials
-client_id: icicle_va
-client_key: icicle_va_4ever
+client_id: smartfoodshed-va-dev
+client_key: va-dev
 
 # The Tapis base URL and tenant id
 tapis_base_url: https://icicleai.tapis.io
