@@ -88,7 +88,7 @@ def callback():
         "grant_type": "authorization_code",
     }
     try:
-        response = requests.post(url, data=data, auth=(config['client_id'], config['client_key']))
+        response = requests.post(url, data=data, auth=('https://vaapifrontenddev.pods.icicle.tapis.io', config['client_key']))
         response.raise_for_status()
         json_resp = json.loads(response.text)
         token = json_resp['result']['access_token']['access_token']
