@@ -99,7 +99,7 @@ def callback():
     
     response = make_response(redirect(os.environ['FRONT_URL'], code=302))
 
-    domain = os.environ['FRONT_URL'][8:-1]
+    domain = os.environ['FRONT_URL'][21:-1]
     response.set_cookie("token", token, domain=domain)
     response.set_cookie("username", username, domain=domain)
     
