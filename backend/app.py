@@ -100,7 +100,7 @@ def callback():
     roles = auth.add_user_to_session(username, token)
     #current_app.logger.info(f"Username added to session; found these roles: {roles}")
     #return redirect("/", code=302)
-    response = make_response(redirect('https://vaapifrontenddev.pods.icicle.tapis.io', code=302))
+    response = make_response(redirect(os.environ['FRONT_URL'], code=302))
     response.set_cookie("token", token)
     # print(username, roles)
     # response.set_cookie("roles", roles)
