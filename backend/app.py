@@ -88,7 +88,7 @@ def callback():
         "grant_type": "authorization_code",
     }
     try:
-        response = requests.post(url, data=data, auth=('https://vaapifrontenddev.pods.icicle.tapis.io', config['client_key']))
+        response = requests.post(url, data=data, auth=(config['client_id'], config['client_key']))
         response.raise_for_status()
         json_resp = json.loads(response.text)
         token = json_resp['result']['access_token']['access_token']
@@ -100,7 +100,7 @@ def callback():
     roles = auth.add_user_to_session(username, token)
     #current_app.logger.info(f"Username added to session; found these roles: {roles}")
     #return redirect("/", code=302)
-    response = make_response(redirect(config['app_base_url'], code=302))
+    response = make_response(redirect('https://vaapifrontenddev.pods.icicle.tapis.io', code=302))
     response.set_cookie("token", token)
     # print(username, roles)
     # response.set_cookie("roles", roles)
