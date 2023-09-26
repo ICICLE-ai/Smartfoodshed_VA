@@ -22,7 +22,7 @@
       >
       <v-list>
         <template v-for="item in items">
-          <v-list-item :key="item.value" @click="ClickEvent(item.value)">
+          <v-list-item :key="item.value" v-if="checkVisible(item.label)" @click="ClickEvent(item.value)">
             <v-list-item-icon><v-icon>{{item.icon}}</v-icon></v-list-item-icon>
             <v-list-item-title>{{check(item.label)}}</v-list-item-title>
           </v-list-item>
@@ -139,6 +139,11 @@ export default {
           'value': 'LoadData',
           'label': 'Load Data',
           'icon': 'mdi-cloud-download'
+        },
+        {
+          'value': 'LogOut',
+          'label': 'Log Out',
+          'icon': 'mdi-logout'
         }
       ],
       tableHeaders: [],
@@ -164,9 +169,20 @@ export default {
     Dashboard
   },
   methods: {
+    checkVisible(ele){
+      if(ele=="Log Out"){
+        if(this.getCookieByName('token')==null){ //not logged in
+          return false
+        }else{
+          return true 
+        }
+      }else{
+        return true
+      }
+    },
     check(ele){
       if(ele=="Log In"){
-        if(this.getCookieByName('token')==null){
+        if(this.getCookieByName('token')==null){ //not logged in
           return "Log In"
         }else{
           return this.getCookieByName('username')
@@ -266,7 +282,8 @@ export default {
       if(clickedItem=="LogIn"){
         // login event
         if(this.getCookieByName('token')==null){
-          this.$store.dispatch('logIn')
+          await this.$store.dispatch('logIn')
+          this.items[3]['visible']=true 
         }
       }else if(clickedItem=="SaveData"){
         // get the state data
@@ -281,7 +298,7 @@ export default {
           AUTHORIZATION: `Token ${this.getCookieByName('token')}`,
 
         }
-      };
+      }
         axios.get("https://icfoods.o18s.com/api/storage/json-objects/", config).then(result=>{
           this.tableData = result['data'].map(obj => {
             return {
@@ -300,6 +317,10 @@ export default {
           }]
           this.tableLoading = false 
         })
+      }
+      else if(clickedItem=="LogOut"){
+          // For Carlos 
+          this.items[3]['visible']=false // hide the log out button  
       }
     }
   }, 
