@@ -206,6 +206,10 @@ export default {
       }
       return null; // Return null if cookie not found
     },
+    // Delete cookie
+    deleteCookieByName(name) {
+      document.cookie = name +'=; Path=/; Expires=Thu, 01 Jan 1970 00:00:01 GMT;';
+    },
     saveCloudData(){
       const savedState = this.$store.state
      
@@ -283,7 +287,7 @@ export default {
         // login event
         if(this.getCookieByName('token')==null){
           await this.$store.dispatch('logIn')
-          this.items[3]['visible']=true 
+          this.items[3]['visible']=true //Shows logout
         }
       }else if(clickedItem=="SaveData"){
         // get the state data
@@ -320,6 +324,8 @@ export default {
       }
       else if(clickedItem=="LogOut"){
           // For Carlos 
+          deleteCookieByName("username");
+          deleteCookieByName("token");
           this.items[3]['visible']=false // hide the log out button  
       }
     }
