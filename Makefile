@@ -63,7 +63,7 @@ up: build
 	@echo "Makefile: $(GREEN)up$(NC)"
 	@echo "  🔥 : Running burnup."
 	@echo ""
-	docker-compose -p va1 up -d
+	docker compose -p va1 up -d
 	@echo ""
 
 
@@ -73,7 +73,7 @@ down:
 	@echo "Makefile: $(GREEN)down$(NC)"
 	@echo "  🔥 : Running burndown."
 	@echo ""
-	docker-compose -p va1 down 
+	docker compose -p va1 down 
 	@echo ""
 
 

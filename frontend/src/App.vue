@@ -132,6 +132,10 @@ export default {
           'label': 'Log In',
           'icon': 'mdi-login'
         },{
+          'value': 'LogOut',
+          'label': 'Log Out',
+          'icon': 'mdi-logout'
+        },{
           'value': 'SaveData',
           'label': 'Save Data',
           'icon': 'mdi-cloud-upload'
@@ -140,11 +144,6 @@ export default {
           'label': 'Load Data',
           'icon': 'mdi-cloud-download'
         },
-        {
-          'value': 'LogOut',
-          'label': 'Log Out',
-          'icon': 'mdi-logout'
-        }
       ],
       tableHeaders: [],
       tableData: [],
@@ -170,7 +169,7 @@ export default {
   },
   methods: {
     checkVisible(ele){
-      if(ele=="Log Out"){
+      if(ele=="Log Out" || ele=="Save Data"){
         if(this.getCookieByName('token')==null){ //not logged in
           return false
         }else{
@@ -218,13 +217,12 @@ export default {
       var data2save = {
         "title": this.input_data_title,
         "owner": this.getCookieByName('username'), // TODO : to be dynamic 
-        // "json_data": savedState,
-        "json_data": {'data':'test'}
+        "json_data": savedState,
       }
 
       const config = {
         headers:{
-          AUTHORIZATION: `Token ${this.getCookieByName('token')}`,
+          authorization: `Token ${this.getCookieByName('token')}`,
 
         }
       };
@@ -287,7 +285,8 @@ export default {
         // login event
         if(this.getCookieByName('token')==null){
           await this.$store.dispatch('logIn')
-          this.items[3]['visible']=true //Shows logout
+          this.item[1]['visible']=true //Shows logout
+          this.items[2]['visible']=true //Shows to save data
         }
       }else if(clickedItem=="SaveData"){
         // get the state data
@@ -324,9 +323,10 @@ export default {
       }
       else if(clickedItem=="LogOut"){
           // For Carlos 
-          deleteCookieByName("username");
-          deleteCookieByName("token");
-          this.items[3]['visible']=false // hide the log out button  
+          this.deleteCookieByName("username");
+          this.deleteCookieByName("token");
+          this.items[1]['visible']=false // hide the log out button
+          this.items[2]['visible']=false // hide the save data button
       }
     }
   }, 
