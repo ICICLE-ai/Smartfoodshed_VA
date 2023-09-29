@@ -349,7 +349,7 @@ export default {
     loginRedirect: function(){
       // alert(this.loginRedirect)
       if(this.loginRedirect!="/"){
-        window.location.replace(this.loginRedirect);
+        window.location.href = this.loginRedirect;
       }
     }
   },

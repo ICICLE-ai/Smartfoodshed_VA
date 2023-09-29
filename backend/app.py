@@ -75,7 +75,7 @@ def callback():
     Process a callback from a Tapis authorization server:
       1) Get the authorization code from the query parameters.
       2) Exchange the code for a token
-      3) Add the user and token to the session
+      3) Add the user and token to the sessionhttps
       4) Redirect to the /data endpoint.
     """
     code = request.args.get('code')
@@ -102,6 +102,7 @@ def callback():
     domain = os.environ['FRONT_URL'][21:-1]
     response.set_cookie("token", token, domain=domain, secure=True)
     response.set_cookie("username", username, domain=domain, secure=True)    
+    response.set_cookie("username", username, domain=domain, secure=True)
     
     return response
 
