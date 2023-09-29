@@ -101,6 +101,7 @@ def callback():
 
     domain = os.environ['FRONT_URL'][21:-1]
     response.set_cookie("token", token, domain=domain, secure=True)
+    response.set_cookie("username", username, domain=domain, secure=True)    
     response.set_cookie("username", username, domain=domain, secure=True)
     
     return response

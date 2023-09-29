@@ -26,6 +26,7 @@ services:
             db_password1: newPassword
             flask_debug: "True"
             local_run_db_init: "True"
+            FRONT_URL: "http://localhost:8080"
         restart: on-failure
         networks:
             - va1-network

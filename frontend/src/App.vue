@@ -22,7 +22,7 @@
       >
       <v-list>
         <template v-for="item in items">
-          <v-list-item :key="item.value" @click="ClickEvent(item.value)">
+          <v-list-item :key="item.value" v-if="checkVisible(item.label)" @click="ClickEvent(item.value)">
             <v-list-item-icon><v-icon>{{item.icon}}</v-icon></v-list-item-icon>
             <v-list-item-title>{{check(item.label)}}</v-list-item-title>
           </v-list-item>
@@ -132,6 +132,10 @@ export default {
           'label': 'Log In',
           'icon': 'mdi-login'
         },{
+          'value': 'LogOut',
+          'label': 'Log Out',
+          'icon': 'mdi-logout'
+        },{
           'value': 'SaveData',
           'label': 'Save Data',
           'icon': 'mdi-cloud-upload'
@@ -139,7 +143,7 @@ export default {
           'value': 'LoadData',
           'label': 'Load Data',
           'icon': 'mdi-cloud-download'
-        }
+        },
       ],
       tableHeaders: [],
       tableData: [],
@@ -164,9 +168,20 @@ export default {
     Dashboard
   },
   methods: {
+    checkVisible(ele){
+      if(ele=="Log Out" || ele=="Save Data"){
+        if(this.getCookieByName('token')==null){ //not logged in
+          return false
+        }else{
+          return true 
+        }
+      }else{
+        return true
+      }
+    },
     check(ele){
       if(ele=="Log In"){
-        if(this.getCookieByName('token')==null){
+        if(this.getCookieByName('token')==null){ //not logged in
           return "Log In"
         }else{
           return this.getCookieByName('username')
@@ -190,6 +205,10 @@ export default {
       }
       return null; // Return null if cookie not found
     },
+    // Delete cookie
+    deleteCookieByName(name) {
+      document.cookie = name +'=; Path=/; Expires=Thu, 01 Jan 1970 00:00:01 GMT;';
+    },
     saveCloudData(){
       const savedState = this.$store.state
      
@@ -197,12 +216,13 @@ export default {
       // alert(document.cookie);
       var data2save = {
         "title": this.input_data_title,
+        "owner": this.getCookieByName('username'), // TODO : to be dynamic 
         "json_data": savedState,
       }
 
       const config = {
         headers:{
-          AUTHORIZATION: `Token ${this.getCookieByName('token')}`,
+          authorization: `Token ${this.getCookieByName('token')}`,
 
         }
       };
@@ -264,7 +284,9 @@ export default {
       if(clickedItem=="LogIn"){
         // login event
         if(this.getCookieByName('token')==null){
-          this.$store.dispatch('logIn')
+          await this.$store.dispatch('logIn')
+          this.item[1]['visible']=true //Shows logout
+          this.items[2]['visible']=true //Shows to save data
         }
       }else if(clickedItem=="SaveData"){
         // get the state data
@@ -279,7 +301,7 @@ export default {
           AUTHORIZATION: `Token ${this.getCookieByName('token')}`,
 
         }
-      };
+      }
         axios.get("https://icfoods.o18s.com/api/storage/json-objects/", config).then(result=>{
           this.tableData = result['data'].map(obj => {
             return {
@@ -298,6 +320,13 @@ export default {
           }]
           this.tableLoading = false 
         })
+      }
+      else if(clickedItem=="LogOut"){
+          // For Carlos 
+          this.deleteCookieByName("username");
+          this.deleteCookieByName("token");
+          this.items[1]['visible']=false // hide the log out button
+          this.items[2]['visible']=false // hide the save data button
       }
     }
   }, 
