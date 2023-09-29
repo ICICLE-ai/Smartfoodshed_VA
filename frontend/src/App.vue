@@ -207,7 +207,8 @@ export default {
     },
     // Delete cookie
     deleteCookieByName(name) {
-      document.cookie = name +'=; Path=/; Expires=Thu, 01 Jan 1970 00:00:01 GMT;';
+      //document.cookie = name +'=; Path=/; Domain=localhost; Expires=' + new Date(0).toUTCString() + ';'; //For local use only 
+      document.cookie = name +'=; Path=/; Domain=.pods.icicle.tapis.io; Expires=' + new Date(0).toUTCString() + ';';
     },
     saveCloudData(){
       const savedState = this.$store.state
