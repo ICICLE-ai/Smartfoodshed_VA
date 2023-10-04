@@ -298,7 +298,7 @@ export default {
         this.tableLoading = true
         // this.loadDataTesting()
         if (this.getCookieByName('token')==null) {
-          axios.get("https:/icfoods.o18s.com/api/storage/json-objects-public/").then(result=>{
+          axios.get("https://icfoods.o18s.com/api/storage/json-objects-public/").then(result=>{
             this.tableData = result['data'].map(obj => {
               return {
                 ...obj,
