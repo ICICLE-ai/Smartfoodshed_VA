@@ -297,30 +297,51 @@ export default {
         this.dialog_load = true
         this.tableLoading = true
         // this.loadDataTesting()
-        const config = {
-        headers:{
-          AUTHORIZATION: `Token ${this.getCookieByName('token')}`,
-
+        if (this.getCookieByName('token')==null) {
+          axios.get("https:/icfoods.o18s.com/api/storage/json-objects-public/").then(result=>{
+            this.tableData = result['data'].map(obj => {
+              return {
+                ...obj,
+              };
+            });
+            this.tableHeaders = [{
+              text: 'UUID',
+              value: 'uuid'
+            }, {
+              text: 'Title',
+              value: 'title'
+            }, {
+              text: 'Owner',
+              value: 'owner'
+            }]
+            this.tableLoading = false
+          })
         }
-      }
-        axios.get("https://icfoods.o18s.com/api/storage/json-objects/", config).then(result=>{
-          this.tableData = result['data'].map(obj => {
-            return {
-              ...obj,  // Copy all key-value pairs from the original object
-            };
-          });
-          this.tableHeaders = [{
-            text: 'UUID',
-            value: 'uuid'
-          },{
-            text: 'Title',
-            value: 'title'
-          },{
-            text: 'Owner',
-            value: 'owner'
-          }]
-          this.tableLoading = false 
-        })
+        else {
+          const config = {
+            headers:{
+              authorization: `Token ${this.getCookieByName('token')}`,
+            }
+          }
+          axios.get("https://icfoods.o18s.com/api/storage/json-objects/", config).then(result=>{
+            this.tableData = result['data'].map(obj => {
+              return {
+                ...obj,  // Copy all key-value pairs from the original object
+              };
+            });
+            this.tableHeaders = [{
+              text: 'UUID',
+              value: 'uuid'
+            },{
+              text: 'Title',
+              value: 'title'
+            },{
+              text: 'Owner',
+              value: 'owner'
+            }]
+            this.tableLoading = false 
+          })
+        }
       }
       else if(clickedItem=="LogOut"){
           // For Carlos 

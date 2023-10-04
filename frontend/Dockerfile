@@ -1,4 +1,4 @@
-FROM node:lts as build-stage
+FROM node:lts-slim as build-stage
 WORKDIR /app
 COPY package*.json ./
 COPY ./ .
