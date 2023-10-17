@@ -229,8 +229,8 @@ export default {
       };
       // axios.post(path,data2save,config)
       // this.dialog_save_loading = true 
-      var path = "https://icfoods.o18s.com/api/storage/json-object/create/"
-      // var path = "https://icfoods.o18s.com/api/tapis/protected/"
+      var path = "https://icicleapi.pods.icicleai.tapis.io/api/storage/json-object/create/"
+      // var path = "https://icicleapi.pods.icicleai.tapis.io/api/tapis/protected/"
       axios.post(path, data2save, config)
       // axios.get(path, config)
       .then(response => {
@@ -260,7 +260,7 @@ export default {
       // slot.select(!slot.isSelected)// click anywhere in the row will automatically select the checkbox 
       // fetch the data 
       this.dialog_load_loading = true
-      axios.get("https://icfoods.o18s.com/api/storage/json-object/"+this.selectedRow['uuid']+"/").then(result=>{
+      axios.get("https://icicleapi.pods.icicleai.tapis.io/api/storage/json-object/"+this.selectedRow['uuid']+"/").then(result=>{
         var temp = result['data']['json_data']
         temp['resetMode'] = true
         this.$store.dispatch('resetState',temp)
@@ -298,7 +298,7 @@ export default {
         this.tableLoading = true
         // this.loadDataTesting()
         if (this.getCookieByName('token')==null) {
-          axios.get("https://icfoods.o18s.com/api/storage/json-objects-public/").then(result=>{
+          axios.get("https://icicleapi.pods.icicleai.tapis.io/api/storage/json-objects-public/").then(result=>{
             this.tableData = result['data'].map(obj => {
               return {
                 ...obj,
@@ -323,7 +323,7 @@ export default {
               authorization: `Token ${this.getCookieByName('token')}`,
             }
           }
-          axios.get("https://icfoods.o18s.com/api/storage/json-objects/", config).then(result=>{
+          axios.get("https://icicleapi.pods.icicleai.tapis.io/api/storage/json-objects/", config).then(result=>{
             this.tableData = result['data'].map(obj => {
               return {
                 ...obj,  // Copy all key-value pairs from the original object
