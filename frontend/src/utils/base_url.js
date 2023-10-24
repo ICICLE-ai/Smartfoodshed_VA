@@ -8,8 +8,10 @@ import axios from 'axios'
 // Develop backend url: "https://vaapibackend.pods.icicle.develop.tapis.io/" ## not in use, always use the first one 
 
 // Local development 
-export const  base_request_url= "https://vaapibackend.pods.icicle.tapis.io/"
+// export const  base_request_url= "https://vaapibackend.pods.icicle.tapis.io/"
 //export const base_request_url = "http://localhost:5000/"
+export const base_request_url = process.env.VUE_APP_BACKEND
+export const django_url = process.env.VUE_APP_DJANGO
 export const apiClient = axios.create({
     baseURL: base_request_url,
     withCredentials: false,
