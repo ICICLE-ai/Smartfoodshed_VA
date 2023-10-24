@@ -1,0 +1,11 @@
+# Your client credentials
+client_id:
+client_key:
+
+# The Tapis base URL and tenant id
+tapis_base_url: https://icicleai.tapis.io
+tenant: icicleai
+
+# The base URL that you app isserved on; this needs to match what was registered with the  OAuth client
+#the catalog to a public URL. 
+app_base_url: https://vaapibackend.pods.icicle.tapis.io
