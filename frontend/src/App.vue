@@ -209,7 +209,7 @@ export default {
     // Delete cookie
     deleteCookieByName(name) {
       //document.cookie = name +'=; Path=/; Domain=localhost; Expires=' + new Date(0).toUTCString() + ';'; //For local use only 
-      document.cookie = name +'=; Path=/; Domain=' + env.process.VUE_APP_TOKEN_DOMAIN'; Expires=' + new Date(0).toUTCString() + ';';
+      document.cookie = name +'=; Path=/; Domain=' + process.env.VUE_APP_TOKEN_DOMAIN + '; Expires=' + new Date(0).toUTCString() + ';';
     },
     saveCloudData(){
       const savedState = this.$store.state
