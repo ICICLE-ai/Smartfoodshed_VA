@@ -1,6 +1,6 @@
-# Your client credentials
-client_id: smartfoodshed-va-dev
-client_key: va-dev
+# Your client credentials (Using github secrets)
+client_id: secrets.DEV_CLIENT_ID
+client_key: secrets.DEV_CLIENT_KEY
 
 # The Tapis base URL and tenant id
 tapis_base_url: https://icicleai.tapis.io
