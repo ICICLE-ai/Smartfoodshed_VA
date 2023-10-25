@@ -300,9 +300,9 @@ export default {
       else if(clickedItem=="LoadData"){
         this.dialog_load = true
         this.tableLoading = true
-        // this.loadDataTesting()
         if (this.getCookieByName('token')==null) {
-          axios.get("https://icicleapi.pods.icicleai.tapis.io/api/storage/json-objects-public/").then(result=>{
+          axios.get(django_url+"api/storage/json-objects-public/")
+          .then(result=>{
             this.tableData = result['data'].map(obj => {
               return {
                 ...obj,
@@ -327,7 +327,7 @@ export default {
               authorization: `Token ${this.getCookieByName('token')}`,
             }
           }
-          axios.get("https://icicleapi.pods.icicleai.tapis.io/api/storage/json-objects/", config).then(result=>{
+          axios.get(django_url+"api/storage/json-objects/", config).then(result=>{
             this.tableData = result['data'].map(obj => {
               return {
                 ...obj,  // Copy all key-value pairs from the original object
@@ -346,27 +346,6 @@ export default {
             this.tableLoading = false 
           })
         }
-      }
-        //axios.get("https://icfoods.o18s.com/api/storage/json-objects/", config)
-        axios.get(django_url+"api/storage/json-objects/", config)
-          .then(result=>{
-            this.tableData = result['data'].map(obj => {
-            return {
-              ...obj,  // Copy all key-value pairs from the original object
-            };
-          });
-          this.tableHeaders = [{
-            text: 'UUID',
-            value: 'uuid'
-          },{
-            text: 'Title',
-            value: 'title'
-          },{
-            text: 'Owner',
-            value: 'owner'
-          }]
-          this.tableLoading = false 
-        })
       }
       else if(clickedItem=="LogOut"){
           // For Carlos 
