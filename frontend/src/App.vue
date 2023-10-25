@@ -234,7 +234,7 @@ export default {
       // var path = "https://icfoods.o18s.com/api/tapis/protected/"
       
       //axios.post(path, data2save, config)
-      axios.post(django_url+"api/storage/json-object-create/", data2save, config)
+      axios.post(django_url+"api/storage/json-object/create/", data2save, config)
       .then(response => {
         this.alertInfo = {
           alert_color: "success",
