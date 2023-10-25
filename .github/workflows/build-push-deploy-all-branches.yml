@@ -47,7 +47,9 @@ jobs:
 
       - name: Grab config file
         shell: bash
-        run: echo ${{ secrets.DEV_CONFIG }} | base64 -d > backend/config.yaml
+        env: 
+          CONFIG_FILE: ${{ contains('refs/heads/main', github.ref) && ${{ secrets.PROD_CONFIG_FILE }} || ${{ secrets.DEV_CONFIG_FILE }} }}
+        run: echo ${CONFIG_FILE} | base64 -d > backend/config.yaml
 
       - name: Setup Docker Buildx
         uses: docker/setup-buildx-action@v2
