@@ -10,7 +10,7 @@ for file in $ROOT_DIR/js/*.js* $ROOT_DIR/index.html $ROOT_DIR/precache-manifest*
   # Use sed to replace the placeholder (VAR_#) with the environ var.
   sed -i 's|VAR_1|'${BACKEND_URL}'|g' $file;
   sed -i 's|VAR_2|'${DJANGO_URL}'|g' $file;
-  sed -i 's|VAR_3|'${TOKEN_DOMAIN}'|g' $file;
+  sed -i 's|VAR_3|'${COOKIE_DOMAIN}'|g' $file;
 done;
 
 # Continue with nginx execution
