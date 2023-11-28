@@ -119,6 +119,7 @@ import Dashboard from '@/views/Dashboard.vue'
 import axios from 'axios'
 import { getItemIndex } from './utils/storehelp';
 // import TEST from '../public/testing.json'
+import {base_request_url, django_url} from '@/utils/base_url'
 export default {
   data() {
     return {
@@ -168,7 +169,7 @@ export default {
     Dashboard
   },
   methods: {
-    checkVisible(ele){
+    checkVisible(ele){ 
       if(ele=="Log Out" || ele=="Save Data"){
         if(this.getCookieByName('token')==null){ //not logged in
           return false
@@ -208,7 +209,7 @@ export default {
     // Delete cookie
     deleteCookieByName(name) {
       //document.cookie = name +'=; Path=/; Domain=localhost; Expires=' + new Date(0).toUTCString() + ';'; //For local use only 
-      document.cookie = name +'=; Path=/; Domain=.pods.icicle.tapis.io; Expires=' + new Date(0).toUTCString() + ';';
+      document.cookie = name +'=; Path=/; Domain=' + process.env.VUE_APP_COOKIE_DOMAIN + '; Expires=' + new Date(0).toUTCString() + ';';
     },
     saveCloudData(){
       const savedState = this.$store.state
@@ -229,10 +230,11 @@ export default {
       };
       // axios.post(path,data2save,config)
       // this.dialog_save_loading = true 
-      var path = "https://icicleapi.pods.icicleai.tapis.io/api/storage/json-object/create/"
-      // var path = "https://icicleapi.pods.icicleai.tapis.io/api/tapis/protected/"
-      axios.post(path, data2save, config)
-      // axios.get(path, config)
+      //var path = "https://icfoods.o18s.com/api/storage/json-object/create/"
+      // var path = "https://icfoods.o18s.com/api/tapis/protected/"
+      
+      //axios.post(path, data2save, config)
+      axios.post(django_url+"api/storage/json-object/create/", data2save, config)
       .then(response => {
         this.alertInfo = {
           alert_color: "success",
@@ -260,13 +262,15 @@ export default {
       // slot.select(!slot.isSelected)// click anywhere in the row will automatically select the checkbox 
       // fetch the data 
       this.dialog_load_loading = true
-      axios.get("https://icicleapi.pods.icicleai.tapis.io/api/storage/json-object/"+this.selectedRow['uuid']+"/").then(result=>{
-        var temp = result['data']['json_data']
-        temp['resetMode'] = true
-        this.$store.dispatch('resetState',temp)
-        this.dialog_load_loading = false
-        this.dialog_load = false
-      })
+      //axios.get("https://icfoods.o18s.com/api/storage/json-object/"+this.selectedRow['uuid']+"/")
+      axios.get(django_url+"api/storage/json-object/"+this.selectedRow['uuid']+"/")
+        .then(result=>{
+          var temp = result['data']['json_data']
+          temp['resetMode'] = true
+          this.$store.dispatch('resetState',temp)
+          this.dialog_load_loading = false
+          this.dialog_load = false
+        })
     },
     // loadDataTesting(){
     //   // console.log(TEST)
@@ -286,7 +290,7 @@ export default {
         // login event
         if(this.getCookieByName('token')==null){
           await this.$store.dispatch('logIn')
-          this.item[1]['visible']=true //Shows logout
+          this.items[1]['visible']=true //Shows logout
           this.items[2]['visible']=true //Shows to save data
         }
       }else if(clickedItem=="SaveData"){
@@ -296,9 +300,9 @@ export default {
       else if(clickedItem=="LoadData"){
         this.dialog_load = true
         this.tableLoading = true
-        // this.loadDataTesting()
         if (this.getCookieByName('token')==null) {
-          axios.get("https://icicleapi.pods.icicleai.tapis.io/api/storage/json-objects-public/").then(result=>{
+          axios.get(django_url+"api/storage/json-objects-public/")
+          .then(result=>{
             this.tableData = result['data'].map(obj => {
               return {
                 ...obj,
@@ -323,7 +327,7 @@ export default {
               authorization: `Token ${this.getCookieByName('token')}`,
             }
           }
-          axios.get("https://icicleapi.pods.icicleai.tapis.io/api/storage/json-objects/", config).then(result=>{
+          axios.get(django_url+"api/storage/json-objects/", config).then(result=>{
             this.tableData = result['data'].map(obj => {
               return {
                 ...obj,  // Copy all key-value pairs from the original object

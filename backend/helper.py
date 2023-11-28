@@ -76,7 +76,7 @@ def preprocess_county_entity(node_list,graph):
     #Add node label "County" to all county entities
     set_county_label_cypher = "MATCH (n) WHERE id(n) = {} SET n:County"
     set_geoid_cypher = "MATCH (n) WHERE id(n) = {} SET n.geo_id = '{}'"
-    localfile_path = "https://raw.githubusercontent.com/yasmineTYM/PPOD_KG/main/"
+    localfile_path = "https://raw.githubusercontent.com/ICICLE-ai/Smartfoodshed_VA_VC1/main/backend/data/"
     fips = pd.read_csv(localfile_path+"county_fips.csv")
     fips = fips.astype({"fips": str})
     fips['fips'] = fips['fips'].apply(lambda x: x.zfill(5))

@@ -28,7 +28,7 @@ localfile_path = "../../../local_data"
 """
 # from config import localfile_path
 
-localfile_path = "https://raw.githubusercontent.com/yasmineTYM/PPOD_KG/main/"
+localfile_path = "https://raw.githubusercontent.com/ICICLE-ai/Smartfoodshed_VA_VC1/main/backend/data"
 # localfile_path = "/Users/yameitu/Desktop/ICIRCLE/local_data/"
 # configuration
 DEBUG = True
@@ -99,10 +99,9 @@ def callback():
     
     response = make_response(redirect(os.environ['FRONT_URL'], code=302))
 
-    domain = os.environ['FRONT_URL'][21:-1]
+    domain = os.environ['COOKIE_DOMAIN']
     response.set_cookie("token", token, domain=domain, secure=True)
     response.set_cookie("username", username, domain=domain, secure=True)    
-    response.set_cookie("username", username, domain=domain, secure=True)
     
     return response
 
@@ -432,7 +431,7 @@ def loadPPOD(graph, deleteOld=False):
 #     graph.run('CREATE CONSTRAINT n10s_unique_uri ON (r:Resource) ASSERT r.uri IS UNIQUE')
     graph.run('CALL n10s.graphconfig.init();')
     graph.run('CALL n10s.graphconfig.init({ handleVocabUris: "IGNORE" })')
-    graph.run("CALL apoc.import.graphml('https://raw.githubusercontent.com/yasmineTYM/PPOD_KG/main/PPOD_v9.graphml', {storeNodeIds:True, readLabels: True})")
+    graph.run("CALL apoc.import.graphml('https://raw.githubusercontent.com/ICICLE-ai/Smartfoodshed_VA_VC1/main/backend/data/PPOD_v9.graphml', {storeNodeIds:True, readLabels: True})")
     result = graph.run("MATCH (n) RETURN count(n) as num")
     for record in result:
         print(f"Number of nodes in the database: {record['num']}")

@@ -11,7 +11,9 @@ services:
             - "8080:8080"
         restart: always
         environment:
-            base_request_url: http://localhost:5000/
+            BACKEND_URL: http://localhost:5000/
+            DJANGO_URL: https://icicleapi.pods.icicleai.tapis.io/
+            TOKEN_DOMAIN: localhost
         networks:
             - va1-network
         command: ["nginx", "-g", "daemon off;"]
