@@ -28,7 +28,7 @@ localfile_path = "../../../local_data"
 """
 # from config import localfile_path
 
-localfile_path = "https://raw.githubusercontent.com/ICICLE-ai/Smartfoodshed_VA_VC1/main/backend/data"
+localfile_path = "https://raw.githubusercontent.com/ICICLE-ai/Smartfoodshed_VA_VC1/main/backend/data/"
 # localfile_path = "/Users/yameitu/Desktop/ICIRCLE/local_data/"
 # configuration
 DEBUG = True
