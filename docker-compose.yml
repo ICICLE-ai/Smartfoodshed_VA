@@ -12,7 +12,7 @@ services:
         restart: always
         environment:
             BACKEND_URL: http://localhost:5000/
-            DJANGO_URL: https://icicleapi.pods.icicleai.tapis.io/
+            CLOUD_URL: https://icicleapi.pods.icicleai.tapis.io/
             TOKEN_DOMAIN: localhost
         networks:
             - va1-network
@@ -29,6 +29,7 @@ services:
             flask_debug: "True"
             local_run_db_init: "True"
             FRONT_URL: "http://localhost:8080"
+            COOKIE_DOMAIN: "localhost"
         restart: on-failure
         networks:
             - va1-network

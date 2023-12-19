@@ -11,7 +11,7 @@ import axios from 'axios'
 // export const  base_request_url= "https://vaapibackend.pods.icicle.tapis.io/"
 //export const base_request_url = "http://localhost:5000/"
 export const base_request_url = process.env.VUE_APP_BACKEND
-export const django_url = process.env.VUE_APP_DJANGO
+export const cloud_url = process.env.VUE_APP_CLOUD
 export const apiClient = axios.create({
     baseURL: base_request_url,
     withCredentials: false,

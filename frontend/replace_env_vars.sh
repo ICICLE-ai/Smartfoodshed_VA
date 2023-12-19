@@ -9,7 +9,7 @@ ROOT_DIR=/app;
 for file in $ROOT_DIR/js/*.js* $ROOT_DIR/index.html $ROOT_DIR/precache-manifest*.js; do
   # Use sed to replace the placeholder (VAR_#) with the environ var.
   sed -i 's|VAR_1|'${BACKEND_URL}'|g' $file;
-  sed -i 's|VAR_2|'${DJANGO_URL}'|g' $file;
+  sed -i 's|VAR_2|'${CLOUD_URL}'|g' $file;
   sed -i 's|VAR_3|'${COOKIE_DOMAIN}'|g' $file;
 done;
 
