@@ -239,7 +239,7 @@ export default {
       const config = {
         headers: {
           authorization: `Token ${this.getCookieByName("token")}`,
-          public: this.publicData.toUTCString(),
+          public: this.publicData.toString(),
         },
       };
       axios
