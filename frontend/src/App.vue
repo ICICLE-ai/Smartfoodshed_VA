@@ -244,7 +244,7 @@ export default {
       };
       axios
         .post(cloud_url + "api/storage/json-object/create/", dataToSave, config)
-        .then((response) => {
+        .then(response => {
           this.alertInfo = {
             alert_color: "success",
             alert_title: "Successfully saved!",
@@ -255,7 +255,7 @@ export default {
           this.dialog_save = false; // hide the dialog
           this.show_alert = true; // show notification
         })
-        .catch((error) => {
+        .catch(error => {
           this.alertInfo = {
             alert_color: "error",
             alert_title: "Error occured!",
@@ -278,8 +278,8 @@ export default {
             this.selectedRow["uuid"] +
             "/"
         )
-        .then((result) => {
-          var temp = result["data"]["json_data"];
+        .then(response => {
+          var temp = response["data"]["json_data"];
           temp["resetMode"] = true;
           this.$store.dispatch("resetState", temp);
           this.dialog_load_loading = false;
@@ -290,7 +290,7 @@ export default {
       this.dialog_delete_loading = true;
       axios
         .get(cloud_url + "api/storage/delete/" + this.selectedRow["uuid"] + "/")
-        .then(() => {
+        .then(response => {
           this.dialog_delete_loading = false;
           this.dialog_load = false;
         });
@@ -321,8 +321,8 @@ export default {
           if (this.getCookieByName("token") == null) {
             axios
               .get(cloud_url + "api/storage/json-objects-public/")
-              .then((result) => {
-                this.tableData = result["data"].map((obj) => {
+              .then(response => {
+                this.tableData = response["data"].map(obj => {
                   return {
                     ...obj,
                   };
@@ -336,8 +336,8 @@ export default {
             };
             axios
               .get(cloud_url + "api/storage/json-objects/", config)
-              .then((result) => {
-                this.tableData = result["data"].map((obj) => {
+              .then(response => {
+                this.tableData = response["data"].map(obj => {
                   return {
                     ...obj, // Copy all key-value pairs from the original object
                   };
