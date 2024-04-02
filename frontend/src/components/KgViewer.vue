@@ -264,7 +264,7 @@
 </template>
 
 <script>
-import * as Neo4jd3 from '../js/Neo4D3_v2'
+import * as Neo4jd3 from '../js/Neo4D3'
 import * as d3Lasso from 'd3-lasso'
 import * as d3 from 'd3'
 import * as KGutils from '@/utils/KGutils.js'
