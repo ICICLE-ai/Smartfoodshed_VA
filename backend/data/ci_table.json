@@ -18,124 +18,135 @@
                 "id": 2
             },
             {
-                "owner": "Joe Stubbs",
-                "name": "Camera Traps Model Evaluation and Capacity Planning Dashboard (AE)",
+                "name": "IKLE Actions Editor",
                 "id": 3
             },
             {
-                "name": "Model Training Dashboard (DA)",
+                "name": "Camera Traps Model Evaluation and Capacity Planning Dashboard (AE)",
                 "id": 4
             },
             {
-                "name": "Dataset Management Dashboard (DA)",
+                "name": "Model Training Dashboard (DA)",
                 "id": 5
             },
             {
-                "name": "Authentication and Authorization Middleware",
+                "name": "Data Dashboard",
                 "id": 6
             },
             {
-                "name": "Model Commons",
+                "name": "Authentication and Authorization Middleware",
                 "id": 7
             },
             {
-                "name": "ICICLE Tapis OAuth2-based Authentication Service",
+                "name": "Model Commons",
                 "id": 8
             },
             {
-                "name": "ICICLE Tapis Security & Authorization Service",
+                "name": "IKLE ETL and Caching Infrastructure",
                 "id": 9
             },
             {
-                "name": "Model Commons Model Repository",
+                "name": "IKLE Knowledge Harvester Engine",
                 "id": 10
-            },
-            {
-                "name": "Model Commons Data Repository",
-                "id": 11
-            },
-            {
-                "name": "Adaptive AI Server",
-                "id": 12
-            },
-            {
-                "name": "HARP Application Resource Predictor",
-                "id": 13
-            },
-            {
-                "name": "Tapis Jobs API",
-                "id": 14
-            },
-            {
-                "name": "Tapis Apps API",
-                "id": 15
-            },
-            {
-                "name": "Tapis Systems API",
-                "id": 16
-            },
-            {
-                "name": "Intelligence Plane",
-                "id": 17
-            },
-            {
-                "name": "Tapis HPC Middelware",
-                "id": 18
-            },
-            {
-                "name": "ICICLE ML Hosting Middleware",
-                "id": 19
-            },
-            {
-                "name": "Tapis Pods API",
-                "description": "Hosted Knowledge Graphs, Inference Servers, and related containers",
-                "id": 20
             },
             {
                 "name": "Tapis Workflows API",
                 "description": "Supports the IKLE ETL and caching service",
+                "id": 11
+            },
+            {
+                "name": "ICICLE Tapis OAuth2-based Authentication Service",
+                "id": 12
+            },
+            {
+                "name": "ICICLE Tapis Security & Authorization Service",
+                "id": 13
+            },
+            {
+                "name": "Model Commons Model Repository",
+                "id": 14
+            },
+            {
+                "name": "Model Commons Data Repository",
+                "id": 15
+            },
+            {
+                "name": "Adaptive AI Server",
+                "id": 16
+            },
+            {
+                "name": "HARP Application Resource Predictor",
+                "id": 17
+            },
+            {
+                "name": "Tapis Jobs API",
+                "id": 18
+            },
+            {
+                "name": "Tapis Apps API",
+                "id": 19
+            },
+            {
+                "name": "Tapis Systems API",
+                "id": 20
+            },
+            {
+                "name": "Intelligence Plane",
                 "id": 21
+            },
+            {
+                "name": "Tapis HPC Middelware",
+                "id": 22
+            },
+            {
+                "name": "ICICLE ML Hosting Middleware",
+                "id": 23
+            },
+            {
+                "name": "Tapis Pods API",
+                "description": "Hosted Knowledge Graphs, Inference Servers, and related containers",
+                "id": 24
             },
             {
                 "name": "Illuvar functions-as-a-service (FaaS) (RIISS)",
                 "description": "Hosted Knowledge Graphs, Inference Servers, and related containers",
-                "id": 22
-            },
-            {
-                "name": "ICICLE ML Edge-to-Center Middleware",
-                "id": 23
-            },
-            {
-                "name": "Monitoring Plane",
-                "id": 24
-            },
-            {
-                "name": "CKN Knowledge Base (datacenter)",
                 "id": 25
             },
             {
-                "name": "CKN CEP Engine (datacenter)",
+                "name": "ICICLE ML Edge-to-Center Middleware",
                 "id": 26
             },
             {
-                "name": "CKN Capture Daemon (edge)",
+                "name": "Monitoring Plane",
                 "id": 27
             },
             {
-                "name": "CKN Actuator (edge)",
+                "name": "RED Edge Placement Planner",
                 "id": 28
             },
             {
-                "name": "RED Edge Placement Planner",
+                "name": "Dynamic Edge Hardware Provisioning Service (AE)",
                 "id": 29
             },
             {
-                "name": "Dynamic Edge Hardware Provisioning Service (AE)",
+                "name": "Edge Application Deployment Service (AE)",
                 "id": 30
             },
             {
-                "name": "Edge Application Deployment Service (AE)",
+                "name": "CKN Knowledge Base (datacenter)",
                 "id": 31
+            },
+            {
+                "name": "CKN CEP Engine (datacenter)",
+                "id": 32
+            },
+            {
+                "name": "CKN Capture Daemon (edge)",
+                "id": 33
+            },
+            {
+                "name": "CKN Actuator (edge)",
+                "id": 34
             }
         ],
         "table_info": [
@@ -156,7 +167,6 @@
             }
         ]
     },
-
     {
         "table_type": "relationship",
         "table_name": "contains",
@@ -174,6 +184,13 @@
                 "relation_id": 1,
                 "start_id": 1,
                 "end_id": 2
+            },
+            {
+                "Component_start": null,
+                "Component_end": null,
+                "relation_id": 5,
+                "start_id": 2,
+                "end_id": 6
             },
             {
                 "Component_start": null,
@@ -199,71 +216,57 @@
             {
                 "Component_start": null,
                 "Component_end": null,
-                "relation_id": 11,
-                "start_id": 6,
-                "end_id": 9
+                "relation_id": 12,
+                "start_id": 7,
+                "end_id": 13
             },
             {
                 "Component_start": null,
                 "Component_end": null,
-                "relation_id": 10,
-                "start_id": 6,
-                "end_id": 8
+                "relation_id": 11,
+                "start_id": 7,
+                "end_id": 12
+            },
+            {
+                "Component_start": null,
+                "Component_end": null,
+                "relation_id": 20,
+                "start_id": 8,
+                "end_id": 15
             },
             {
                 "Component_start": null,
                 "Component_end": null,
                 "relation_id": 19,
-                "start_id": 7,
-                "end_id": 11
-            },
-            {
-                "Component_start": null,
-                "Component_end": null,
-                "relation_id": 18,
-                "start_id": 7,
-                "end_id": 10
-            },
-            {
-                "Component_start": null,
-                "Component_end": null,
-                "relation_id": 21,
-                "start_id": 12,
-                "end_id": 17
-            },
-            {
-                "Component_start": null,
-                "Component_end": null,
-                "relation_id": 22,
-                "start_id": 13,
-                "end_id": 17
-            },
-            {
-                "Component_start": null,
-                "Component_end": null,
-                "relation_id": 23,
-                "start_id": 14,
-                "end_id": 18
+                "start_id": 8,
+                "end_id": 14
             },
             {
                 "Component_start": null,
                 "Component_end": null,
                 "relation_id": 24,
-                "start_id": 15,
-                "end_id": 18
+                "start_id": 11,
+                "end_id": 23
             },
             {
                 "Component_start": null,
                 "Component_end": null,
                 "relation_id": 25,
                 "start_id": 16,
-                "end_id": 18
+                "end_id": 21
             },
             {
                 "Component_start": null,
                 "Component_end": null,
-                "relation_id": 29,
-                "start_id": 19,
+                "relation_id": 26,
+                "start_id": 17,
+                "end_id": 21
+            },
+            {
+                "Component_start": null,
+                "Component_end": null,
+                "relation_id": 27,
+                "start_id": 18,
                 "end_id": 22
             },
             {
@@ -271,70 +274,84 @@
                 "Component_end": null,
                 "relation_id": 28,
                 "start_id": 19,
-                "end_id": 21
+                "end_id": 22
             },
             {
                 "Component_start": null,
                 "Component_end": null,
-                "relation_id": 27,
-                "start_id": 19,
-                "end_id": 20
+                "relation_id": 29,
+                "start_id": 20,
+                "end_id": 22
             },
             {
                 "Component_start": null,
                 "Component_end": null,
-                "relation_id": 30,
+                "relation_id": 32,
+                "start_id": 23,
+                "end_id": 25
+            },
+            {
+                "Component_start": null,
+                "Component_end": null,
+                "relation_id": 31,
                 "start_id": 23,
                 "end_id": 24
             },
             {
                 "Component_start": null,
                 "Component_end": null,
-                "relation_id": 34,
-                "start_id": 24,
-                "end_id": 28
-            },
-            {
-                "Component_start": null,
-                "Component_end": null,
                 "relation_id": 36,
-                "start_id": 24,
+                "start_id": 26,
                 "end_id": 30
             },
             {
                 "Component_start": null,
                 "Component_end": null,
+                "relation_id": 34,
+                "start_id": 26,
+                "end_id": 28
+            },
+            {
+                "Component_start": null,
+                "Component_end": null,
                 "relation_id": 33,
-                "start_id": 24,
+                "start_id": 26,
                 "end_id": 27
             },
             {
                 "Component_start": null,
                 "Component_end": null,
-                "relation_id": 37,
-                "start_id": 24,
-                "end_id": 31
-            },
-            {
-                "Component_start": null,
-                "Component_end": null,
                 "relation_id": 35,
-                "start_id": 24,
+                "start_id": 26,
                 "end_id": 29
             },
             {
                 "Component_start": null,
                 "Component_end": null,
-                "relation_id": 32,
-                "start_id": 24,
-                "end_id": 26
+                "relation_id": 39,
+                "start_id": 27,
+                "end_id": 33
             },
             {
                 "Component_start": null,
                 "Component_end": null,
-                "relation_id": 31,
-                "start_id": 24,
-                "end_id": 25
+                "relation_id": 38,
+                "start_id": 27,
+                "end_id": 32
+            },
+            {
+                "Component_start": null,
+                "Component_end": null,
+                "relation_id": 40,
+                "start_id": 27,
+                "end_id": 34
+            },
+            {
+                "Component_start": null,
+                "Component_end": null,
+                "relation_id": 37,
+                "start_id": 27,
+                "end_id": 31
             }
         ],
         "table_info": [
@@ -350,6 +367,5 @@
             }
         ]
     }
-
 
 ]
