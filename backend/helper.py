@@ -7,12 +7,12 @@ import collections
 import py2neo
 import requests 
 def readFileLocalOrGit(path):
-    if url.startswith('https://'):    
-        resp = requests.get(url)
+    if path.startswith('https://'):    
+        resp = requests.get(path)
         data = json.loads(resp.text)
         return data
-    elif url.startswith('file:'):
-        with open(url.replace('file:', '')) as f:
+    elif path.startswith('file:'):
+        with open(path.replace('file:', '')) as f:
             data = json.load(f)
         return data
     else:
