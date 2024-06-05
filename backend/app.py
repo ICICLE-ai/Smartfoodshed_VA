@@ -29,7 +29,7 @@ localfile_path = "../../../local_data"
 # from config import localfile_path
 
 localfile_path = "https://raw.githubusercontent.com/ICICLE-ai/Smartfoodshed_VA_VC1/main/backend/data/"
-localfile_path = "/app/data/"
+localfile_path = "file:/app/data/"
 # configuration
 DEBUG = True
 GRAPH_DRIVER = None
@@ -107,14 +107,14 @@ def callback():
 
 @app.route('/getGraphData', methods=['GET'])
 def getGraphData():
-    data = helper.readJsonFromGit(localfile_path+'input_graph.json')
+    data = helper.readFileLocalOrGit(localfile_path+'input_graph.json')
     # print(type(filtered_data))
     return Response(json.dumps(data))
 
 @app.route('/g', methods=['GET'])
 def getMapData():
     global database
-    data = helper.readJsonFromGit(localfile_path+database+'_map_initial_data.json')
+    data = helper.readFileLocalOrGit(localfile_path+database+'_map_initial_data.json')
     # with open('../../../local_data/'+database+"_map_initial_data_v1.json") as f:
     #     data = json.loads(f.read())
     output = {
@@ -129,7 +129,7 @@ def getTableData():
     ## This config file will not be pushed to the osu code, so we don't need to always change path
     # global database
     # print('gettabledata', database)
-    data = helper.readJsonFromGit(localfile_path+database+'_table.json')
+    data = helper.readFileLocalOrGit(localfile_path+database+'_table.json')
 
     # with open('../../../local_data/'+database+"_table_localserver.json") as f:
     #     data = json.loads(f.read())

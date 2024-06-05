@@ -6,10 +6,18 @@ from py2neo import Subgraph
 import collections
 import py2neo
 import requests 
-def readJsonFromGit(url):
-    resp = requests.get(url)
-    data = json.loads(resp.text)
-    return data
+def readFileLocalOrGit(path):
+    if url.startswith('https://'):    
+        resp = requests.get(url)
+        data = json.loads(resp.text)
+        return data
+    elif url.startswith('file:'):
+        with open(url.replace('file:', '')) as f:
+            data = json.load(f)
+        return data
+    else:
+        raise ValueError('Invalid URL, must start with "https://" or "file:"')
+
 def filterGraph(data, num, sort):
     ## filter nodes 
     nodes = data['results'][0]['data'][0]['graph']['nodes']
