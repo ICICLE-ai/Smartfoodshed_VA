@@ -50,6 +50,26 @@ def ping_pong():
 
 
 #app.register_blueprint(icicle_flaskn)
+@app.route('/tapisui-entry', methods=['GET'])
+def tapisUI_entry():
+    """
+    Entrypoint for TapisUI iframe
+    """
+    jwt = request.args.get("jwt")
+    
+    if not jwt:
+        raise Exception(f"Error: No JWT in request")
+
+    # Verify JWT was created using Tapis OAuth and get username
+    username = auth.get_username(jwt)
+    
+    response = make_response(redirect(os.environ['FRONT_URL'], code=302))
+
+    domain = os.environ['COOKIE_DOMAIN']
+    response.set_cookie("token", jwt, domain=domain, secure=True)
+    response.set_cookie("username", username, domain=domain, secure=True)    
+    
+    return response
 
 @app.route('/login', methods=['GET'])
 def login():
